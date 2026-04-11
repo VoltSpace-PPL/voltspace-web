@@ -1,59 +1,205 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ⚡ VoltSpace - Sprint 1 Development Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Dokumen ini berisi panduan pengerjaan Sprint 1 untuk tim VoltSpace, termasuk alur kerja Git, pembagian tugas, serta aturan pengembangan.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# 📅 Sprint 1 Timeline
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* **Development:** Week 6 – Week 9 (6 April – 2 Mei)
+* **Testing:** Week 10 (1 minggu)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+# 🎯 Sprint Goal
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Mengembangkan fitur inti sistem VoltSpace yang mencakup manajemen ruangan, pengguna, jadwal listrik, dashboard monitoring, serta integrasi IoT dasar.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+# 🌳 Branch Structure
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+main   → versi stabil
+dev    → integrasi semua fitur
+nama/fitur → development masing-masing anggota
+```
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# 🚀 Setup Awal (Wajib Semua Anggota)
 
-## Contributing
+```bash
+git clone https://github.com/VoltSpace-PPL/VoltSpace-Web.git
+cd VoltSpace-Web
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan serve
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 🔁 Workflow Pengerjaan
 
-## Security Vulnerabilities
+## 1. Ambil update terbaru dari dev
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+git checkout dev
+git pull origin dev
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 2. Masuk ke branch masing-masing
+
+Contoh:
+
+```bash
+git checkout rizki/ruangan
+```
+
+---
+
+## 3. Kerjakan fitur
+
+Lakukan coding sesuai tugas masing-masing.
+
+---
+
+## 4. Commit perubahan
+
+```bash
+git add .
+git commit -m "feat: deskripsi perubahan"
+```
+
+Contoh:
+
+```bash
+feat: create data ruangan
+fix: validasi input user
+```
+
+---
+
+## 5. Push ke GitHub
+
+```bash
+git push origin nama-branch
+```
+
+---
+
+## 6. Pull Request (PR)
+
+* Lakukan PR ke:
+
+```
+nama/fitur → dev
+```
+
+---
+
+## 7. Update dari dev (WAJIB sebelum lanjut kerja)
+
+```bash
+git checkout dev
+git pull origin dev
+git checkout nama/fitur
+git merge dev
+```
+
+---
+
+# ⚠️ Aturan Penting
+
+❌ Tidak boleh push ke `main`
+❌ Tidak boleh langsung kerja di `dev`
+✅ Semua fitur harus melalui Pull Request ke `dev`
+✅ Commit harus jelas dan terstruktur
+
+---
+
+# 👥 Pembagian Tugas Sprint 1
+
+## 👤 M. Rizki Aulia Wibowo
+
+**Branch:** `rizki/ruangan`
+**Tugas:**
+
+* Mengembangkan fitur CRUD data ruangan
+* Validasi input data ruangan
+
+---
+
+## 👤 Muhammad Aydin Yusuf
+
+**Branch:** `aydin/jadwal-listrik`
+**Tugas:**
+
+* Mengembangkan CRUD jadwal listrik
+* Mengatur logika penjadwalan listrik otomatis
+
+---
+
+## 👤 Cheisya Valda Wibawaningrum
+
+**Branch:** `cheisya/iot-device`
+**Tugas:**
+
+* Mengelola CRUD perangkat IoT
+* Menyimpan data device ke sistem
+
+---
+
+## 👤 Muhammad Mufid Taqiyuddin
+
+**Branch:** `mufid/user`
+**Tugas:**
+
+* Mengembangkan CRUD pengguna
+* Mengatur role (admin/mahasiswa)
+* Validasi dan manajemen akun
+
+---
+
+## 👤 M. Helmi Afriza
+
+**Branch:** `helmi/dashboard`
+**Tugas:**
+
+* Mengembangkan dashboard monitoring energi
+* Menampilkan data penggunaan listrik
+* Visualisasi data (grafik/summary)
+
+---
+
+# 🧪 Testing (Week 10)
+
+Pengujian dilakukan selama 1 minggu mencakup:
+
+* Integration testing antar fitur
+* Pengujian IoT dengan sistem web
+* Bug fixing
+* Validasi fungsionalitas end-to-end
+
+---
+
+# 🎯 Output Sprint 1
+
+* Sistem CRUD utama berjalan
+* Dashboard monitoring aktif
+* IoT terintegrasi dengan backend
+* Sistem siap dikembangkan ke Sprint 2
+
+---
+
+# ⚡ Catatan
+
+* Pastikan selalu sync dengan `dev`
+* Gunakan commit message yang jelas
+* Koordinasi aktif antar tim
+
+---
