@@ -92,23 +92,23 @@ git push origin nama-branch
 
 ---
 
-## 6. Pull Request (PR)
-
-* Lakukan PR ke:
-
-```
-nama/fitur → dev
-```
-
----
-
-## 7. Update dari dev (WAJIB sebelum lanjut kerja)
+## 6. Update dari dev (WAJIB sebelum Pull Request)
 
 ```bash
 git checkout dev
 git pull origin dev
 git checkout nama/fitur
 git merge dev
+```
+
+---
+
+## 7. Pull Request (PR)
+
+* Lakukan PR ke:
+
+```
+nama/fitur → dev
 ```
 
 ---
