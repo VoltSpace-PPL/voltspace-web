@@ -36,8 +36,8 @@ main
 └── cheisya/iot-device
 
 
-❌ Tidak ada `dev` branch  
-❌ Tidak membuat branch baru  
+
+❌ Tidak perlu membuat branch baru  
 ✅ Semua pekerjaan dilakukan di branch masing-masing  
 
 ---
