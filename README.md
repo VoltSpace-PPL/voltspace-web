@@ -183,7 +183,7 @@ nama/branch  →  main
 |------|--------|-------|
 | M. Rizki Aulia Wibowo | `rizki/ruangan` | CRUD Ruangan + validasi input |
 | Muhammad Aydin Yusuf | `aydin/jadwal-listrik` | CRUD Jadwal Listrik + logika penjadwalan |
-| Cheisya Valda Wibawaningrum | `cheisya/iot-device` | CRUD IoT Device + integrasi data |
+| Cheisya Valda Wibawaningrum | `cheisya/iot-device` | CRUD IoT Device |
 | Muhammad Mufid Taqiyuddin | `mufid/user` | CRUD User + role management + validasi akun |
 | M. Helmi Afriza | `helmi/dashboard` | Dashboard Monitoring + visualisasi energi |
 
@@ -225,4 +225,4 @@ git push origin nama/branch
 
 ---
 
-*VoltSpace · Sprint 1 · PPL Team*
+*VoltSpace · Sprint 1 · PPL Team F*
