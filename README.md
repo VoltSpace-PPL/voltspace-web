@@ -1,206 +1,124 @@
-# ⚡ VoltSpace - Sprint 1 Development Guide
+# ⚡ VoltSpace - Sprint 1 Development Guide (Final)
 
-Dokumen ini berisi panduan pengerjaan Sprint 1 untuk tim VoltSpace, termasuk alur kerja Git, pembagian tugas, serta aturan pengembangan.
+Dokumen ini berisi panduan pengerjaan Sprint 1 VoltSpace, termasuk alur kerja Git, pembagian tugas, serta aturan pengembangan.
 
 ---
 
 # 📅 Sprint 1 Timeline
 
-* **Development:** Week 6 – Week 9 (6 April – 2 Mei)
-* **Testing:** Week 10 (1 minggu)
+| Tahap       | Periode             |
+|------------|--------------------|
+| Development | Week 6 – Week 9     |
+| Testing     | Week 10 (1 minggu)  |
 
 ---
 
 # 🎯 Sprint Goal
 
-Mengembangkan fitur inti sistem VoltSpace yang mencakup manajemen ruangan, pengguna, jadwal listrik, dashboard monitoring, serta integrasi IoT dasar.
+Mengembangkan fitur inti sistem VoltSpace:
+
+- Manajemen ruangan  
+- Manajemen pengguna  
+- Jadwal listrik  
+- Dashboard monitoring  
+- Integrasi IoT dasar  
 
 ---
 
 # 🌳 Branch Structure
 
-```bash
-main   → versi stabil
-dev    → integrasi semua fitur
-nama/fitur → development masing-masing anggota
-```
+
+main
+├── rizki/ruangan
+├── mufid/user
+├── helmi/dashboard
+├── aydin/jadwal-listrik
+└── cheisya/iot-device
+
+
+❌ Tidak ada `dev` branch  
+❌ Tidak membuat branch baru  
+✅ Semua pekerjaan dilakukan di branch masing-masing  
 
 ---
 
-# 🚀 Setup Awal (Wajib Semua Anggota)
+# 🚀 Setup Awal (CLONE MANUAL)
 
+## 1. Masuk folder kerja
 ```bash
+cd folder-kerja-kalian
+2. Clone repository
 git clone https://github.com/VoltSpace-PPL/VoltSpace-Web.git
+3. Masuk project
 cd VoltSpace-Web
-
+4. Install Laravel
 composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate:fresh
 php artisan serve
-```
-
----
-
-# 🔁 Workflow Pengerjaan
-
-## 1. Ambil update terbaru dari dev
-
-```bash
-git checkout dev
-git pull origin dev
-```
-
----
-
-## 2. Masuk ke branch masing-masing
+🔁 Workflow Pengerjaan
+1. Masuk branch masing-masing
+git checkout nama/branch
 
 Contoh:
 
-```bash
 git checkout rizki/ruangan
-```
+2. Kerjakan fitur
 
----
+Lakukan development sesuai task masing-masing.
 
-## 3. Kerjakan fitur
-
-Lakukan coding sesuai tugas masing-masing.
-
----
-
-## 4. Commit perubahan
-
-```bash
+3. Commit perubahan
 git add .
 git commit -m "feat: deskripsi perubahan"
-```
 
 Contoh:
 
-```bash
-feat: create data ruangan
-fix: validasi input user
-```
+feat: create CRUD ruangan
+fix: validation input user
+4. Push ke GitHub
+git push origin nama/branch
 
----
+Contoh:
 
-## 5. Push ke GitHub
+git push origin rizki/ruangan
+5. Pull Request (PR)
+nama/branch → main
 
-```bash
-git push origin nama-branch
-```
+Contoh:
 
----
+rizki/ruangan → main
+⚠️ Aturan Penting
 
-## 6. Update dari dev (WAJIB sebelum Pull Request)
+❌ Tidak boleh push langsung ke main
+❌ Tidak boleh kerja di branch orang lain
+❌ Tidak boleh membuat branch baru
 
-```bash
-git checkout dev
-git pull origin dev
-git checkout nama/fitur
-git merge dev
-```
+✅ Semua fitur sudah disediakan branch
+✅ Semua perubahan wajib melalui Pull Request ke main
+✅ Commit harus jelas dan deskriptif
 
----
+👥 Pembagian Tugas Sprint 1
+Nama	Branch	Tugas
+M. Rizki Aulia Wibowo	rizki/ruangan	CRUD ruangan + validasi input
+Muhammad Aydin Yusuf	aydin/jadwal-listrik	CRUD jadwal listrik + logika penjadwalan
+Cheisya Valda Wibawaningrum	cheisya/iot-device	CRUD IoT device + integrasi data
+Muhammad Mufid Taqiyuddin	mufid/user	CRUD user + role management + validasi akun
+M. Helmi Afriza	helmi/dashboard	Dashboard monitoring + visualisasi energi
+🧪 Testing (Week 10)
+Integration testing antar fitur
+Testing IoT system
+Bug fixing
+End-to-end testing
+🎯 Output Sprint 1
+CRUD utama selesai
+Dashboard berjalan
+IoT terintegrasi
+Sistem siap Sprint 2
+⚡ Workflow Singkat
+git checkout nama/branch
+git add .
+git commit -m "feat: ..."
+git push origin nama/branch
 
-## 7. Pull Request (PR)
-
-* Lakukan PR ke:
-
-```
-nama/fitur → dev
-```
-
----
-
-# ⚠️ Aturan Penting
-
-❌ Tidak boleh push ke `main`
-❌ Tidak boleh langsung kerja di `dev`
-✅ Semua fitur harus melalui Pull Request ke `dev`
-✅ Commit harus jelas dan terstruktur
-
----
-
-# 👥 Pembagian Tugas Sprint 1
-
-## 👤 M. Rizki Aulia Wibowo
-
-**Branch:** `rizki/ruangan`
-**Tugas:**
-
-* Mengembangkan fitur CRUD data ruangan
-* Validasi input data ruangan
-
----
-
-## 👤 Muhammad Aydin Yusuf
-
-**Branch:** `aydin/jadwal-listrik`
-**Tugas:**
-
-* Mengembangkan CRUD jadwal listrik
-* Mengatur logika penjadwalan listrik otomatis
-
----
-
-## 👤 Cheisya Valda Wibawaningrum
-
-**Branch:** `cheisya/iot-device`
-**Tugas:**
-
-* Mengelola CRUD perangkat IoT
-* Menyimpan data device ke sistem
-
----
-
-## 👤 Muhammad Mufid Taqiyuddin
-
-**Branch:** `mufid/user`
-**Tugas:**
-
-* Mengembangkan CRUD pengguna
-* Mengatur role (admin/mahasiswa)
-* Validasi dan manajemen akun
-
----
-
-## 👤 M. Helmi Afriza
-
-**Branch:** `helmi/dashboard`
-**Tugas:**
-
-* Mengembangkan dashboard monitoring energi
-* Menampilkan data penggunaan listrik
-* Visualisasi data (grafik/summary)
-
----
-
-# 🧪 Testing (Week 10)
-
-Pengujian dilakukan selama 1 minggu mencakup:
-
-* Integration testing antar fitur
-* Pengujian IoT dengan sistem web
-* Bug fixing
-* Validasi fungsionalitas end-to-end
-
----
-
-# 🎯 Output Sprint 1
-
-* Sistem CRUD utama berjalan
-* Dashboard monitoring aktif
-* IoT terintegrasi dengan backend
-* Sistem siap dikembangkan ke Sprint 2
-
----
-
-# ⚡ Catatan
-
-* Pastikan selalu sync dengan `dev`
-* Gunakan commit message yang jelas
-* Koordinasi aktif antar tim
-
----
+# lalu PR ke main
