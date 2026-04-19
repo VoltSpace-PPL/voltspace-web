@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'voltspace' => [
+        // Base origin for API calls from Blade pages.
+        // Defaults to the same Laravel app origin (APP_URL) so /api/* works locally.
+        'api_origin' => env('BACKEND_URL', env('APP_URL', 'http://127.0.0.1:8000')),
+    ],
+
 ];

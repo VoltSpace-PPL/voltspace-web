@@ -1,228 +1,59 @@
-# ⚡ VoltSpace — Sprint 1 Development Guide
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-> Panduan resmi pengerjaan Sprint 1 VoltSpace: alur kerja Git, pembagian tugas, dan aturan pengembangan tim.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
----
+## About Laravel
 
-## 📋 Daftar Isi
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Sprint Timeline](#-sprint-1-timeline)
-- [Sprint Goal](#-sprint-goal)
-- [Branch Structure](#-branch-structure)
-- [Setup Awal](#-setup-awal)
-- [Workflow Pengerjaan](#-workflow-pengerjaan)
-- [Aturan Penting](#️-aturan-penting)
-- [Pembagian Tugas](#-pembagian-tugas-sprint-1)
-- [Testing](#-testing-week-10)
-- [Output Sprint 1](#-output-sprint-1)
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
----
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## 📅 Sprint 1 Timeline
+## Learning Laravel
 
-| Tahap       | Periode              |
-|-------------|----------------------|
-| Development | Week 6 – Week 9      |
-| Testing     | Week 10 (1 minggu)   |
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
 
----
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## 🎯 Sprint Goal
+## Laravel Sponsors
 
-Mengembangkan fitur inti sistem VoltSpace:
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-| #  | Fitur                    |
-|----|--------------------------|
-| 1  | Manajemen Ruangan        |
-| 2  | Manajemen Pengguna       |
-| 3  | Jadwal Listrik           |
-| 4  | Dashboard Monitoring     |
-| 5  | Manajemen IoT            |
-| 6  | Integrasi IoT            |
+### Premium Partners
 
----
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-## 🌳 Branch Structure
+## Contributing
 
-```
-main
-├── rizki/ruangan
-├── mufid/user
-├── helmi/dashboard
-├── aydin/jadwal-listrik
-└── cheisya/iot-device
-```
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-| Aturan | Keterangan |
-|--------|------------|
-| ❌ | Jangan membuat branch baru (karena sudah dibikin) |
-| ✅ | Semua pekerjaan dilakukan di branch masing-masing |
+## Code of Conduct
 
----
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## 🚀 Setup Awal
+## Security Vulnerabilities
 
-Lakukan langkah berikut **satu kali** saat pertama kali memulai.
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-### 1. Masuk ke Folder Kerja
+## License
 
-```bash
-cd folder-kerja-kalian
-```
-
-### 2. Clone Repository
-
-```bash
-git clone https://github.com/VoltSpace-PPL/VoltSpace-Web.git
-```
-
-### 3. Masuk ke Folder Project
-
-```bash
-cd VoltSpace-Web
-```
-
-### 4. Install & Konfigurasi Laravel
-
-```bash
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate:fresh
-php artisan serve
-```
-
----
-
-## 🔁 Workflow Pengerjaan
-
-Ikuti langkah ini **setiap kali** mengerjakan fitur.
-
-### Step 1 — Masuk ke Branch Masing-Masing
-
-```bash
-git checkout nama/branch
-```
-
-> **Contoh:**
-> ```bash
-> git checkout rizki/ruangan
-> ```
-
----
-
-### Step 2 — Kerjakan Fitur
-
-Lakukan development sesuai task masing-masing (lihat [Pembagian Tugas](#-pembagian-tugas-sprint-1)).
-
----
-
-### Step 3 — Commit Perubahan
-
-```bash
-git add .
-git commit -m "feat: deskripsi perubahan"
-```
-
-> **Contoh commit message yang benar:**
-> ```
-> feat: create CRUD ruangan
-> fix: validation input user
-> refactor: simplify dashboard query
-> ```
-
----
-
-### Step 4 — Push ke GitHub
-
-```bash
-git push origin nama/branch
-```
-
-> **Contoh:**
-> ```bash
-> git push origin rizki/ruangan
-> ```
-
----
-
-### Step 5 — Buat Pull Request (PR)
-
-Buka GitHub dan buat PR dari branch kamu ke `main`:
-
-```
-nama/branch  →  main
-```
-
-> **Contoh:**
-> ```
-> rizki/ruangan  →  main
-> ```
-
----
-
-## ⚠️ Aturan Penting
-
-### ❌ Dilarang
-
-- Push langsung ke `main`
-- Bekerja di branch orang lain
-- Membuat branch baru di luar yang sudah ditentukan
-
-### ✅ Wajib Dilakukan
-
-- Semua perubahan harus melalui **Pull Request ke `main`**
-- Commit message harus **jelas dan deskriptif**
-- Selalu bekerja di **branch masing-masing**
-
----
-
-## 👥 Pembagian Tugas Sprint 1
-
-| Nama | Branch | Tugas |
-|------|--------|-------|
-| M. Rizki Aulia Wibowo | `rizki/ruangan` | CRUD Ruangan + validasi input |
-| Muhammad Aydin Yusuf | `aydin/jadwal-listrik` | CRUD Jadwal Listrik + logika penjadwalan |
-| Cheisya Valda Wibawaningrum | `cheisya/iot-device` | CRUD IoT Device |
-| Muhammad Mufid Taqiyuddin | `mufid/user` | CRUD User + role management + validasi akun |
-| M. Helmi Afriza | `helmi/dashboard` | Dashboard Monitoring + visualisasi energi |
-
----
-
-## 🧪 Testing (Week 10)
-
-- [ ] Integration testing antar fitur
-- [ ] Testing IoT system
-- [ ] Bug fixing
-- [ ] End-to-end testing
-
----
-
-## 🎯 Output Sprint 1
-
-- [ ] CRUD utama selesai
-- [ ] Dashboard berjalan
-- [ ] IoT terintegrasi
-- [ ] Sistem siap untuk Sprint 2
-
----
-
-## ⚡ Quick Reference — Workflow Singkat
-
-```bash
-# 1. Masuk ke branch kamu
-git checkout nama/branch
-
-# 2. Selesai ngoding, simpan perubahan
-git add .
-git commit -m "feat: deskripsi perubahan"
-
-# 3. Push ke GitHub
-git push origin nama/branch
-
-# 4. Buat Pull Request di GitHub: nama/branch → main
-```
-
----
-
-*VoltSpace · Sprint 1 · PPL Team F*
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
