@@ -1,36 +1,70 @@
 <?php
 
-namespace App\Models;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Http\Controllers\Controller;
+use App\Models\Device;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class Device extends Model
+class DeviceController extends Controller
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'type',
-        'ip_address',
-        'ruangan_id',
-    ];
-
-    public function ruangan(): BelongsTo
+    public function index(Request $request): JsonResponse
     {
-        return $this->belongsTo(Ruangan::class);
+        $query = Device::query();
+
+        if ($request->filled('ruangan_id')) {
+            $query->where('ruangan_id', $request->string('ruangan_id'));
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->string('type'));
+        }
+
+        return response()->json($query->latest()->get());
     }
 
-    public function kontrolListriks(): HasMany
+    public function store(Request $request): JsonResponse
     {
-        return $this->hasMany(KontrolListrik::class);
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'max:255'],
+            'ip_address' => ['required', 'string', 'max:255'],
+            'ruangan_id' => ['nullable', 'string', 'exists:ruangans,id'],
+        ]);
+
+        $device = Device::create($data);
+
+        return response()->json([
+            'message' => 'Device berhasil dibuat.',
+            'data' => $device,
+        ], 201);
     }
 
-    public function jadwalListriks(): HasMany
+    public function update(Request $request, Device $device): JsonResponse
     {
-        return $this->hasMany(JadwalListrik::class);
+        $data = $request->validate([
+            'name' => ['sometimes', 'string', 'max:255'],
+            'type' => ['sometimes', 'string', 'max:255'],
+            'ip_address' => ['sometimes', 'string', 'max:255'],
+            'ruangan_id' => ['sometimes', 'string', 'exists:ruangans,id'],
+        ]);
+
+        $device->update($data);
+
+        return response()->json([
+            'message' => 'Device berhasil diupdate.',
+            'data' => $device->fresh(),
+        ]);
+    }
+
+    public function destroy(Device $device): JsonResponse
+    {
+        $device->delete();
+
+        return response()->json([
+            'message' => 'Device berhasil dihapus.',
+        ]);
     }
 }
 

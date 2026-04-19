@@ -51,6 +51,68 @@
     </div>
 </div>
 
+<!-- Add Device Modal -->
+<div id="add-device-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeAddDeviceModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[480px] p-4">
+        <div class="glass-effect rounded-[24px] shadow-2xl overflow-hidden">
+            <div class="p-6 flex justify-between items-center border-b border-white/10">
+                <h3 class="text-[22px] font-bold text-white">Add Device</h3>
+                <button onclick="closeAddDeviceModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                </button>
+            </div>
+            <form id="add-device-form" class="p-8 space-y-5">
+                <!-- 2-col: Device ID + Type -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Device ID</label>
+                        <input type="text" name="device_code" placeholder="DEV-001"
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Type</label>
+                        <input type="text" name="type" placeholder="Energy Meter" required
+                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Name</label>
+                    <input type="text" name="name" placeholder="Smart Meter #4521" required
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                </div>
+
+                <!-- Room -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room</label>
+                    <div class="relative">
+                        <select name="ruangan_id"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
+                            <option value="">— Select Room —</option>
+                        </select>
+                        <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+                    </div>
+                </div>
+
+                <!-- IP Address -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">IP Address</label>
+                    <input type="text" name="ip_address" placeholder="192.168.1.1" required
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-4 pt-2">
+                    <button type="button" onclick="closeAddDeviceModal()" class="flex-1 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors">Cancel</button>
+                    <button type="submit" class="flex-1 py-3.5 bg-[#00d4aa] text-white font-bold rounded-xl hover:bg-[#00bfa0] transition-colors shadow-lg shadow-[#00d4aa]/20">Add Device</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -124,6 +186,39 @@
             tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-500 text-[14px]">Failed to load devices. Please refresh.</td></tr>`;
         }
     }
+
+    document.getElementById('add-device-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const btn = f.querySelector('button[type="submit"]');
+        const orig = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Saving...';
+
+        const payload = {
+            name:        f.name.value.trim(),
+            type:        f.type.value.trim(),
+            ip_address:  f.ip_address.value.trim(),
+            ruangan_id:  f.ruangan_id.value || null,
+        };
+        if (f.device_code.value.trim()) payload.device_code = f.device_code.value.trim();
+
+        try {
+            const res = await apiFetch('/devices', { method: 'POST', body: JSON.stringify(payload) });
+            if (res.ok) {
+                closeAddDeviceModal();
+                f.reset();
+                await loadDevices();
+            } else {
+                const err = await res.json();
+                const msg = err?.errors ? Object.values(err.errors).flat().join('\n') : (err.message || 'Failed to add device');
+                alert('Error: ' + msg);
+            }
+        } catch(err) {
+            alert('Network error. Please try again.');
+        } finally {
+            btn.disabled = false; btn.textContent = orig;
+        }
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
         loadDevices();
