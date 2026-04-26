@@ -34,6 +34,7 @@
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Type</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">IP Address</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Room</th>
+                        <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="devices-table-body" class="divide-y divide-[#334155]">
@@ -113,11 +114,121 @@
     </div>
 </div>
 
+<!-- Edit Device Modal -->
+<div id="edit-device-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeEditDeviceModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[480px] p-4 max-h-[100dvh] overflow-y-auto overscroll-contain">
+        <div class="glass-effect rounded-[24px] shadow-2xl overflow-hidden">
+            <div class="p-6 flex justify-between items-center border-b border-white/10">
+                <h3 class="text-[22px] font-bold text-white">Edit Device</h3>
+                <button onclick="closeEditDeviceModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                </button>
+            </div>
+            <form id="edit-device-form" class="p-8 space-y-5">
+                <input type="hidden" name="edit_device_internal_id">
+                <!-- Device ID (readonly) -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Device ID</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2"/></svg>
+                        </span>
+                        <input type="text" name="edit_device_code" readonly
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-slate-400 cursor-not-allowed focus:outline-none">
+                    </div>
+                </div>
+                <!-- Name -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Name</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" stroke-width="2"/></svg>
+                        </span>
+                        <input type="text" name="edit_name" placeholder="Smart Meter #4521" required
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                </div>
+                <!-- Type -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Type</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
+                        </span>
+                        <input type="text" name="edit_type" placeholder="Energy Meter" required
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                </div>
+                <!-- IP Address -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">IP Address</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" stroke-width="2"/></svg>
+                        </span>
+                        <input type="text" name="edit_ip_address" placeholder="192.168.1.1" required
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                </div>
+                <!-- Room -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room</label>
+                    <div class="relative">
+                        <select name="edit_ruangan_id"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-[15px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
+                            <option value="">— Select Room —</option>
+                        </select>
+                        <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+                    </div>
+                </div>
+                <!-- Buttons -->
+                <div class="flex gap-4 pt-2">
+                    <button type="button" onclick="closeEditDeviceModal()" class="flex-1 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors">Cancel</button>
+                    <button type="submit" class="flex-1 py-3.5 bg-[#00d4aa] text-white font-bold rounded-xl hover:bg-[#00bfa0] transition-colors shadow-lg shadow-[#00d4aa]/20">Update Device</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
     let devicesMap = {};
+    let deleteDeviceId = null;
+
+    function openEditDeviceModal(device) {
+        const f = document.getElementById('edit-device-form');
+        f.edit_device_internal_id.value = device.id ?? '';
+        f.edit_device_code.value = device.device_code || ('DEV-' + String(device.id).padStart(3, '0'));
+        f.edit_name.value = device.name || '';
+        f.edit_type.value = device.type || '';
+        f.edit_ip_address.value = device.ip_address || '';
+        // populate edit room dropdown then set value
+        loadRoomsDropdown('edit').then(() => {
+            f.edit_ruangan_id.value = device.ruangan_id || '';
+        });
+        document.getElementById('edit-device-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeEditDeviceModal() {
+        document.getElementById('edit-device-modal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function openDeleteDeviceModal(id, name) {
+        deleteDeviceId = id;
+        document.getElementById('delete-device-message').textContent = `Are you sure you want to delete device "${name}"?`;
+        document.getElementById('delete-device-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeDeleteDeviceModal() {
+        document.getElementById('delete-device-modal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        deleteDeviceId = null;
+    }
 
     function openAddDeviceModal() {
         document.getElementById('add-device-modal').classList.remove('hidden');
@@ -128,14 +239,22 @@
         document.body.style.overflow = 'auto';
     }
 
-    // Load rooms into the Room dropdown
-    async function loadRoomsDropdown() {
+    // Load rooms into a Room dropdown. mode='add'|'edit'
+    async function loadRoomsDropdown(mode) {
+        const selName = mode === 'edit' ? 'edit_ruangan_id' : 'ruangan_id';
+        const sel = document.querySelector(`select[name="${selName}"]`);
+        if (!sel) return;
+        // Only populate once (skip if already has options beyond placeholder)
+        if (mode !== 'edit' && sel.options.length > 1) return;
+        // For edit, always rebuild
+        if (mode === 'edit') {
+            while (sel.options.length > 1) sel.remove(1);
+        }
         try {
             const res = await apiFetch('/ruangan');
             if (!res.ok) return;
             const data = await res.json();
             const rooms = Array.isArray(data) ? data : (data.data || []);
-            const sel = document.querySelector('select[name="ruangan_id"]');
             rooms.forEach(r => {
                 const opt = document.createElement('option');
                 opt.value = r.id;
@@ -167,6 +286,7 @@
             tbody.innerHTML = devices.map(d => {
                 const deviceCode = d.device_code || ('DEV-' + String(d.id).padStart(3, '0'));
                 const roomName   = d.ruangan ? d.ruangan.nama_ruangan : (d.ruangan_id || '–');
+                const did = String(d.id);
                 return `
                 <tr class="hover:bg-white/[0.02] transition-all group">
                     <td class="px-6 py-5">
@@ -178,8 +298,33 @@
                     <td class="px-6 py-5 text-[14px] text-slate-400 font-medium">${d.type || '-'}</td>
                     <td class="px-6 py-5 text-[14px] text-slate-400 font-medium">${d.ip_address || '-'}</td>
                     <td class="px-6 py-5 text-[14px] text-slate-400 font-medium">${roomName}</td>
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-2">
+                            <button data-edit-id="${did}" class="btn-edit-device flex items-center gap-1.5 px-3 py-1.5 bg-[#00aaff]/10 border border-[#00aaff]/20 text-[#00aaff] rounded-lg text-[12px] font-bold hover:bg-[#00aaff]/20 transition-all">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                Edit
+                            </button>
+                            <button data-delete-id="${did}" class="btn-delete-device flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg text-[12px] font-bold hover:bg-red-500/20 transition-all">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                Delete
+                            </button>
+                        </div>
+                    </td>
                 </tr>`;
             }).join('');
+
+            document.querySelectorAll('.btn-edit-device').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const device = devicesMap[this.dataset.editId];
+                    if (device) openEditDeviceModal(device);
+                });
+            });
+            document.querySelectorAll('.btn-delete-device').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const device = devicesMap[this.dataset.deleteId];
+                    if (device) openDeleteDeviceModal(device.id, device.name);
+                });
+            });
 
 
         } catch (err) {
@@ -220,9 +365,39 @@
         }
     });
 
+    document.getElementById('edit-device-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const btn = f.querySelector('button[type="submit"]');
+        const orig = btn.innerHTML;
+        btn.disabled = true; btn.textContent = 'Saving...';
+        const id = f.edit_device_internal_id.value;
+        const payload = {
+            name:       f.edit_name.value.trim(),
+            type:       f.edit_type.value.trim(),
+            ip_address: f.edit_ip_address.value.trim(),
+            ruangan_id: f.edit_ruangan_id.value || null,
+        };
+        try {
+            const res = await apiFetch('/devices/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+            if (res.ok) {
+                closeEditDeviceModal();
+                await loadDevices();
+            } else {
+                const err = await res.json();
+                const msg = err?.errors ? Object.values(err.errors).flat().join('\n') : (err.message || 'Failed to update device');
+                alert('Error: ' + msg);
+            }
+        } catch(err) {
+            alert('Network error. Please try again.');
+        } finally {
+            btn.disabled = false; btn.innerHTML = orig;
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
         loadDevices();
-        loadRoomsDropdown();
+        loadRoomsDropdown('add');
     });
 </script>
 @endpush
