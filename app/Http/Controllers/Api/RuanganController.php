@@ -66,4 +66,26 @@ class RuanganController extends Controller
             'message' => 'Ruangan berhasil dihapus.',
         ]);
     }
+
+    public function iotIndex()
+    {
+        return Ruangan::select('id', 'nama_ruangan', 'power')->get();
+    }
+
+    public function toggle(Request $request, $id): JsonResponse
+    {
+        $ruangan = Ruangan::findOrFail($id);
+
+        $request->validate([
+            'power' => ['required', 'boolean']
+        ]);
+
+        $ruangan->power = $request->power;
+        $ruangan->save();
+
+        return response()->json([
+            'message' => 'Power berhasil diubah',
+            'power' => $ruangan->power
+        ]);
+    }
 }

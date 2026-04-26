@@ -19,6 +19,7 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ruangan', [RuanganController::class, 'index']);
+    Route::post('/ruangan/{id}/toggle', [RuanganController::class, 'toggle']);
     Route::get('/devices', [DeviceController::class, 'index']);
     Route::get('/jadwal-listrik', [JadwalListrikController::class, 'index']);
     Route::get('/users', [UserController::class, 'index'])->middleware('admin');
@@ -47,3 +48,4 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/jadwal-listrik/{jadwal}', [JadwalListrikController::class, 'destroy']);
     });
 });
+Route::get('/iot/ruangan', [RuanganController::class, 'iotIndex']);

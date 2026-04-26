@@ -447,7 +447,7 @@
                         <span class="text-[13px] font-bold text-slate-400">Power</span>
                         <div class="flex items-center gap-3">
                             <label class="switch">
-                                <input type="checkbox" ${isPowerOn ? 'checked' : ''} onchange="togglePower('${roomId}', this.checked)">
+                                <input type="checkbox" ${isPowerOn ? 'checked' : ''} onchange="toggleRoom('${roomId}', this.checked)">
                                 <span class="slider"></span>
                             </label>
                             <span class="text-[13px] font-bold w-8 ${isPowerOn ? 'text-emerald-500' : 'text-slate-600'}">${isPowerOn ? 'ON' : 'OFF'}</span>
@@ -491,9 +491,28 @@
         }
     }
 
-    async function togglePower(id, state) {
-        console.info('Power toggle UI-only:', id, state);
+    window.toggleRoom = async function (id, state) {
+    try {
+        const res = await fetch(`/api/ruangan/${id}/toggle`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            },
+            body: JSON.stringify({
+                power: state ? 1 : 0
+            })
+        });
+
+        const data = await res.json();
+        console.log("TOGGLE RESPONSE:", data);
+
+        loadRooms(); // refresh UI
+    } catch (err) {
+        console.error("Toggle error:", err);
     }
+}
 
     document.getElementById('room-form').addEventListener('submit', async (e) => {
         e.preventDefault();

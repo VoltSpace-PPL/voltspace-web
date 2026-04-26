@@ -23,6 +23,25 @@ class DeviceController extends Controller
 
         return response()->json($query->latest()->get());
     }
+
+    public function toggle(Request $request): JsonResponse
+{
+    $device = Device::first(); 
+
+    if (!$device) {
+        return response()->json([
+            'message' => 'Device tidak ditemukan'
+        ], 404);
+    }
+
+    $device->relay = $request->relay;
+    $device->save();
+
+    return response()->json([
+        'success' => true,
+        'relay' => $device->relay
+    ]);
+}
     
 }
 
