@@ -3,33 +3,27 @@
 #include <ArduinoJson.h>
 #include <PZEM004Tv30.h>
 
-// WiFi
 const char* ssid = "adityakania";
 const char* password = "aditya123";
 
-// API Laravel
 String server = "http://192.168.100.6:8000/api";
 
-// Relay
 #define RELAY_PIN 14
 
-// PZEM
 PZEM004Tv30 pzem(Serial2, 16, 17);
 
-// Timer
 unsigned long lastRequest = 0;
 unsigned long lastPzemSend = 0;
 
-const unsigned long intervalRelay = 5000;   // ambil status relay
-const unsigned long intervalPzem  = 10000;  // kirim data listrik
+const unsigned long intervalRelay = 5000;   
+const unsigned long intervalPzem  = 10000;  
 
 void setup() {
   Serial.begin(115200);
 
   pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, HIGH); // OFF (active LOW relay)
+  digitalWrite(RELAY_PIN, HIGH); 
 
-  // Serial2 untuk PZEM
   Serial2.begin(9600, SERIAL_8N1, 16, 17);
 
   WiFi.begin(ssid, password);
@@ -47,13 +41,11 @@ void setup() {
 void loop() {
   if (WiFi.status() != WL_CONNECTED) return;
 
-  // CONTROL RELAY
   if (millis() - lastRequest >= intervalRelay) {
     lastRequest = millis();
     kontrolRelay();
   }
 
-  // SEND PZEM DATA
   if (millis() - lastPzemSend >= intervalPzem) {
     lastPzemSend = millis();
     kirimPZEM();
