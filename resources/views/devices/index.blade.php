@@ -192,6 +192,35 @@
     </div>
 </div>
 
+<!-- Delete Device Modal -->
+<div id="delete-device-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeDeleteDeviceModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[420px] p-4">
+        <div class="glass-effect rounded-[24px] shadow-2xl p-8">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2"/></svg>
+                    </div>
+                    <h3 class="text-[20px] font-bold text-white">Delete Device?</h3>
+                </div>
+                <button onclick="closeDeleteDeviceModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                </button>
+            </div>
+            <p id="delete-device-message" class="text-[14px] text-slate-400 mb-5">Are you sure you want to delete this device?</p>
+            <div class="flex items-start gap-3 p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl mb-8">
+                <svg class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2"/></svg>
+                <p class="text-[13px] text-yellow-500/80">This action cannot be undone. The device and all associated data will be permanently deleted.</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="closeDeleteDeviceModal()" class="flex-1 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors">Cancel</button>
+                <button id="confirm-delete-device-btn" class="flex-1 py-3.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors">Delete Device</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -392,6 +421,26 @@
             alert('Network error. Please try again.');
         } finally {
             btn.disabled = false; btn.innerHTML = orig;
+        }
+    });
+
+    document.getElementById('confirm-delete-device-btn').addEventListener('click', async () => {
+        if (!deleteDeviceId) return;
+        const btn = document.getElementById('confirm-delete-device-btn');
+        btn.disabled = true; btn.textContent = 'Deleting...';
+        try {
+            const res = await apiFetch('/devices/' + deleteDeviceId, { method: 'DELETE' });
+            if (res.ok) {
+                closeDeleteDeviceModal();
+                await loadDevices();
+            } else {
+                const err = await res.json();
+                alert('Error: ' + (err.message || 'Failed to delete device'));
+            }
+        } catch(e) {
+            alert('Network error. Please try again.');
+        } finally {
+            btn.disabled = false; btn.textContent = 'Delete Device';
         }
     });
 
