@@ -376,6 +376,7 @@
                 if (res.ok && token) {
                     localStorage.setItem('token', token);
                     location.href = '/dashboard';
+                    location.href = '/rooms';
                 } else {
                     const fromErrors = data.errors ? Object.values(data.errors).flat().filter(Boolean).join('\n') : '';
                     alert(fromErrors || data.message || 'Email atau password salah. Periksa kredensial demo di bawah form.');

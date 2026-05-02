@@ -38,6 +38,8 @@
 
     <!-- Grid - 2 columns for wider cards with charts -->
     <div id="rooms-grid" class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+    <!-- Grid - Updated to 3 columns to make cards larger as per Photo 5 -->
+    <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         <!-- Will be populated by JS -->
     </div>
 </div>
@@ -441,7 +443,7 @@
 
         // Load consumption + 6-month trend in parallel
         await Promise.all([loadConsumption(), loadRoomTrends()]);
-
+        
         try {
             const res = await apiFetch('/ruangan');
             if (!res.ok) throw new Error('API error');
@@ -473,6 +475,12 @@
                 return `
                 <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 transition-all hover:border-slate-500 group shadow-lg min-w-0">
                     <div class="flex justify-between items-start gap-3 mb-5 min-w-0">
+                const subtitle = escapeHtml([room.id, room.lokasi].filter(Boolean).join(' · '));
+                const roomId = escapeHtml(String(room.id));
+
+                return `
+                <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 transition-all hover:border-slate-500 group shadow-lg min-w-0">
+                    <div class="flex justify-between items-start gap-3 mb-6 min-w-0">
                         <div class="flex items-center gap-4 min-w-0 flex-1">
                             <div class="w-12 h-12 rounded-xl bg-[#00aaff]/10 flex items-center justify-center text-[#00aaff] border border-[#00aaff]/20 shrink-0">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/></svg>
@@ -517,6 +525,21 @@
                     </div>
 
                     <div class="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-[#334155] mb-5">
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2 text-slate-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
+                                <span class="text-[14px] font-medium">Devices</span>
+                            </div>
+                            <span class="text-[17px] font-bold text-white">${kapasitas}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[14px] text-slate-400 font-medium">Location</span>
+                            <span class="text-[14px] font-bold text-white">${escapeHtml(room.lokasi || '-')}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-[#334155] mb-6">
                         <span class="text-[13px] font-bold text-slate-400">Power</span>
                         <div class="flex items-center gap-3">
                             <label class="switch">
@@ -573,6 +596,7 @@
                     });
                 });
             }
+
 
             // Attach event listeners after rendering
             document.querySelectorAll('.btn-edit-room').forEach(btn => {

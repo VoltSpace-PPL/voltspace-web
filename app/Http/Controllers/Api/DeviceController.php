@@ -24,6 +24,7 @@ class DeviceController extends Controller
         return response()->json($query->latest()->get());
     }
 
+
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
