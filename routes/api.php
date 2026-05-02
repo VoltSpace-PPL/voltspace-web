@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DeviceControlController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\JadwalListrikController;
@@ -18,6 +19,10 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard/summary', [DashboardController::class, 'summary']);
+    Route::get('/dashboard/trend', [DashboardController::class, 'trend']);
+    Route::get('/dashboard/rooms', [DashboardController::class, 'rooms']);
     Route::get('/ruangan', [RuanganController::class, 'index']);
     Route::get('/devices', [DeviceController::class, 'index']);
     Route::get('/jadwal-listrik', [JadwalListrikController::class, 'index']);

@@ -375,6 +375,7 @@
                 const token = data.token || data.access_token || data.data?.token || data.data?.access_token;
                 if (res.ok && token) {
                     localStorage.setItem('token', token);
+                    location.href = '/dashboard';
                     location.href = '/rooms';
                 } else {
                     const fromErrors = data.errors ? Object.values(data.errors).flat().filter(Boolean).join('\n') : '';

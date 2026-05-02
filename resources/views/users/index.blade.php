@@ -65,7 +65,7 @@
                         <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Email</th>
                         <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Role</th>
                         <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Joined</th>
-
+                        <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="users-table-body" class="divide-y divide-[#334155]">
@@ -140,6 +140,89 @@
 
 
 
+<!-- Edit User Modal -->
+<div id="edit-user-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeEditUserModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[480px] p-4 max-h-[100dvh] overflow-y-auto overscroll-contain">
+        <div class="glass-effect rounded-[24px] shadow-2xl overflow-hidden">
+            <div class="p-6 flex justify-between items-center border-b border-white/10">
+                <h3 class="text-[22px] font-bold text-white">Edit User</h3>
+                <button onclick="closeEditUserModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                </button>
+            </div>
+            <form id="edit-user-form" class="p-8 space-y-6">
+                <input type="hidden" name="edit_user_id">
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">👤</span>
+                        <input type="text" name="edit_name" placeholder="Enter full name" required class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">✉</span>
+                        <input type="email" name="edit_email" placeholder="user@voltspace.id" required class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Password <span class="normal-case text-slate-500 font-normal">(Leave empty to keep current)</span></label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🔒</span>
+                        <input type="password" name="edit_password" placeholder="Enter password" class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Role</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🛡️</span>
+                        <select name="edit_role" class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
+                            <option value="admin">Admin</option>
+                            <option value="mahasiswa">User</option>
+                        </select>
+                        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pt-6">
+                    <button type="button" onclick="closeEditUserModal()" class="flex-1 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors">Cancel</button>
+                    <button type="submit" class="flex-1 py-3.5 bg-[#00d4aa] text-white font-bold rounded-xl hover:bg-[#00bfa0] transition-colors shadow-lg shadow-[#00d4aa]/20">Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+<div id="delete-user-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-md" onclick="closeDeleteUserModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[420px] p-4">
+        <div class="glass-effect rounded-[24px] shadow-2xl p-8">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2"/></svg>
+                    </div>
+                    <h3 class="text-[20px] font-bold text-white">Delete User?</h3>
+                </div>
+                <button onclick="closeDeleteUserModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                </button>
+            </div>
+            <p id="delete-user-message" class="text-[14px] text-slate-400 mb-5">Are you sure you want to delete this user?</p>
+            <div class="flex items-start gap-3 p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl mb-8">
+                <svg class="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2"/></svg>
+                <p class="text-[13px] text-yellow-500/80">This action cannot be undone. All user data and associated records will be permanently deleted.</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="closeDeleteUserModal()" class="flex-1 py-3.5 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors">Cancel</button>
+                <button id="confirm-delete-user-btn" class="flex-1 py-3.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors">Delete User</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @endsection
@@ -155,6 +238,62 @@
         document.body.style.overflow = 'auto';
     }
 
+    function openEditUserModal(user) {
+        const f = document.getElementById('edit-user-form');
+        f.edit_user_id.value = user.id;
+        f.edit_name.value    = user.name || '';
+        f.edit_email.value   = user.email || '';
+        f.edit_password.value = '';
+        f.edit_role.value    = (user.role || 'mahasiswa').toLowerCase();
+        document.getElementById('edit-user-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeEditUserModal() {
+        document.getElementById('edit-user-modal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    let deleteUserId = null;
+    function openDeleteUserModal(id, name) {
+        deleteUserId = id;
+        document.getElementById('delete-user-message').textContent = `Are you sure you want to delete user "${name}"?`;
+        document.getElementById('delete-user-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeDeleteUserModal() {
+        document.getElementById('delete-user-modal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        deleteUserId = null;
+    }
+
+    document.getElementById('confirm-delete-user-btn').addEventListener('click', async () => {
+        if (!deleteUserId) return;
+        const btn = document.getElementById('confirm-delete-user-btn');
+        btn.disabled = true; btn.textContent = 'Deleting...';
+        try {
+            const res = await apiFetch('/users/' + deleteUserId, { method: 'DELETE' });
+            if (res.ok) { closeDeleteUserModal(); await loadUsers(); }
+            else { const err = await res.json(); alert('Error: ' + (err.message || 'Failed')); }
+        } catch(e) { alert('Network error.'); }
+        finally { btn.disabled = false; btn.textContent = 'Delete User'; }
+    });
+
+    document.getElementById('edit-user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const f = e.target;
+        const btn = f.querySelector('button[type="submit"]');
+        const orig = btn.innerHTML;
+        btn.disabled = true; btn.textContent = 'Saving...';
+        const id = f.edit_user_id.value;
+        const payload = { name: f.edit_name.value, email: f.edit_email.value, role: f.edit_role.value };
+        if (f.edit_password.value) payload.password = f.edit_password.value;
+        try {
+            const res = await apiFetch('/users/' + id, { method: 'PUT', body: JSON.stringify(payload) });
+            if (res.ok) { closeEditUserModal(); await loadUsers(); }
+            else { const err = await res.json(); alert('Error: ' + (err.message || 'Failed')); }
+        } catch(e) { alert('Network error.'); }
+        finally { btn.disabled = false; btn.innerHTML = orig; }
+    });
 
     // Global users store - keyed by id
     let usersMap = {};
@@ -201,9 +340,33 @@
                         </span>
                     </td>
                     <td class="px-8 py-6 text-[14px] text-slate-400 font-medium">${(user.created_at || '').slice(0,10) || '-'}</td>
+                    <td class="px-8 py-6 text-right">
+                        <div class="flex items-center justify-end gap-3">
+                            <button data-edit-uid="${userId}" class="btn-edit-user w-8 h-8 rounded-lg flex items-center justify-center bg-[#00aaff]/10 border border-[#00aaff]/20 text-[#00aaff] hover:bg-[#00aaff]/20 transition-all">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.3"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </button>
+                            <button data-delete-uid="${userId}" class="btn-delete-user w-8 h-8 rounded-lg flex items-center justify-center bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 transition-all">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.3"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 `;
             }).join('');
+
+            // Attach event listeners after rendering
+            document.querySelectorAll('.btn-edit-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const user = usersMap[this.dataset.editUid];
+                    if (user) openEditUserModal(user);
+                });
+            });
+            document.querySelectorAll('.btn-delete-user').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const user = usersMap[this.dataset.deleteUid];
+                    if (user) openDeleteUserModal(user.id, user.name);
+                });
+            });
 
         } catch (err) {
             tbody.innerHTML = `<tr><td colspan="5" class="px-8 py-16 text-center text-slate-500">Failed to load users. Make sure you are logged in.</td></tr>`;

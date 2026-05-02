@@ -68,6 +68,11 @@
             <nav class="flex-1 min-h-0 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
                 @php
                     $menu = [
+                        ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => '/dashboard'],
+                        ['id' => 'monitoring', 'label' => 'Energy Monitoring', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
+                        ['id' => 'buildings', 'label' => 'Buildings', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+                        ['id' => 'rooms', 'label' => 'Rooms', 'icon' => 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', 'route' => '/rooms'],
+                        ['id' => 'devices', 'label' => 'Devices', 'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'route' => '/devices'],
                         ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
                         ['id' => 'monitoring', 'label' => 'Energy Monitoring', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
                         ['id' => 'buildings', 'label' => 'Buildings', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
@@ -94,6 +99,15 @@
                 @endforeach
             </nav>
 
+            <div class="p-6 border-t border-[#334155]">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-accent-teal/20 flex items-center justify-center text-accent-teal font-bold text-sm">AD</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[14px] font-bold text-white truncate leading-none">Admin User</p>
+                        <p class="text-[11px] text-slate-500 truncate mt-1">admin@voltspace.id</p>
+                    </div>
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5"/></svg>
+                </div>
             <div class="p-4 border-t border-[#334155] space-y-2">
                 <!-- User Info -->
                 <div class="flex items-center gap-3 px-2 py-1">

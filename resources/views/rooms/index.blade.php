@@ -36,6 +36,8 @@
         </div>
     </div>
 
+    <!-- Grid - 2 columns for wider cards with charts -->
+    <div id="rooms-grid" class="grid grid-cols-1 xl:grid-cols-2 gap-8">
     <!-- Grid - Updated to 3 columns to make cards larger as per Photo 5 -->
     <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         <!-- Will be populated by JS -->
@@ -269,6 +271,7 @@
 @push('scripts')
 
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
     function escapeHtml(s) {
         return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -385,10 +388,62 @@
         return 'tersedia';
     }
 
+    // Trend data: { trendMap: {roomId: [6 values]}, trendLabels: [6 labels] }
+    let trendMap = {};
+    let trendLabels = [];
+
+    async function loadRoomTrends() {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const promises = [];
+        const labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        for (let m = 1; m <= 12; m++) {
+            promises.push(
+                apiFetch(`/dashboard/rooms?month=${m}&year=${currentYear}`)
+                    .then(r => r.ok ? r.json() : { rooms: [] })
+                    .catch(() => ({ rooms: [] }))
+            );
+        }
+        trendLabels = labels;
+        const results = await Promise.all(promises);
+        trendMap = {};
+        results.forEach((data, idx) => {
+            (data.rooms || []).forEach(r => {
+                if (!trendMap[r.id]) trendMap[r.id] = new Array(12).fill(0);
+                trendMap[r.id][idx] = parseFloat(r.consumption_kwh) || 0;
+            });
+        });
+    }
+
+    let consumptionMap = {};
+
+    async function loadConsumption() {
+        try {
+            const res = await apiFetch('/dashboard/rooms');
+            if (!res.ok) return;
+            const data = await res.json();
+            const rooms = data.rooms || [];
+            consumptionMap = {};
+            rooms.forEach(r => {
+                consumptionMap[r.id] = r.consumption_kwh ?? 0;
+            });
+        } catch (e) {
+            console.warn('[Rooms] Could not load consumption data:', e);
+        }
+    }
+
+    function fmtKwh(val) {
+        const n = parseFloat(val) || 0;
+        return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 }).format(n);
+    }
+
     async function loadRooms() {
         const grid = document.getElementById('rooms-grid');
         grid.innerHTML = '<div class="col-span-3 text-center text-slate-500 py-20">Loading rooms...</div>';
 
+        // Load consumption + 6-month trend in parallel
+        await Promise.all([loadConsumption(), loadRoomTrends()]);
+        
         try {
             const res = await apiFetch('/ruangan');
             if (!res.ok) throw new Error('API error');
@@ -409,6 +464,17 @@
                 const isPowerOn = room.power === 'ON' || room.power === 1 || room.power === true;
                 const kapasitas = room.kapasitas ?? 0;
                 const title = escapeHtml(room.nama_ruangan || 'Unnamed Room');
+                const subtitle = escapeHtml([room.id, room.lokasi].filter(Boolean).join(' \u00b7 '));
+                const roomId = escapeHtml(String(room.id));
+                const consumption = consumptionMap[room.id] ?? null;
+                const consumptionDisplay = consumption !== null
+                    ? `<span class="text-[20px] font-extrabold text-white">${fmtKwh(consumption)} <span class="text-[13px] text-slate-400 font-medium">kWh</span></span>`
+                    : `<span class="text-[14px] text-slate-600 italic">No data</span>`;
+                const safeId = String(room.id).replace(/[^a-zA-Z0-9]/g, '-');
+
+                return `
+                <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 transition-all hover:border-slate-500 group shadow-lg min-w-0">
+                    <div class="flex justify-between items-start gap-3 mb-5 min-w-0">
                 const subtitle = escapeHtml([room.id, room.lokasi].filter(Boolean).join(' · '));
                 const roomId = escapeHtml(String(room.id));
 
@@ -429,6 +495,36 @@
                         </span>
                     </div>
 
+                    <!-- Consumption highlight + chart -->
+                    <div class="rounded-xl p-4 mb-5" style="background:#0f172a; border:1px solid #1e293b;">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Annual Consumption ({{ now()->year }})</p>
+                                ${consumptionDisplay}
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-2 h-2 rounded-full bg-[#00d4aa] animate-pulse"></div>
+                                <span class="text-[11px] text-[#00d4aa] font-bold">Live</span>
+                            </div>
+                        </div>
+                        <div style="height:150px; position:relative;">
+                            <canvas id="chart-${safeId}" style="width:100%; height:150px;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Info rows -->
+                    <div class="grid grid-cols-2 gap-3 mb-5">
+                        <div class="rounded-xl p-3" style="background:#162032; border:1px solid #1e293b;">
+                            <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Devices</p>
+                            <p class="text-[20px] font-extrabold text-white">${kapasitas}</p>
+                        </div>
+                        <div class="rounded-xl p-3" style="background:#162032; border:1px solid #1e293b;">
+                            <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Location</p>
+                            <p class="text-[15px] font-bold text-white truncate">${escapeHtml(room.lokasi || '-')}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-[#334155] mb-5">
                     <div class="space-y-4 mb-8">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center gap-2 text-slate-400">
@@ -471,6 +567,36 @@
                 </div>
                 `;
             }).join('');
+
+            // Render sparkline charts
+            if (window.Chart) {
+                rooms.forEach(room => {
+                    const safeId = String(room.id).replace(/[^a-zA-Z0-9]/g, '-');
+                    const canvas = document.getElementById('chart-' + safeId);
+                    if (!canvas) return;
+                    const trendData = trendMap[room.id] || new Array(12).fill(0);
+                    const ctx = canvas.getContext('2d');
+                    const grad = ctx.createLinearGradient(0, 0, 0, 150);
+                    grad.addColorStop(0, 'rgba(0,212,170,0.35)');
+                    grad.addColorStop(1, 'rgba(0,212,170,0.01)');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: trendLabels,
+                            datasets: [{ data: trendData, borderColor: '#00d4aa', borderWidth: 2, backgroundColor: grad, fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#00d4aa', pointBorderColor: '#0f172a', pointBorderWidth: 1.5, pointHoverRadius: 5 }]
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', borderColor: '#334155', borderWidth: 1, titleColor: '#94a3b8', bodyColor: '#fff', callbacks: { label: c => ' ' + fmtKwh(c.parsed.y) + ' kWh' } } },
+                            scales: {
+                                x: { grid: { display: false }, border: { display: false }, ticks: { color: '#475569', font: { size: 10 } } },
+                                y: { display: false, beginAtZero: true }
+                            }
+                        }
+                    });
+                });
+            }
+
 
             // Attach event listeners after rendering
             document.querySelectorAll('.btn-edit-room').forEach(btn => {

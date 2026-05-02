@@ -23,6 +23,49 @@ class DeviceController extends Controller
 
         return response()->json($query->latest()->get());
     }
-    
+
+
+    public function store(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'max:255'],
+            'ip_address' => ['required', 'string', 'max:255'],
+            'ruangan_id' => ['nullable', 'string', 'exists:ruangans,id'],
+        ]);
+
+        $device = Device::create($data);
+
+        return response()->json([
+            'message' => 'Device berhasil dibuat.',
+            'data' => $device,
+        ], 201);
+    }
+
+    public function update(Request $request, Device $device): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => ['sometimes', 'string', 'max:255'],
+            'type' => ['sometimes', 'string', 'max:255'],
+            'ip_address' => ['sometimes', 'string', 'max:255'],
+            'ruangan_id' => ['sometimes', 'string', 'exists:ruangans,id'],
+        ]);
+
+        $device->update($data);
+
+        return response()->json([
+            'message' => 'Device berhasil diupdate.',
+            'data' => $device->fresh(),
+        ]);
+    }
+
+    public function destroy(Device $device): JsonResponse
+    {
+        $device->delete();
+
+        return response()->json([
+            'message' => 'Device berhasil dihapus.',
+        ]);
+    }
 }
 
