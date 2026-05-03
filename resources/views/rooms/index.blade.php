@@ -441,7 +441,7 @@
 
         // Load consumption + 6-month trend in parallel
         await Promise.all([loadConsumption(), loadRoomTrends()]);
-        
+
         try {
             const res = await apiFetch('/ruangan');
             if (!res.ok) throw new Error('API error');
@@ -472,7 +472,7 @@
 
                 return `
                 <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 transition-all hover:border-slate-500 group shadow-lg min-w-0">
-                    <div class="flex justify-between items-start gap-3 mb-6 min-w-0">
+                    <div class="flex justify-between items-start gap-3 mb-5 min-w-0">
                         <div class="flex items-center gap-4 min-w-0 flex-1">
                             <div class="w-12 h-12 rounded-xl bg-[#00aaff]/10 flex items-center justify-center text-[#00aaff] border border-[#00aaff]/20 shrink-0">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/></svg>
@@ -516,7 +516,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-[#334155] mb-6">
+                    <div class="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-[#334155] mb-5">
                         <span class="text-[13px] font-bold text-slate-400">Power</span>
                         <div class="flex items-center gap-3">
                             <label class="switch">
@@ -573,7 +573,6 @@
                     });
                 });
             }
-
 
             // Attach event listeners after rendering
             document.querySelectorAll('.btn-edit-room').forEach(btn => {
@@ -636,6 +635,5 @@
     document.addEventListener('DOMContentLoaded', loadRooms);
 </script>
 @endpush
-
 
 

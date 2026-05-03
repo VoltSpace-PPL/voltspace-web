@@ -31,7 +31,7 @@ class JadwalListrikController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'ruangan_id' => ['required', 'integer', 'exists:ruangans,id'],
+            'ruangan_id' => ['required', 'string', 'exists:ruangans,id'],
             'device_id' => ['nullable', 'integer', 'exists:devices,id'],
             'selected_days' => ['required', 'array', 'min:1'],
             'selected_days.*' => ['string', 'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'],
@@ -63,7 +63,7 @@ class JadwalListrikController extends Controller
     public function update(Request $request, JadwalListrik $jadwal): JsonResponse
     {
         $data = $request->validate([
-            'ruangan_id' => ['sometimes', 'integer', 'exists:ruangans,id'],
+            'ruangan_id' => ['sometimes', 'string', 'exists:ruangans,id'],
             'device_id' => ['nullable', 'integer', 'exists:devices,id'],
             'selected_days' => ['sometimes', 'array', 'min:1'],
             'selected_days.*' => ['string', 'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'],
