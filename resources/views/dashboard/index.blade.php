@@ -161,9 +161,11 @@
     let trendChart = null;
     let currentYear = new Date().getFullYear();
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
     function fmt(num) {
-        return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 }).format(num);
+        return new Intl.NumberFormat('id-ID', {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        }).format(parseFloat(num) || 0);
     }
 
     function setEl(id, val) {
@@ -172,10 +174,82 @@
     }
 
     function nowStr() {
-        return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        return new Date().toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
     }
 
-    // ── Greeting ─────────────────────────────────────────────────────────────
+    function escHtml(str) {
+        return String(str ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[c]));
+    }
+
+    async function getDeviceStatusMap() {
+    const map = {};
+
+    try {
+        const res = await window.apiFetch('/devices');
+        if (!res.ok) return map;
+
+        const data = await res.json();
+        const devices = Array.isArray(data) ? data : (data.data || []);
+
+        for (const device of devices) {
+            if (!device.ruangan_id) continue;
+
+            try {
+                const statusRes = await window.apiFetch('/devices/' + device.id + '/status');
+                if (!statusRes.ok) continue;
+
+                const status = await statusRes.json();
+
+                const relay = String(status.relay || 'OFF').trim().toUpperCase();
+                const energy = parseFloat(status.energy ?? 0) || 0;
+                const power = parseFloat(status.power ?? 0) || 0;
+
+                map[device.ruangan_id] = {
+                    relay: status.relay
+                        ? String(status.relay).trim().toUpperCase()
+                        : (status.online ? 'ON' : 'OFF'),
+                    energy: parseFloat(status.energy ?? 0) || 0,
+                    power: parseFloat(status.power ?? 0) || 0
+                };
+            } catch (e) {}
+        }
+    } catch (e) {}
+
+    return map;
+}
+
+    function totalEnergyFromMap(statusMap) {
+        let total = 0;
+
+        Object.values(statusMap).forEach(device => {
+            total += parseFloat(device.energy) || 0;
+        });
+
+        return total;
+    }
+
+    function activeDeviceCountFromMap(statusMap) {
+    let total = 0;
+
+    Object.values(statusMap).forEach(device => {
+        if (device.relay === 'ON') {
+            total++;
+        }
+    });
+
+    return total;
+}
+
     (function setGreeting() {
         const h = new Date().getHours();
         const greet = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
@@ -183,19 +257,23 @@
         if (el) el.textContent = `${greet}, Admin`;
     })();
 
-    // ── Summary ───────────────────────────────────────────────────────────────
     async function loadSummary() {
         try {
             const res = await window.apiFetch('/dashboard/summary');
             if (!res.ok) return;
+
             const data = await res.json();
             const s = data.summary;
             const p = data.period;
 
-            setEl('total-energy', fmt(s.total_energy_last_month_kwh) + ' kWh');
+            const statusMap = await getDeviceStatusMap();
+            const liveEnergy = totalEnergyFromMap(statusMap);
+            const activeDevices = activeDeviceCountFromMap(statusMap);
+
+            setEl('total-energy', fmt(liveEnergy) + ' kWh');
             setEl('efficiency-value', fmt(s.energy_efficiency_percent));
             setEl('active-rooms', s.active_rooms);
-            setEl('active-devices', s.active_devices);
+            setEl('active-devices', activeDevices);
             setEl('energy-period', p.month_name + ' ' + p.year);
             setEl('last-updated-time', nowStr());
         } catch (e) {
@@ -203,30 +281,46 @@
         }
     }
 
-    // ── Trend Chart ───────────────────────────────────────────────────────────
     async function loadTrend(year) {
         setEl('trend-year', year);
-        document.getElementById('trend-loading').style.display = 'flex';
+
+        const loading = document.getElementById('trend-loading');
+        if (loading) loading.style.display = 'flex';
 
         try {
             const res = await window.apiFetch('/dashboard/trend?year=' + year);
-            if (!res.ok) return;
+            if (!res.ok) {
+                if (loading) loading.style.display = 'none';
+                return;
+            }
+
             const data = await res.json();
-            const monthly = data.trend.monthly;
+            const monthly = data.trend.monthly || [];
 
             const labels = monthly.map(m => m.month_name);
-            const values = monthly.map(m => m.total_kwh);
+            const values = monthly.map(m => parseFloat(m.total_kwh) || 0);
 
-            document.getElementById('trend-loading').style.display = 'none';
+            const statusMap = await getDeviceStatusMap();
+            const liveEnergy = totalEnergyFromMap(statusMap);
+            const currentMonthIndex = new Date().getMonth();
+
+            if (year === new Date().getFullYear()) {
+                values[currentMonthIndex] = liveEnergy;
+            }
+
+            if (loading) loading.style.display = 'none';
             renderTrendChart(labels, values);
         } catch (e) {
             console.error('[Dashboard] trend error:', e);
-            document.getElementById('trend-loading').style.display = 'none';
+            if (loading) loading.style.display = 'none';
         }
     }
 
     function renderTrendChart(labels, values) {
-        const ctx = document.getElementById('trend-chart').getContext('2d');
+        const canvas = document.getElementById('trend-chart');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
 
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, 'rgba(0, 212, 170, 0.40)');
@@ -250,7 +344,7 @@
                     pointBackgroundColor: '#00d4aa',
                     pointBorderColor: '#0b1120',
                     pointBorderWidth: 2,
-                    pointHoverRadius: 6,
+                    pointHoverRadius: 6
                 }]
             },
             options: {
@@ -292,21 +386,32 @@
         });
     }
 
-    // ── Rooms Table ───────────────────────────────────────────────────────────
     async function loadRooms() {
         try {
             const res = await window.apiFetch('/dashboard/rooms');
             if (!res.ok) return;
+
             const data = await res.json();
-            const rooms = data.rooms;
+            const rooms = data.rooms || [];
             const p = data.period;
+
+            const statusMap = await getDeviceStatusMap();
+
+            rooms.forEach(room => {
+                const iot = statusMap[room.id];
+
+                if (iot) {
+                    room.power = iot.relay === 'ON' ? 'ON' : 'OFF';
+                    room.consumption_kwh = parseFloat(iot.energy) || 0;
+                }
+            });
 
             setEl('rooms-period-badge', p.month_name + ' ' + p.year);
 
             const tbody = document.getElementById('rooms-table-body');
             const empty = document.getElementById('rooms-empty');
 
-            if (!rooms || rooms.length === 0) {
+            if (!rooms.length) {
                 tbody.innerHTML = '';
                 empty.classList.remove('hidden');
                 return;
@@ -314,17 +419,21 @@
 
             empty.classList.add('hidden');
 
-            const maxKwh = Math.max(...rooms.map(r => r.consumption_kwh), 1);
+            const maxKwh = Math.max(...rooms.map(r => parseFloat(r.consumption_kwh) || 0), 1);
 
             tbody.innerHTML = rooms.map(r => {
                 const statusColor = r.status === 'digunakan'
                     ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20'
                     : 'bg-slate-500/15 text-slate-400 border-slate-500/20';
+
                 const statusLabel = r.status === 'digunakan' ? 'In Use' : 'Available';
+
                 const powerColor = r.power === 'ON'
                     ? 'bg-[#00d4aa]/15 text-[#00d4aa] border-[#00d4aa]/20'
                     : 'bg-slate-700/40 text-slate-500 border-slate-600/20';
-                const barPct = maxKwh > 0 ? ((r.consumption_kwh / maxKwh) * 100).toFixed(1) : 0;
+
+                const kwh = parseFloat(r.consumption_kwh) || 0;
+                const barPct = maxKwh > 0 ? ((kwh / maxKwh) * 100).toFixed(1) : 0;
 
                 return `<tr class="border-b border-[#2e3a4e]/70 hover:bg-[#253044]/50 transition-colors">
                     <td class="py-4 pr-4">
@@ -340,7 +449,7 @@
                             <div class="w-24 h-1.5 rounded-full overflow-hidden" style="background:#2e3a4e;">
                                 <div class="h-full bg-[#00d4aa] rounded-full transition-all duration-700" style="width:${barPct}%"></div>
                             </div>
-                            <span class="text-white font-medium whitespace-nowrap">${fmt(r.consumption_kwh)} kWh</span>
+                            <span class="text-white font-medium whitespace-nowrap">${fmt(kwh)} kWh</span>
                         </div>
                     </td>
                     <td class="py-4">
@@ -349,40 +458,36 @@
                 </tr>`;
             }).join('');
 
-            // Also update rooms-total badge
             const totalRooms = rooms.length;
             const activeCount = rooms.filter(r => r.status === 'digunakan').length;
+
             setEl('rooms-total', `of ${totalRooms} total`);
             setEl('active-rooms', activeCount);
+            setEl('last-updated-time', nowStr());
         } catch (e) {
             console.error('[Dashboard] rooms error:', e);
         }
     }
 
-    function escHtml(str) {
-        return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    }
-
-    // ── Year Navigation ───────────────────────────────────────────────────────
     document.getElementById('trend-prev').addEventListener('click', () => {
         currentYear--;
         loadTrend(currentYear);
     });
+
     document.getElementById('trend-next').addEventListener('click', () => {
         currentYear++;
         loadTrend(currentYear);
     });
 
-    // ── Init ──────────────────────────────────────────────────────────────────
     loadSummary();
     loadTrend(currentYear);
     loadRooms();
 
-    // Auto-refresh every 60s
     setInterval(() => {
         loadSummary();
         loadRooms();
-    }, 60000);
+        loadTrend(currentYear);
+    }, 5000);
 })();
 </script>
 @endpush
