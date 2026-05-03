@@ -36,8 +36,8 @@
         </div>
     </div>
 
-    <!-- Grid - 2 columns for wider cards with charts -->
-    <div id="rooms-grid" class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+    <!-- Grid -->
+    <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         <!-- Will be populated by JS -->
     </div>
 </div>

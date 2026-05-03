@@ -95,15 +95,23 @@
                 @endforeach
             </nav>
 
-            <div class="p-6 border-t border-[#334155]">
-                <div class="flex items-center gap-3 group cursor-pointer">
-                    <div class="w-10 h-10 rounded-full bg-accent-teal/20 flex items-center justify-center text-accent-teal font-bold text-sm">AD</div>
+            <div class="p-4 border-t border-[#334155] space-y-2">
+                <!-- User Info -->
+                <div class="flex items-center gap-3 px-2 py-1">
+                    <div class="w-9 h-9 rounded-full bg-[#00d4aa]/20 flex items-center justify-center text-[#00d4aa] font-bold text-sm flex-shrink-0" id="sidebar-avatar">AD</div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-[14px] font-bold text-white truncate leading-none">Admin User</p>
-                        <p class="text-[11px] text-slate-500 truncate mt-1">admin@voltspace.id</p>
+                        <p class="text-[13px] font-bold text-white truncate leading-none" id="sidebar-name">Admin User</p>
+                        <p class="text-[11px] text-slate-500 truncate mt-0.5" id="sidebar-email">admin@voltspace.id</p>
                     </div>
-                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5"/></svg>
                 </div>
+                <!-- Logout Button -->
+                <button id="logout-btn" onclick="handleLogout()"
+                    class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all group">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    <span class="text-[14px] font-semibold" id="logout-label">Logout</span>
+                </button>
             </div>
         </aside>
 
@@ -200,6 +208,42 @@
         updateClock();
     </script>
     @include('partials.voltspace-api')
+    <script>
+        // ── Sidebar user info ──────────────────────────────────────────────
+        async function loadSidebarUser() {
+            try {
+                const res = await apiFetch('/auth/me');
+                if (!res.ok) return;
+                const data = await res.json();
+                const user = data.data || data.user || data;
+                if (user.name) {
+                    const initials = user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+                    document.getElementById('sidebar-avatar').textContent = initials;
+                    document.getElementById('sidebar-name').textContent   = user.name;
+                }
+                if (user.email) {
+                    document.getElementById('sidebar-email').textContent = user.email;
+                }
+            } catch (e) { /* silently ignore */ }
+        }
+
+        // ── Logout ────────────────────────────────────────────────────────
+        async function handleLogout() {
+            const btn   = document.getElementById('logout-btn');
+            const label = document.getElementById('logout-label');
+            btn.disabled  = true;
+            label.textContent = 'Logging out…';
+
+            try {
+                await apiFetch('/auth/logout', { method: 'POST' });
+            } catch (e) { /* ignore network errors – still clear session */ }
+
+            localStorage.removeItem('token');
+            location.href = '/login';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadSidebarUser);
+    </script>
     @stack('scripts')
 </body>
 </html>

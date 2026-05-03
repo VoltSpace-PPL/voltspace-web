@@ -1,0 +1,140 @@
+#include <WiFi.h>
+#include <WebServer.h>
+#include <PZEM004Tv30.h>
+
+#define RELAY_PIN 14
+
+#define RELAY_ACTIVE_LOW false
+
+const char* ssid = "D14";
+const char* password = "titik123";
+
+IPAddress local_IP(192,168,1,50);
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
+
+WebServer server(80);
+
+HardwareSerial pzemSerial(2);
+PZEM004Tv30 pzem(&pzemSerial, 16, 17);
+
+bool relayState = false;
+
+String deviceId = "DEV-001";
+String deviceName = "Smart Meter 1";
+
+void setRelay(bool state) {
+  relayState = state;
+
+  if (RELAY_ACTIVE_LOW) {
+    digitalWrite(RELAY_PIN, state ? LOW : HIGH);
+  } else {
+    digitalWrite(RELAY_PIN, state ? HIGH : LOW);
+  }
+}
+
+float getVoltage() {
+  float v = pzem.voltage();
+  return isnan(v) ? 0 : v;
+}
+
+float getCurrent() {
+  float i = pzem.current();
+  return isnan(i) ? 0 : i;
+}
+
+float getPower() {
+  float p = pzem.power();
+  return isnan(p) ? 0 : p;
+}
+
+float getEnergy() {
+  float e = pzem.energy();
+  return isnan(e) ? 0 : e;
+}
+
+void handleRoot() {
+  String html = "<html><head>";
+  html += "<meta charset='UTF-8'>";
+  html += "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+  html += "<meta http-equiv='refresh' content='3'>";
+  html += "<title>ESP32 Device</title>";
+  html += "</head><body style='font-family:Arial;text-align:center;margin-top:40px;'>";
+
+  html += "<h2>" + deviceName + "</h2>";
+  html += "<p>Status Relay: <b>";
+  html += relayState ? "ON" : "OFF";
+  html += "</b></p>";
+
+  html += "<a href='/on'><button style='padding:10px 20px;'>ON</button></a> ";
+  html += "<a href='/off'><button style='padding:10px 20px;'>OFF</button></a>";
+
+  html += "<hr>";
+  html += "<p>Voltage: " + String(getVoltage(), 2) + " V</p>";
+  html += "<p>Current: " + String(getCurrent(), 3) + " A</p>";
+  html += "<p>Power: " + String(getPower(), 2) + " W</p>";
+  html += "<p>Energy: " + String(getEnergy(), 3) + " kWh</p>";
+  html += "</body></html>";
+
+  server.send(200, "text/html", html);
+}
+
+void handleStatus() {
+  String json = "{";
+  json += "\"device_id\":\"" + deviceId + "\",";
+  json += "\"name\":\"" + deviceName + "\",";
+  json += "\"online\":true,";
+  json += "\"relay\":\"" + String(relayState ? "ON" : "OFF") + "\",";
+  json += "\"voltage\":" + String(getVoltage(), 2) + ",";
+  json += "\"current\":" + String(getCurrent(), 3) + ",";
+  json += "\"power\":" + String(getPower(), 2) + ",";
+  json += "\"energy\":" + String(getEnergy(), 3);
+  json += "}";
+
+  server.send(200, "application/json", json);
+}
+
+void handleOn() {
+  setRelay(true);
+  server.send(200, "text/plain", "Relay ON");
+}
+
+void handleOff() {
+  setRelay(false);
+  server.send(200, "text/plain", "Relay OFF");
+}
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(RELAY_PIN, OUTPUT);
+  setRelay(false);
+
+  WiFi.config(local_IP, gateway, subnet);
+  WiFi.begin(ssid, password);
+
+  Serial.print("Connecting WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nConnected!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  pzemSerial.begin(9600, SERIAL_8N1, 16, 17);
+
+  server.on("/", handleRoot);
+  server.on("/status", handleStatus);
+  server.on("/on", handleOn);
+  server.on("/off", handleOff);
+
+  server.begin();
+
+  Serial.println("Server Started");
+}
+
+void loop() {
+  server.handleClient();
+}
