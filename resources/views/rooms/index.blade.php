@@ -40,6 +40,7 @@
     <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         <!-- Will be populated by JS -->
     </div>
+</div>
 
 <!-- Modal with Glassmorphism -->
 <div id="room-modal" class="fixed inset-0 z-[100] hidden">
@@ -635,5 +636,6 @@
     document.addEventListener('DOMContentLoaded', loadRooms);
 </script>
 @endpush
+
 
 

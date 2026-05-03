@@ -33,3 +33,4 @@ class Device extends Model
         return $this->hasMany(JadwalListrik::class);
     }
 }
+// IDE cache reset
