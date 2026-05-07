@@ -271,6 +271,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+    let roomDeviceMap = {};
+
+async function loadRoomDevices() {
+    roomDeviceMap = {};
+
+    try {
+        const res = await apiFetch('/devices');
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const devices = Array.isArray(data) ? data : (data.data || []);
+
+        await Promise.all(devices.map(async (device) => {
+            if (!device.ruangan_id) return;
+
+            let relay = 'OFF';
+            let energy = 0;
+
+            try {
+                const statusRes = await apiFetch('/devices/' + device.id + '/status');
+
+                if (statusRes.ok) {
+                    const status = await statusRes.json();
+                    relay = status.relay || 'OFF';
+                    energy = parseFloat(status.energy ?? 0) || 0;
+                }
+            } catch (e) {}
+
+            roomDeviceMap[device.ruangan_id] = {
+                ...device,
+                relay: relay,
+                energy: energy,
+            };
+        }));
+    } catch (e) {
+        console.warn('[Rooms] Could not load room devices:', e);
+    }
+}
     function escapeHtml(s) {
         return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
@@ -432,7 +470,10 @@
 
     function fmtKwh(val) {
         const n = parseFloat(val) || 0;
-        return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 }).format(n);
+        return new Intl.NumberFormat('id-ID', {
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3
+        }).format(n);
     }
 
     async function loadRooms() {
@@ -440,7 +481,11 @@
         grid.innerHTML = '<div class="col-span-3 text-center text-slate-500 py-20">Loading rooms...</div>';
 
         // Load consumption + 6-month trend in parallel
-        await Promise.all([loadConsumption(), loadRoomTrends()]);
+        await Promise.all([
+            loadConsumption(),
+            loadRoomTrends(),
+            loadRoomDevices()
+        ]);
 
         try {
             const res = await apiFetch('/ruangan');
@@ -459,12 +504,12 @@
             grid.innerHTML = rooms.map(room => {
                 const displayStatus = uiStatusFromApi(room.status);
                 const isOccupied = displayStatus === 'Occupied';
-                const isPowerOn = room.power === 'ON' || room.power === 1 || room.power === true;
+                const isPowerOn = roomDeviceMap[room.id]?.relay === 'ON';
                 const kapasitas = room.kapasitas ?? 0;
                 const title = escapeHtml(room.nama_ruangan || 'Unnamed Room');
                 const subtitle = escapeHtml([room.id, room.lokasi].filter(Boolean).join(' \u00b7 '));
                 const roomId = escapeHtml(String(room.id));
-                const consumption = consumptionMap[room.id] ?? null;
+                const consumption = roomDeviceMap[room.id]?.energy ?? 0;
                 const consumptionDisplay = consumption !== null
                     ? `<span class="text-[20px] font-extrabold text-white">${fmtKwh(consumption)} <span class="text-[13px] text-slate-400 font-medium">kWh</span></span>`
                     : `<span class="text-[14px] text-slate-600 italic">No data</span>`;
@@ -520,7 +565,7 @@
                         <span class="text-[13px] font-bold text-slate-400">Power</span>
                         <div class="flex items-center gap-3">
                             <label class="switch">
-                                <input type="checkbox" ${isPowerOn ? 'checked' : ''} onchange="togglePower('${roomId}', this.checked)">
+                                <input type="checkbox" ${isPowerOn ? 'checked' : ''} onchange="togglePower('${roomId}', this)">
                                 <span class="slider"></span>
                             </label>
                             <span class="text-[13px] font-bold w-8 ${isPowerOn ? 'text-emerald-500' : 'text-slate-600'}">${isPowerOn ? 'ON' : 'OFF'}</span>
@@ -552,6 +597,12 @@
                     const canvas = document.getElementById('chart-' + safeId);
                     if (!canvas) return;
                     const trendData = trendMap[room.id] || new Array(12).fill(0);
+
+                    const device = roomDeviceMap[room.id];
+                    if (device && device.energy !== undefined) {
+                        const currentMonthIndex = new Date().getMonth();
+                        trendData[currentMonthIndex] = parseFloat(device.energy) || 0;
+                    }
                     const ctx = canvas.getContext('2d');
                     const grad = ctx.createLinearGradient(0, 0, 0, 150);
                     grad.addColorStop(0, 'rgba(0,212,170,0.35)');
@@ -593,8 +644,43 @@
         }
     }
 
-    async function togglePower(id, state) {
-        console.info('Power toggle UI-only:', id, state);
+        async function togglePower(id, checkbox) {
+        const device = roomDeviceMap[id];
+
+        if (!device) {
+            checkbox.checked = !checkbox.checked;
+            alert('Belum ada device IoT untuk room ini.');
+            return;
+        }
+
+        const aksi = checkbox.checked ? 'on' : 'off';
+        const oldChecked = !checkbox.checked;
+        const label = checkbox.parentElement.nextElementSibling;
+
+        try {
+            const res = await apiFetch('/devices/toggle', {
+                method: 'POST',
+                body: JSON.stringify({
+                    device_id: device.id,
+                    aksi: aksi,
+                }),
+            });
+
+            if (!res.ok) {
+                checkbox.checked = oldChecked;
+                alert('Gagal mengontrol device IoT.');
+                return;
+            }
+
+            label.textContent = checkbox.checked ? 'ON' : 'OFF';
+            label.className = `text-[13px] font-bold w-8 ${checkbox.checked ? 'text-emerald-500' : 'text-slate-600'}`;
+
+            roomDeviceMap[id].relay = checkbox.checked ? 'ON' : 'OFF';
+
+        } catch (e) {
+            checkbox.checked = oldChecked;
+            alert('Device IoT tidak terhubung.');
+        }
     }
 
     document.getElementById('room-form').addEventListener('submit', async (e) => {
