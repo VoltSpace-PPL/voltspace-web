@@ -23,19 +23,6 @@
         </button>
     </div>
 
-    <!-- Filter -->
-    <div class="flex flex-wrap items-center gap-3 mb-8 min-w-0">
-        <div class="p-2 bg-[#1e293b] border border-[#334155] rounded-lg text-slate-400 shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L4.293 7.293A1 1 0 014 6.586V4z" stroke-width="2"/></svg>
-        </div>
-        <div class="relative min-w-0 flex-1 basis-[min(100%,12rem)] sm:basis-auto sm:flex-initial max-w-full">
-            <select class="appearance-none bg-[#1e293b] border border-[#334155] text-slate-300 text-[13px] px-4 py-2 pr-10 rounded-lg focus:outline-none cursor-pointer w-full min-w-0 max-w-full">
-                <option>All Locations</option>
-            </select>
-            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
-        </div>
-    </div>
-
     <!-- Grid -->
     <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         <!-- Will be populated by JS -->
@@ -89,26 +76,14 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Location</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/></svg>
-                            </span>
-                            <input type="text" name="building" placeholder="TULT" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Devices</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
-                            </span>
-                            <input type="number" name="devices" placeholder="24" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                        </div>
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Devices</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
+                        </span>
+                        <input type="number" name="devices" placeholder="24" required
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
                     </div>
                 </div>
 
@@ -186,27 +161,15 @@
                     </div>
                 </div>
 
-                <!-- Building + Devices -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Location</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/></svg>
-                            </span>
-                            <input type="text" name="edit_building" placeholder="TULT" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Devices</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
-                            </span>
-                            <input type="number" name="edit_devices" placeholder="24" min="0"
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                        </div>
+                <!-- Devices (capacity) -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Devices</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
+                        </span>
+                        <input type="number" name="edit_devices" placeholder="24" min="0" required
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
                     </div>
                 </div>
 
@@ -328,7 +291,6 @@ async function loadRoomDevices() {
         f.edit_room_id.value  = room.id ?? '';
         f.edit_name_en.value  = room.nama_ruangan || '';
         f.edit_name_id.value  = room.nama_ruangan || '';
-        f.edit_building.value = room.lokasi || '';
         f.edit_devices.value  = room.kapasitas ?? '';
         const uiStatus = uiStatusFromApi(room.status);
         f.querySelectorAll('input[name="edit_status"]').forEach(r => r.checked = r.value === uiStatus);
@@ -386,7 +348,6 @@ async function loadRoomDevices() {
         const rawKapasitas = parseInt(f.edit_devices.value, 10);
         const payload = {
             nama_ruangan: f.edit_name_en.value.trim() || f.edit_name_id.value.trim(),
-            lokasi:       f.edit_building.value.trim(),
             status:       apiStatusFromUi(f.querySelector('input[name="edit_status"]:checked').value)
         };
         if (!isNaN(rawKapasitas)) payload.kapasitas = rawKapasitas;
@@ -507,7 +468,7 @@ async function loadRoomDevices() {
                 const isPowerOn = roomDeviceMap[room.id]?.relay === 'ON';
                 const kapasitas = room.kapasitas ?? 0;
                 const title = escapeHtml(room.nama_ruangan || 'Unnamed Room');
-                const subtitle = escapeHtml([room.id, room.lokasi].filter(Boolean).join(' \u00b7 '));
+                const subtitle = escapeHtml([room.kode || room.id].filter(Boolean).join(' \u00b7 '));
                 const roomId = escapeHtml(String(room.id));
                 const consumption = roomDeviceMap[room.id]?.energy ?? 0;
                 const consumptionDisplay = consumption !== null
@@ -550,15 +511,9 @@ async function loadRoomDevices() {
                     </div>
 
                     <!-- Info rows -->
-                    <div class="grid grid-cols-2 gap-3 mb-5">
-                        <div class="rounded-xl p-3" style="background:#162032; border:1px solid #1e293b;">
+                    <div class="rounded-xl p-3 mb-5" style="background:#162032; border:1px solid #1e293b;">
                             <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Devices</p>
                             <p class="text-[20px] font-extrabold text-white">${kapasitas}</p>
-                        </div>
-                        <div class="rounded-xl p-3" style="background:#162032; border:1px solid #1e293b;">
-                            <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Location</p>
-                            <p class="text-[15px] font-bold text-white truncate">${escapeHtml(room.lokasi || '-')}</p>
-                        </div>
                     </div>
 
                     <div class="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-[#334155] mb-5">
@@ -693,7 +648,6 @@ async function loadRoomDevices() {
 
         const payload = {
             nama_ruangan: f.name_id.value.trim() || f.name_en.value.trim(),
-            lokasi: f.building.value.trim(),
             kapasitas: parseInt(f.devices.value, 10) || 0,
             status: apiStatusFromUi(f.querySelector('input[name="status"]:checked').value)
         };

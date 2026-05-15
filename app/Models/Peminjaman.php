@@ -22,11 +22,15 @@ class Peminjaman extends Model
         'tujuan',
         'surat_peminjaman',
         'status',
+        'catatan_admin',
+        'reviewed_at',
+        'reviewed_by',
     ];
 
     protected $casts = [
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
+        'reviewed_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -36,6 +40,11 @@ class Peminjaman extends Model
 
     public function ruangan(): BelongsTo
     {
-        return $this->belongsTo(Ruangan::class);
+        return $this->belongsTo(Ruangan::class, 'ruangan_id', 'id');
+    }
+
+    public function peninjau(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 }

@@ -21,10 +21,15 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $actor = auth()->user();
+        $roles = $actor && $actor->isSuperAdmin()
+            ? 'admin,mahasiswa,super_admin'
+            : 'mahasiswa';
+
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'role' => 'required|in:admin,mahasiswa',
+            'role' => 'required|in:'.$roles,
             'password' => 'required|string|min:8',
         ];
     }

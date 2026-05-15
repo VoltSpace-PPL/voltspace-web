@@ -15,7 +15,6 @@ class RoomsRead001Test extends DuskTestCase
             ['id' => 'R-TEST-01'],
             [
                 'nama_ruangan' => 'Test Room 01',
-                'lokasi' => 'Building A',
                 'kapasitas' => 10,
                 'status' => 'tersedia'
             ]

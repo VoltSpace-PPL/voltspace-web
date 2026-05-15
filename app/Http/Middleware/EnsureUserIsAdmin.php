@@ -15,9 +15,10 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() || $request->user()->role !== 'admin') {
+        $user = $request->user();
+        if (! $user || ! $user->isStaffAdmin()) {
             return response()->json([
-                'message' => 'Akses ditolak. Hanya admin.',
+                'message' => 'Akses ditolak. Hanya admin atau super admin.',
             ], 403);
         }
 

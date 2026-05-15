@@ -7,7 +7,7 @@ Route::get('/', function () {
 });
 
 // Blade routes for the bundled frontend (views live in resources/views).
-Route::view('/login', 'auth.login');
+Route::view('/login', 'auth.login')->name('login');
 Route::view('/dashboard', 'dashboard.index');
 Route::view('/users', 'users.index');
 Route::view('/rooms', 'rooms.index');

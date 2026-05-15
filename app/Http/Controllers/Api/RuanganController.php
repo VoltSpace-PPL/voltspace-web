@@ -18,10 +18,6 @@ class RuanganController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        if ($request->filled('lokasi')) {
-            $query->where('lokasi', 'like', '%'.$request->input('lokasi').'%');
-        }
-
         return response()->json($query->latest()->get());
     }
 
@@ -30,7 +26,6 @@ class RuanganController extends Controller
         $ruangan = Ruangan::create([
             'id'           => $request->filled('id') ? $request->input('id') : null,
             'nama_ruangan' => $request->input('nama_ruangan'),
-            'lokasi'       => $request->input('lokasi'),
             'kapasitas'    => $request->integer('kapasitas'),
             'status'       => $request->input('status', 'tersedia'),
         ]);
@@ -44,8 +39,7 @@ class RuanganController extends Controller
     public function update(Request $request, Ruangan $ruangan): JsonResponse
     {
         $data = $request->validate([
-            'nama_ruangan' => ['sometimes', 'string', 'max:255'],
-            'lokasi'       => ['sometimes', 'string', 'max:255'],
+            'nama_ruangan' => ['sometimes', 'string', 'max:255', 'unique:ruangans,nama_ruangan,'.$ruangan->id.',id'],
             'kapasitas'    => ['sometimes', 'integer', 'min:0'],
             'status'       => ['sometimes', 'in:tersedia,digunakan,dipesan'],
         ]);

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\LaporanEnergi;
 use App\Models\MonitoringEnergi;
 use App\Models\Ruangan;
 use Carbon\Carbon;
@@ -91,17 +90,10 @@ class DashboardController extends Controller
 
     private function buildSummary(Carbon $previousDate): array
     {
-        $totalFromMonitoring = (float) MonitoringEnergi::query()
+        $totalEnergyLastMonth = (float) MonitoringEnergi::query()
             ->where('tahun', $previousDate->year)
             ->where('bulan', $previousDate->month)
             ->sum('konsumsi_kwh');
-
-        $totalFromLaporan = (float) LaporanEnergi::query()
-            ->where('tahun', $previousDate->year)
-            ->where('bulan', $previousDate->month)
-            ->sum('total_kwh');
-
-        $totalEnergyLastMonth = $totalFromMonitoring > 0 ? $totalFromMonitoring : $totalFromLaporan;
 
         $activeRooms = (int) Ruangan::query()->where('status', 'digunakan')->count();
         $activeDevices = (int) DB::table('devices')->count();
@@ -139,18 +131,9 @@ class DashboardController extends Controller
             ->get()
             ->keyBy('bulan');
 
-        $laporanRows = LaporanEnergi::query()
-            ->select('bulan', DB::raw('SUM(total_kwh) as total_kwh'))
-            ->where('tahun', $year)
-            ->groupBy('bulan')
-            ->get()
-            ->keyBy('bulan');
-
         $months = [];
         for ($m = 1; $m <= 12; $m++) {
-            $fromMonitoring = (float) data_get($monitoringRows->get($m), 'total_kwh', 0);
-            $fromLaporan = (float) data_get($laporanRows->get($m), 'total_kwh', 0);
-            $value = $fromMonitoring > 0 ? $fromMonitoring : $fromLaporan;
+            $value = (float) data_get($monitoringRows->get($m), 'total_kwh', 0);
 
             $months[] = [
                 'month' => $m,
@@ -179,13 +162,6 @@ class DashboardController extends Controller
             ->groupBy('ruangan_id')
             ->pluck('total_kwh', 'ruangan_id');
 
-        $consumptionFromLaporan = LaporanEnergi::query()
-            ->select('ruangan_id', DB::raw('SUM(total_kwh) as total_kwh'))
-            ->where('tahun', $selectedDate->year)
-            ->where('bulan', $selectedDate->month)
-            ->groupBy('ruangan_id')
-            ->pluck('total_kwh', 'ruangan_id');
-
         $latestPowerByRoom = DB::table('kontrol_listriks as kl')
             ->select('kl.ruangan_id', 'kl.aksi')
             ->join(
@@ -197,20 +173,16 @@ class DashboardController extends Controller
             )
             ->pluck('aksi', 'ruangan_id');
 
-        return $ruanganList->map(function (Ruangan $ruangan) use ($consumptionFromMonitoring, $consumptionFromLaporan, $latestPowerByRoom): array {
-            $monitoringValue = (float) ($consumptionFromMonitoring[$ruangan->id] ?? 0);
-            $laporanValue = (float) ($consumptionFromLaporan[$ruangan->id] ?? 0);
-            $consumption = $monitoringValue > 0 ? $monitoringValue : $laporanValue;
-
+        return $ruanganList->map(function (Ruangan $ruangan) use ($consumptionFromMonitoring, $latestPowerByRoom): array {
+            $consumption = round((float) ($consumptionFromMonitoring[$ruangan->id] ?? 0), 2);
             $power = strtolower((string) ($latestPowerByRoom[$ruangan->id] ?? 'off')) === 'on' ? 'ON' : 'OFF';
 
             return [
                 'id' => $ruangan->id,
                 'nama_ruangan' => $ruangan->nama_ruangan,
-                'lokasi' => $ruangan->lokasi,
                 'status' => $ruangan->status,
                 'devices_count' => (int) $ruangan->devices_count,
-                'consumption_kwh' => round($consumption, 2),
+                'consumption_kwh' => $consumption,
                 'power' => $power,
             ];
         })->values()->all();

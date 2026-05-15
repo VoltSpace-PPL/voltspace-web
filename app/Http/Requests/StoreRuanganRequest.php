@@ -23,8 +23,7 @@ class StoreRuanganRequest extends FormRequest
     {
         return [
             'id'           => 'nullable|string|max:64|unique:ruangans,id',
-            'nama_ruangan' => 'required|string|max:255',
-            'lokasi'       => 'required|string|max:255',
+            'nama_ruangan' => 'required|string|max:255|unique:ruangans,nama_ruangan',
             'kapasitas'    => 'required|integer|min:1',
             'status'       => 'nullable|in:tersedia,digunakan,dipesan',
         ];

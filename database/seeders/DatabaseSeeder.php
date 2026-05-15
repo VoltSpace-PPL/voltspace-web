@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\EnergyAlertSetting;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,6 +17,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::query()->updateOrCreate(
+            ['email' => 'superadmin@voltspace.id'],
+            [
+                'name' => 'Super Admin',
+                'role' => 'super_admin',
+                'password' => Hash::make('super123'),
+            ]
+        );
+
         // Must match demo text on frontend login (resources/views/auth/login.blade.php)
         User::query()->updateOrCreate(
             ['email' => 'admin@voltspace.id'],
@@ -34,5 +44,12 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('student123'),
             ]
         );
+
+        if (! EnergyAlertSetting::query()->exists()) {
+            EnergyAlertSetting::query()->create([
+                'high_usage_threshold_kwh' => 100,
+                'peak_demand_limit_kw' => 10,
+            ]);
+        }
     }
 }
