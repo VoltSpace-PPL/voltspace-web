@@ -20,6 +20,7 @@ class Ruangan extends Model
         'kode',
         'nama_ruangan',
         'kapasitas',
+        'lantai',
         'status',
     ];
 

@@ -17,14 +17,22 @@
             <h1 class="text-[32px] font-bold text-white leading-tight">Users</h1>
             <p class="text-[14px] text-slate-500 mt-1">User management and role assignment</p>
         </div>
-        <button onclick="openModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#00d4aa] hover:bg-[#00bfa0] text-white rounded-lg font-bold text-[14px] transition-all self-start sm:self-auto">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M12 4v16m8-8H4"/></svg>
-            Add User
-        </button>
+        <div class="flex items-center gap-3">
+            <button onclick="document.getElementById('import-file').click()" class="px-5 py-2.5 bg-[#1e293b] text-white rounded-xl text-[13px] font-bold border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2.5"/></svg>
+                Import Users
+            </button>
+            <input type="file" id="import-file" class="hidden" accept=".xlsx,.xls,.csv" onchange="handleImport(this)">
+
+            <button onclick="openModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#00d4aa] hover:bg-[#00bfa0] text-white rounded-lg font-bold text-[14px] transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M12 4v16m8-8H4"/></svg>
+                Add User
+            </button>
+        </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
             <div class="w-14 h-14 rounded-xl bg-[#00aaff]/10 flex items-center justify-center text-[#00aaff] border border-[#00aaff]/20">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -32,6 +40,15 @@
             <div>
                 <p class="text-[12px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Users</p>
                 <h3 id="stat-total" class="text-[28px] font-bold text-white leading-none">0</h3>
+            </div>
+        </div>
+        <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
+            <div class="w-14 h-14 rounded-xl bg-[#f59e0b]/10 flex items-center justify-center text-[#f59e0b] border border-[#f59e0b]/20">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+            </div>
+            <div>
+                <p class="text-[12px] font-bold text-slate-500 uppercase tracking-widest mb-1">Super Admins</p>
+                <h3 id="stat-superadmins" class="text-[28px] font-bold text-white leading-none">0</h3>
             </div>
         </div>
         <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
@@ -121,6 +138,7 @@
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🛡️</span>
                         <select name="role" class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
+                            <option value="super_admin">Super Admin</option>
                             <option value="admin">Admin</option>
                             <option value="mahasiswa" selected>User</option>
                         </select>
@@ -179,6 +197,7 @@
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🛡️</span>
                         <select name="edit_role" class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
+                            <option value="super_admin">Super Admin</option>
                             <option value="admin">Admin</option>
                             <option value="mahasiswa">User</option>
                         </select>
@@ -311,6 +330,7 @@
             users.forEach(u => { usersMap[u.id] = u; });
 
             document.getElementById('stat-total').textContent   = users.length;
+            document.getElementById('stat-superadmins').textContent   = users.filter(u => String(u.role||'').toLowerCase() === 'super_admin').length;
             document.getElementById('stat-admins').textContent   = users.filter(u => String(u.role||'').toLowerCase() === 'admin').length;
             document.getElementById('stat-active').textContent   = users.filter(u => String(u.role||'').toLowerCase() === 'mahasiswa').length;
 
@@ -321,8 +341,16 @@
 
             tbody.innerHTML = users.map(user => {
                 const normalizedRole = String(user.role || '').toLowerCase();
+                const isSuperAdmin = normalizedRole === 'super_admin';
                 const isAdmin = normalizedRole === 'admin';
                 const userId = user.id;
+
+                let roleBadgeClass = 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
+                if (isSuperAdmin) {
+                    roleBadgeClass = 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20';
+                } else if (isAdmin) {
+                    roleBadgeClass = 'bg-purple-500/10 text-purple-500 border border-purple-500/20';
+                }
 
                 return `
                 <tr class="hover:bg-white/[0.02] transition-all group">
@@ -334,8 +362,8 @@
                     </td>
                     <td class="px-8 py-6 text-[14px] text-slate-400 font-medium">${user.email}</td>
                     <td class="px-8 py-6">
-                        <span class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest ${isAdmin ? 'bg-purple-500/10 text-purple-500 border border-purple-500/20' : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'}">
-                            ${user.role || 'mahasiswa'}
+                        <span class="px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest ${roleBadgeClass}">
+                            ${(user.role || 'mahasiswa').replace('_', ' ')}
                         </span>
                     </td>
                     <td class="px-8 py-6 text-[14px] text-slate-400 font-medium">${(user.created_at || '').slice(0,10) || '-'}</td>
@@ -405,6 +433,21 @@
             btn.innerHTML = originalText;
         }
     });
+
+    async function handleImport(input) {
+        if (!input.files || input.files.length === 0) return;
+        
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // This simulates an upload or you can point to the real API endpoint
+        // e.g. await fetch('/api/users/import', { method: 'POST', ... })
+        alert('File ' + file.name + ' selected for import. Backend integration pending.');
+        
+        // Reset input so the same file can be selected again
+        input.value = '';
+    }
 
     document.addEventListener('DOMContentLoaded', loadUsers);
 </script>

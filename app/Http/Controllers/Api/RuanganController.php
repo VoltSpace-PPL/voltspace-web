@@ -27,6 +27,7 @@ class RuanganController extends Controller
             'id'           => $request->filled('id') ? $request->input('id') : null,
             'nama_ruangan' => $request->input('nama_ruangan'),
             'kapasitas'    => $request->integer('kapasitas'),
+            'lantai'       => $request->integer('lantai', 1),
             'status'       => $request->input('status', 'tersedia'),
         ]);
 
@@ -41,6 +42,7 @@ class RuanganController extends Controller
         $data = $request->validate([
             'nama_ruangan' => ['sometimes', 'string', 'max:255', 'unique:ruangans,nama_ruangan,'.$ruangan->id.',id'],
             'kapasitas'    => ['sometimes', 'integer', 'min:0'],
+            'lantai'       => ['sometimes', 'integer', 'min:1', 'max:3'],
             'status'       => ['sometimes', 'in:tersedia,digunakan,dipesan'],
         ]);
 

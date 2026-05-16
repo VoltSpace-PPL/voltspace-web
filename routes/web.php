@@ -13,6 +13,13 @@ Route::view('/users', 'users.index');
 Route::view('/rooms', 'rooms.index');
 Route::view('/devices', 'devices.index');
 Route::view('/schedule', 'schedule.index');
+Route::view('/settings', 'settings.index');
+
+// Student Portal Routes (PBI 30, 31, 32)
+Route::view('/student/dashboard', 'student.dashboard');
+Route::view('/student/rooms', 'student.rooms');
+Route::view('/student/bookings/create', 'student.bookings-create');
+Route::view('/student/bookings', 'student.bookings');
 
 // Keep a simple JSON health endpoint for the backend.
 Route::get('/health', function () {
