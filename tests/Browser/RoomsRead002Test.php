@@ -14,7 +14,6 @@ class RoomsRead002Test extends DuskTestCase
             ['id' => 'R-EMPTY-01'],
             [
                 'nama_ruangan' => 'Empty Data Room',
-                'lokasi' => 'Building B',
                 'kapasitas' => 5,
                 'status' => 'tersedia'
             ]

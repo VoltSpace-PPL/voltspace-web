@@ -14,7 +14,7 @@ class JadwalListrikController extends Controller
         $query = JadwalListrik::query();
 
         if ($request->filled('ruangan_id')) {
-            $query->where('ruangan_id', $request->integer('ruangan_id'));
+            $query->where('ruangan_id', $request->input('ruangan_id'));
         }
 
         if ($request->filled('device_id')) {
@@ -25,6 +25,18 @@ class JadwalListrikController extends Controller
             $query->where('schedule_status', $request->string('schedule_status'));
         }
 
+        if ($request->filled('from') && $request->filled('to')) {
+            $from = $request->date('from');
+            $to = $request->date('to');
+            $query->where(function ($q) use ($from, $to) {
+                $q->where(function($q) use ($to) {
+                    $q->whereNull('tanggal_mulai')->orWhereDate('tanggal_mulai', '<=', $to);
+                })->where(function($q) use ($from) {
+                    $q->whereNull('tanggal_selesai')->orWhereDate('tanggal_selesai', '>=', $from);
+                });
+            });
+        }
+
         return response()->json($query->latest()->get());
     }
 
@@ -33,18 +45,20 @@ class JadwalListrikController extends Controller
         $data = $request->validate([
             'ruangan_id' => ['required', 'string', 'exists:ruangans,id'],
             'device_id' => ['nullable', 'integer', 'exists:devices,id'],
-            'selected_days' => ['required', 'array', 'min:1'],
+            'selected_days' => ['nullable', 'array'],
             'selected_days.*' => ['string', 'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i'],
             'automation_action' => ['required', 'in:on,off'],
             'schedule_status' => ['nullable', 'in:active,inactive'],
+            'tanggal_mulai' => ['nullable', 'date'],
+            'tanggal_selesai' => ['nullable', 'date'],
         ]);
 
         $jadwal = JadwalListrik::create([
             'ruangan_id' => $data['ruangan_id'],
             'device_id' => $data['device_id'] ?? null,
-            'selected_days' => $data['selected_days'],
+            'selected_days' => $data['selected_days'] ?? null,
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
             'automation_action' => $data['automation_action'],
@@ -52,6 +66,8 @@ class JadwalListrikController extends Controller
             'waktu_mulai' => $data['start_time'],
             'waktu_selesai' => $data['end_time'],
             'status_listrik' => $data['automation_action'] === 'on' ? 'nyala' : 'mati',
+            'tanggal_mulai' => $data['tanggal_mulai'] ?? null,
+            'tanggal_selesai' => $data['tanggal_selesai'] ?? null,
         ]);
 
         return response()->json([
@@ -65,12 +81,14 @@ class JadwalListrikController extends Controller
         $data = $request->validate([
             'ruangan_id' => ['sometimes', 'string', 'exists:ruangans,id'],
             'device_id' => ['nullable', 'integer', 'exists:devices,id'],
-            'selected_days' => ['sometimes', 'array', 'min:1'],
+            'selected_days' => ['nullable', 'array'],
             'selected_days.*' => ['string', 'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'],
             'start_time' => ['sometimes', 'date_format:H:i'],
             'end_time' => ['sometimes', 'date_format:H:i'],
             'automation_action' => ['sometimes', 'in:on,off'],
             'schedule_status' => ['sometimes', 'in:active,inactive'],
+            'tanggal_mulai' => ['nullable', 'date'],
+            'tanggal_selesai' => ['nullable', 'date'],
         ]);
 
         if (array_key_exists('start_time', $data)) {
@@ -102,4 +120,3 @@ class JadwalListrikController extends Controller
         ]);
     }
 }
-

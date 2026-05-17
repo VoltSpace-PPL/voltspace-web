@@ -119,7 +119,6 @@
             <thead>
                 <tr class="border-b border-[#2e3a4e]">
                     <th class="text-left text-slate-500 font-semibold uppercase tracking-wider text-[11px] pb-3 pr-4">Room</th>
-                    <th class="text-left text-slate-500 font-semibold uppercase tracking-wider text-[11px] pb-3 pr-4">Location</th>
                     <th class="text-left text-slate-500 font-semibold uppercase tracking-wider text-[11px] pb-3 pr-4">Status</th>
                     <th class="text-left text-slate-500 font-semibold uppercase tracking-wider text-[11px] pb-3 pr-4">Devices</th>
                     <th class="text-left text-slate-500 font-semibold uppercase tracking-wider text-[11px] pb-3 pr-4">Consumption</th>
@@ -128,7 +127,7 @@
             </thead>
             <tbody id="rooms-table-body">
                 <tr>
-                    <td colspan="6" class="py-10 text-center">
+                    <td colspan="5" class="py-10 text-center">
                         <div class="flex flex-col items-center gap-3">
                             <div class="w-8 h-8 border-2 border-[#00d4aa] border-t-transparent rounded-full animate-spin"></div>
                             <span class="text-slate-500">Loading rooms...</span>
@@ -439,7 +438,6 @@
                     <td class="py-4 pr-4">
                         <span class="font-semibold text-white">${escHtml(r.nama_ruangan)}</span>
                     </td>
-                    <td class="py-4 pr-4 text-slate-400">${escHtml(r.lokasi || '—')}</td>
                     <td class="py-4 pr-4">
                         <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${statusColor}">${statusLabel}</span>
                     </td>

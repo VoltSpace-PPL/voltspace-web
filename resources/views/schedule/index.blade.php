@@ -49,7 +49,6 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-[#0f172a] border-b border-[#334155]">
-                        <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">ID</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Room</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest w-1/3">Day</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Time</th>
@@ -60,7 +59,7 @@
                 </thead>
                 <tbody id="schedules-table-body" class="divide-y divide-[#334155]">
                     <tr>
-                        <td colspan="7" class="px-6 py-16 text-center text-slate-500">
+                        <td colspan="6" class="px-6 py-16 text-center text-slate-500">
                             <div class="flex flex-col items-center gap-3">
                                 <svg class="w-10 h-10 text-slate-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2"/></svg>
                                 <span class="text-[14px]">Loading schedules...</span>
@@ -460,7 +459,7 @@
             document.getElementById('stat-rooms').textContent = roomsScheduled.size;
 
             if (schedules.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-16 text-center text-slate-500">
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-16 text-center text-slate-500">
                     <div class="flex flex-col items-center gap-3">
                         <svg class="w-10 h-10 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/></svg>
                         <span class="text-[14px]">No schedules found. Click "+ Add Schedule" to automate electricity.</span>
@@ -495,10 +494,10 @@
                 return `
                 <tr class="hover:bg-white/[0.02] transition-all group">
                     <td class="px-6 py-5 whitespace-nowrap">
-                        <span class="text-[13px] font-bold text-[#00d4aa] tracking-wider">${scheduleId}</span>
-                    </td>
-                    <td class="px-6 py-5 whitespace-nowrap">
-                        <span class="text-[14px] font-medium text-white">${roomName}</span>
+                        <div class="flex flex-col gap-0.5">
+                            <span class="text-[14px] font-medium text-white">${roomName}</span>
+                            <span class="text-[11px] font-bold text-[#00d4aa] tracking-wider">${scheduleId}</span>
+                        </div>
                     </td>
                     <td class="px-6 py-5">
                         <p class="text-[13px] text-slate-400 font-medium leading-relaxed">${days}</p>
@@ -548,7 +547,7 @@
             });
 
         } catch (err) {
-            tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-slate-500 text-[14px]">Failed to load schedules. Please refresh.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500 text-[14px]">Failed to load schedules. Please refresh.</td></tr>`;
         }
     }
 
@@ -678,23 +677,33 @@
     document.getElementById('add-schedule-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const f = e.target;
-        
+
+        if (!f.ruangan_id.value) {
+            vsAlert.warning('Pilih Ruangan', 'Harap pilih ruangan terlebih dahulu sebelum menyimpan jadwal.');
+            return;
+        }
+
         let selectedDays = [];
         try { selectedDays = JSON.parse(f.selected_days.value || '[]'); } catch(e){}
         if (selectedDays.length === 0) {
-            alert("Please select at least one day for the schedule.");
+            vsAlert.warning('Pilih Hari', 'Harap pilih minimal satu hari untuk jadwal ini.');
+            return;
+        }
+
+        if (!f.start_time.value || !f.end_time.value) {
+            vsAlert.warning('Waktu Tidak Lengkap', 'Harap isi waktu mulai dan waktu selesai.');
             return;
         }
 
         const btn = f.querySelector('button[type="submit"]');
         const origText = btn.textContent;
-        btn.disabled = true; btn.textContent = 'Saving...';
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
 
         const payload = {
             ruangan_id: f.ruangan_id.value,
             selected_days: selectedDays,
-            start_time: f.start_time.value ? f.start_time.value.substring(0, 5) : null,
-            end_time: f.end_time.value ? f.end_time.value.substring(0, 5) : null,
+            start_time: f.start_time.value.substring(0, 5),
+            end_time: f.end_time.value.substring(0, 5),
             automation_action: f.automation_action.value,
             schedule_status: f.querySelector('input[name="schedule_status"]:checked').value
         };
@@ -704,12 +713,14 @@
             if (res.ok) {
                 closeAddScheduleModal();
                 await loadSchedules();
+                vsAlert.success('Jadwal Ditambahkan', 'Jadwal listrik baru berhasil dibuat.');
             } else {
                 const err = await res.json();
-                alert('Error: ' + (err.message || 'Failed to create schedule'));
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal membuat jadwal.');
+                vsAlert.error('Gagal Menyimpan', msg);
             }
         } catch(err) {
-            alert('Network error. Please try again.');
+            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -719,23 +730,50 @@
         e.preventDefault();
         const f = e.target;
         const id = f.edit_id.value;
-        
+
+        if (!f.edit_ruangan_id.value) {
+            vsAlert.warning('Pilih Ruangan', 'Harap pilih ruangan terlebih dahulu.');
+            return;
+        }
+
         let selectedDays = [];
         try { selectedDays = JSON.parse(f.edit_selected_days.value || '[]'); } catch(e){}
         if (selectedDays.length === 0) {
-            alert("Please select at least one day for the schedule.");
+            vsAlert.warning('Pilih Hari', 'Harap pilih minimal satu hari untuk jadwal ini.');
             return;
+        }
+
+        if (!f.edit_start_time.value || !f.edit_end_time.value) {
+            vsAlert.warning('Waktu Tidak Lengkap', 'Harap isi waktu mulai dan waktu selesai.');
+            return;
+        }
+
+        // Validasi H-1: cek apakah jadwal yang sedang diedit sudah dalam kurang dari 1 jam ke depan
+        const sch = schedulesMap[id];
+        if (sch && sch.schedule_status === 'active') {
+            const now = new Date();
+            const [sh, sm] = (sch.start_time || '').split(':').map(Number);
+            const schedStart = new Date();
+            schedStart.setHours(sh, sm, 0, 0);
+            const diffMs = schedStart - now;
+            if (diffMs > 0 && diffMs < 3600000) {
+                vsAlert.warning(
+                    'Tidak Dapat Diedit',
+                    'Jadwal ini akan aktif dalam kurang dari 1 jam. Perubahan tidak dapat dilakukan kurang dari H-1 jam dari waktu penggunaan.'
+                );
+                return;
+            }
         }
 
         const btn = f.querySelector('button[type="submit"]');
         const origText = btn.textContent;
-        btn.disabled = true; btn.textContent = 'Updating...';
+        btn.disabled = true; btn.textContent = 'Memperbarui...';
 
         const payload = {
             ruangan_id: f.edit_ruangan_id.value,
             selected_days: selectedDays,
-            start_time: f.edit_start_time.value ? f.edit_start_time.value.substring(0, 5) : null,
-            end_time: f.edit_end_time.value ? f.edit_end_time.value.substring(0, 5) : null,
+            start_time: f.edit_start_time.value.substring(0, 5),
+            end_time: f.edit_end_time.value.substring(0, 5),
             automation_action: f.edit_automation_action.value,
             schedule_status: f.querySelector('input[name="edit_schedule_status"]:checked').value
         };
@@ -745,12 +783,14 @@
             if (res.ok) {
                 closeEditScheduleModal();
                 await loadSchedules();
+                vsAlert.success('Jadwal Diperbarui', 'Jadwal listrik berhasil diperbarui.');
             } else {
                 const err = await res.json();
-                alert('Error: ' + (err.message || 'Failed to update schedule'));
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal memperbarui jadwal.');
+                vsAlert.error('Gagal Memperbarui', msg);
             }
         } catch(err) {
-            alert('Network error. Please try again.');
+            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -758,21 +798,41 @@
 
     document.getElementById('confirm-delete-schedule-btn').addEventListener('click', async () => {
         if (!deleteScheduleId) return;
+
+        // Validasi H-1: tidak boleh hapus jika < 1 jam dari waktu mulai
+        const sch = schedulesMap[deleteScheduleId];
+        if (sch && sch.schedule_status === 'active') {
+            const now = new Date();
+            const [sh, sm] = (sch.start_time || '').split(':').map(Number);
+            const schedStart = new Date();
+            schedStart.setHours(sh, sm, 0, 0);
+            const diffMs = schedStart - now;
+            if (diffMs > 0 && diffMs < 3600000) {
+                closeDeleteScheduleModal();
+                vsAlert.warning(
+                    'Tidak Dapat Dihapus',
+                    'Jadwal ini akan aktif dalam kurang dari 1 jam. Penghapusan tidak diizinkan kurang dari H-1 jam dari waktu penggunaan.'
+                );
+                return;
+            }
+        }
+
         const btn = document.getElementById('confirm-delete-schedule-btn');
         const origText = btn.textContent;
-        btn.disabled = true; btn.textContent = 'Deleting...';
-        
+        btn.disabled = true; btn.textContent = 'Menghapus...';
+
         try {
             const res = await apiFetch('/jadwal-listrik/' + deleteScheduleId, { method: 'DELETE' });
             if (res.ok) {
                 closeDeleteScheduleModal();
                 await loadSchedules();
+                vsAlert.success('Jadwal Dihapus', 'Jadwal listrik berhasil dihapus dari sistem.');
             } else {
                 const err = await res.json();
-                alert('Error: ' + (err.message || 'Failed to delete schedule'));
+                vsAlert.error('Gagal Menghapus', err.message || 'Terjadi kesalahan saat menghapus jadwal.');
             }
         } catch(e) {
-            alert('Network error. Please try again.');
+            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }

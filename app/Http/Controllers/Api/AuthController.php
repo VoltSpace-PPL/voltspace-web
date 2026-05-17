@@ -23,7 +23,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $user = $request->user();
+        $user = Auth::user();
         $token = $user->createToken('postman-token')->plainTextToken;
 
         return response()->json([
