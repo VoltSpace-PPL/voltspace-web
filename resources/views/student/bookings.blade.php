@@ -243,7 +243,30 @@
 </div>`;
         }).join('');
     }
-    
+
+    /* ── Cancel booking ──────────────────────────────── */
+    window.confirmCancel = async function (id) {
+        const ok = await vsAlert.confirm(
+            'Batalkan Peminjaman?',
+            'Apakah kamu yakin ingin membatalkan pengajuan ini?<br><span class="text-yellow-400 text-[12px]">⚠ Pembatalan hanya bisa dilakukan maksimal H-2 sebelum tanggal acara.</span>',
+            'Ya, Batalkan',
+            'Tidak'
+        );
+        if (!ok) return;
+        try {
+            const res  = await apiFetch(`/peminjaman/${id}/cancel`, { method: 'POST' });
+            const data = await res.json();
+            if (res.ok) {
+                vsAlert.success('Berhasil Dibatalkan', 'Pengajuan peminjaman berhasil dibatalkan.');
+                loadBookings();
+            } else {
+                vsAlert.error('Gagal Membatalkan', data.message || 'Terjadi kesalahan.');
+            }
+        } catch (e) {
+            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server.');
+        }
+    };
+
     /* ── Filter ──────────────────────────────────────── */
     function filterAndRender() {
         const q = document.getElementById('booking-search').value.toLowerCase();

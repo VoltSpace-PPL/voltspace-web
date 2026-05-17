@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/peminjaman/{peminjaman}', [PeminjamanController::class, 'show']);
     Route::get('/peminjaman/{peminjaman}/surat', [PeminjamanController::class, 'previewSurat']);
     Route::post('/peminjaman', [PeminjamanController::class, 'store']);
+    Route::post('/peminjaman/{peminjaman}/cancel', [PeminjamanController::class, 'cancel']);
 
 
     Route::get('/mahasiswa/dashboard/peminjaman', MahasiswaPeminjamanDashboardController::class);

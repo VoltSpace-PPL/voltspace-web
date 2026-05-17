@@ -107,4 +107,83 @@ class PeminjamanController extends Controller
             'data' => $row->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
         ], 201);
     }
+
+    public function cancel(Request $request, Peminjaman $peminjaman): JsonResponse
+    {
+        $user = $request->user();
+
+        if (in_array($peminjaman->status, ['dibatalkan', 'ditolak'])) {
+            return response()->json(['message' => 'Pengajuan sudah dalam status dibatalkan atau ditolak.'], 422);
+        }
+
+        $dMulai = Carbon::parse($peminjaman->tanggal_mulai)->startOfDay();
+        $hariIni = Carbon::today();
+
+        if ($user->isStaffAdmin()) {
+            if ($hariIni->gt($dMulai->copy()->subDays(1))) {
+                return response()->json(['message' => 'Admin hanya dapat membatalkan peminjaman maksimal H-1 sebelum acara.'], 422);
+            }
+        } elseif ($user->isMahasiswa() && $peminjaman->user_id === $user->id) {
+            if ($hariIni->gt($dMulai->copy()->subDays(2))) {
+                return response()->json(['message' => 'Mahasiswa hanya dapat membatalkan peminjaman maksimal H-2 sebelum acara.'], 422);
+            }
+        } else {
+            return response()->json(['message' => 'Akses ditolak.'], 403);
+        }
+
+        $updateData = ['status' => 'dibatalkan'];
+        if ($user->isStaffAdmin()) {
+            $updateData['reviewed_by'] = $user->id;
+            $updateData['reviewed_at'] = now();
+        }
+
+        $peminjaman->update($updateData);
+        $this->jadwalSync->deleteJadwalForPeminjaman($peminjaman->id);
+
+        return response()->json(['message' => 'Peminjaman berhasil dibatalkan.', 'data' => $peminjaman->fresh()]);
+    }
+
+    public function downloadTemplate()
+    {
+        $path = storage_path('app/templates/template_surat_peminjaman.xlsx');
+        
+        if (!file_exists($path)) {
+            if (!file_exists(storage_path('app/templates'))) {
+                mkdir(storage_path('app/templates'), 0755, true);
+            }
+            // Fallback just in case
+            file_put_contents($path, 'Template belum digenerate.');
+        }
+
+        return response()->download($path, 'Template_Surat_Peminjaman.xlsx');
+    }
+
+    public function previewSurat(Request $request, Peminjaman $peminjaman)
+    {
+        if (! $this->canView($request->user(), $peminjaman)) {
+            return response()->json(['message' => 'Akses ditolak.'], 403);
+        }
+
+        if (!$peminjaman->surat_peminjaman) {
+            return response()->json(['message' => 'Surat peminjaman tidak ada.'], 404);
+        }
+
+        if (!Storage::disk('public')->exists($peminjaman->surat_peminjaman)) {
+            return response()->json(['message' => 'File tidak ditemukan di server.'], 404);
+        }
+
+        return response()->file(Storage::disk('public')->path($peminjaman->surat_peminjaman));
+    }
+
+    private function canView($user, Peminjaman $p): bool
+    {
+        if ($user->isSuperAdmin() || $user->isAdmin()) {
+            return true;
+        }
+        if ($user->isMahasiswa()) {
+            return $p->user_id === $user->id;
+        }
+
+        return false;
+    }
 }
