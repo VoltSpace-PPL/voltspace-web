@@ -14,6 +14,7 @@ class JadwalListrik extends Model
 
     protected $fillable = [
         'ruangan_id',
+        'peminjaman_id',
         'device_id',
         'selected_days',
         'start_time',
@@ -23,6 +24,8 @@ class JadwalListrik extends Model
         'waktu_mulai',
         'waktu_selesai',
         'status_listrik',
+        'tanggal_mulai',
+        'tanggal_selesai',
     ];
 
     protected $casts = [
@@ -32,6 +35,11 @@ class JadwalListrik extends Model
     public function ruangan(): BelongsTo
     {
         return $this->belongsTo(Ruangan::class);
+    }
+
+    public function peminjaman(): BelongsTo
+    {
+        return $this->belongsTo(Peminjaman::class);
     }
 
     public function device(): BelongsTo

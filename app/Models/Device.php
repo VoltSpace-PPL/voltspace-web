@@ -18,6 +18,13 @@ class Device extends Model
         'ruangan_id',
     ];
 
+    protected $appends = ['device_code'];
+
+    public function getDeviceCodeAttribute(): string
+    {
+        return 'DV-' . str_pad((string)$this->id, 3, '0', STR_PAD_LEFT);
+    }
+
     public function ruangan(): BelongsTo
     {
         return $this->belongsTo(Ruangan::class);
