@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/devices', [DeviceController::class, 'index']);
     Route::get('/jadwal-listrik', [JadwalListrikController::class, 'index']);
     Route::get('/users', [UserController::class, 'index'])->middleware('admin');
+    
 
     Route::middleware('admin')->group(function () {
         Route::post('/ruangan', [RuanganController::class, 'store']);
