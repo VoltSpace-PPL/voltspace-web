@@ -42,9 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/peminjaman/{peminjaman}', [PeminjamanController::class, 'show']);
     Route::get('/peminjaman/{peminjaman}/surat', [PeminjamanController::class, 'previewSurat']);
     Route::post('/peminjaman', [PeminjamanController::class, 'store']);
-    Route::post('/peminjaman/{peminjaman}/approve', [PeminjamanController::class, 'approve']);
-    Route::post('/peminjaman/{peminjaman}/reject', [PeminjamanController::class, 'reject']);
-    Route::post('/peminjaman/{peminjaman}/cancel', [PeminjamanController::class, 'cancel']);
+
 
     Route::get('/mahasiswa/dashboard/peminjaman', MahasiswaPeminjamanDashboardController::class);
 
@@ -75,19 +73,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/jadwal-listrik/{jadwal}', [JadwalListrikController::class, 'update']);
         Route::patch('/jadwal-listrik/{jadwal}', [JadwalListrikController::class, 'update']);
         Route::delete('/jadwal-listrik/{jadwal}', [JadwalListrikController::class, 'destroy']);
-
-        Route::get('/jadwal-listrik/template/download', [JadwalListrikExcelController::class, 'downloadTemplate']);
-        Route::post('/jadwal-listrik/import', [JadwalListrikExcelController::class, 'import']);
-
-        Route::get('/energy-alerts/settings', [EnergyAlertController::class, 'settings']);
-        Route::put('/energy-alerts/settings', [EnergyAlertController::class, 'updateSettings']);
-        Route::get('/energy-alerts', [EnergyAlertController::class, 'alerts']);
-
-        Route::get('/laporan-energi', [GeneratedEnergyReportController::class, 'index']);
-        Route::post('/laporan-energi/generate', [GeneratedEnergyReportController::class, 'store']);
-        Route::get('/laporan-energi/{report}/preview', [GeneratedEnergyReportController::class, 'preview']);
-        Route::get('/laporan-energi/{report}/download', [GeneratedEnergyReportController::class, 'download']);
-        Route::delete('/laporan-energi/{report}', [GeneratedEnergyReportController::class, 'destroy']);
     });
 
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('super_admin');
