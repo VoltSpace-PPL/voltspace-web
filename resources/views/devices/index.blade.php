@@ -64,20 +64,12 @@
                 </button>
             </div>
             <form id="add-device-form" class="p-8 space-y-5">
-                <!-- 2-col: Device ID + Type -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Device ID</label>
-                        <input type="text" name="device_code" placeholder="DEV-001"
-                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Type</label>
-                        <input type="text" name="type" placeholder="Energy Meter" required
-                               class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                    </div>
+                <!-- Type -->
+                <div class="space-y-2">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Type</label>
+                    <input type="text" name="type" placeholder="Energy Meter" required
+                           class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
                 </div>
-
                 <!-- Name -->
                 <div class="space-y-2">
                     <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Name</label>
@@ -127,17 +119,6 @@
             </div>
             <form id="edit-device-form" class="p-8 space-y-5">
                 <input type="hidden" name="edit_device_internal_id">
-                <!-- Device ID (readonly) -->
-                <div class="space-y-2">
-                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Device ID</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2"/></svg>
-                        </span>
-                        <input type="text" name="edit_device_code" readonly
-                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-slate-400 cursor-not-allowed focus:outline-none">
-                    </div>
-                </div>
                 <!-- Name -->
                 <div class="space-y-2">
                     <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Name</label>
@@ -231,7 +212,6 @@
     function openEditDeviceModal(device) {
         const f = document.getElementById('edit-device-form');
         f.edit_device_internal_id.value = device.id ?? '';
-        f.edit_device_code.value = device.device_code || ('DEV-' + String(device.id).padStart(3, '0'));
         f.edit_name.value = device.name || '';
         f.edit_type.value = device.type || '';
         f.edit_ip_address.value = device.ip_address || '';
@@ -374,7 +354,6 @@
             ip_address:  f.ip_address.value.trim(),
             ruangan_id:  f.ruangan_id.value || null,
         };
-        if (f.device_code.value.trim()) payload.device_code = f.device_code.value.trim();
 
         try {
             const res = await apiFetch('/devices', { method: 'POST', body: JSON.stringify(payload) });

@@ -375,8 +375,12 @@
                 const token = data.token || data.access_token || data.data?.token || data.data?.access_token;
                 if (res.ok && token) {
                     localStorage.setItem('token', token);
-                    location.href = '/dashboard';
-                    location.href = '/rooms';
+                    const role = data.user?.role || data.data?.user?.role || '';
+                    if (role === 'mahasiswa') {
+                        location.href = '/student/bookings';
+                    } else {
+                        location.href = '/dashboard';
+                    }
                 } else {
                     const fromErrors = data.errors ? Object.values(data.errors).flat().filter(Boolean).join('\n') : '';
                     alert(fromErrors || data.message || 'Email atau password salah. Periksa kredensial demo di bawah form.');

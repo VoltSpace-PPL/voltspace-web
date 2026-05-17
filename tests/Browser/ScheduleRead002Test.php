@@ -2,47 +2,44 @@
 
 namespace Tests\Browser;
 
+use App\Models\JadwalListrik;
 use App\Models\Ruangan;
 use App\Models\User;
-use App\Models\JadwalListrik;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Concerns\CreatesTestRuangan;
 use Tests\DuskTestCase;
 
 class ScheduleRead002Test extends DuskTestCase
 {
+    use CreatesTestRuangan;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         \Schema::disableForeignKeyConstraints();
-        \App\Models\JadwalListrik::truncate();
-        \App\Models\User::where('email', 'admin@voltspace.id')->delete();
-        \App\Models\Ruangan::where('id', 'R-001')->delete();
+        JadwalListrik::truncate();
+        User::where('email', 'admin@voltspace.id')->delete();
+        Ruangan::where('nama_ruangan', 'Server Room Alpha')->delete();
         \Schema::enableForeignKeyConstraints();
-        
+
         User::factory()->create([
             'email' => 'admin@voltspace.id',
             'role' => 'admin',
-            'password' => bcrypt('admin123')
+            'password' => bcrypt('admin123'),
         ]);
-        
-        Ruangan::create([
-            'id' => 'R-001',
-            'nama_ruangan' => 'Server Room Alpha',
-            'lokasi' => 'Lantai 1',
-            'kapasitas' => 10,
-            'status' => 'tersedia'
-        ]);
+
+        $this->makeTestRuangan();
     }
 
     private function loginAdmin(Browser $browser)
     {
         $browser->visit('/login')
-                ->type('email', 'admin@voltspace.id')
-                ->type('password', 'admin123')
-                ->press('Sign In')
-                ->waitForLocation('/rooms')
-                ->pause(500);
+            ->type('email', 'admin@voltspace.id')
+            ->type('password', 'admin123')
+            ->press('Sign In')
+            ->waitForLocation('/rooms')
+            ->pause(500);
     }
 
     /**
@@ -52,10 +49,10 @@ class ScheduleRead002Test extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $this->loginAdmin($browser);
-            
+
             $browser->visit('/schedule')
-                    ->waitForText('Electricity Schedule')
-                    ->waitForText('No schedules found');
+                ->waitForText('Electricity Schedule')
+                ->assertSee('No schedules found');
         });
     }
 }

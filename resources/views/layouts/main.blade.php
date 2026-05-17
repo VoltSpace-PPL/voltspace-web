@@ -52,7 +52,7 @@
 <body class="antialiased overflow-x-hidden grid-pattern">
     <div class="flex min-h-screen w-full max-w-full min-w-0">
         <!-- Sidebar - Made more responsive with hidden on mobile -->
-        <aside id="sidebar" class="fixed left-0 top-0 bottom-0 w-[280px] max-w-[min(280px,100vw)] bg-[#0b1120] border-r border-[#334155] z-50 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 overflow-hidden">
+        <aside id="sidebar" class="fixed left-0 top-0 bottom-0 w-[320px] max-w-[min(320px,100vw)] bg-[#0b1120] border-r border-[#334155] z-50 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0 overflow-hidden">
             <div class="p-8 mb-4">
                 <div class="flex items-center gap-4 group cursor-pointer">
                     <div class="w-12 h-12 relative flex-shrink-0 overflow-hidden rounded-full bg-white p-1">
@@ -69,8 +69,6 @@
                 @php
                     $menu = [
                         ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => '/dashboard'],
-                        ['id' => 'monitoring', 'label' => 'Energy Monitoring', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
-                        ['id' => 'buildings', 'label' => 'Buildings', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
                         ['id' => 'rooms', 'label' => 'Rooms', 'icon' => 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', 'route' => '/rooms'],
                         ['id' => 'devices', 'label' => 'Devices', 'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'route' => '/devices'],
                         ['id' => 'schedule', 'label' => 'Electricity Schedule', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'route' => '/schedule'],
@@ -78,7 +76,7 @@
                         ['id' => 'alerts', 'label' => 'Energy Alerts', 'icon' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z', 'badge' => 3],
                         ['id' => 'reports', 'label' => 'Reports', 'icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
                         ['id' => 'users', 'label' => 'Users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'route' => '/users'],
-                        ['id' => 'settings', 'label' => 'Settings', 'route' => '/settings', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'],
+                        ['id' => 'settings', 'label' => 'Settings', 'route' => '/settings', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', 'route' => '/settings'],
                     ];
                 @endphp
 
@@ -116,7 +114,7 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="main-shell flex-1 lg:ml-[280px] min-h-screen w-full max-w-full bg-[#0b1120]">
+        <main class="main-shell flex-1 lg:ml-[320px] min-h-screen w-full max-w-full bg-[#0b1120]">
             <!-- Top Bar -->
             <header class="bg-[#0b1120]/80 backdrop-blur-md px-6 lg:px-10 py-6 border-b border-[#334155]/30">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
@@ -156,8 +154,8 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke-width="2"/></svg>
                                     <span class="text-[11px] font-bold uppercase tracking-wider">ID</span>
                                 </div>
-                                <div class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors shrink-0 h-8 px-3 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-width="2"/></svg>
+                                <div class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors shrink-0 h-8 px-3 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45" onclick="switchToStudentRole()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-width="2"/></path></svg>
                                     <span class="text-[11px] font-bold uppercase tracking-wider">Switch Role</span>
                                 </div>
                             </div>
@@ -181,6 +179,25 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('-translate-x-full');
+        }
+
+        async function switchToStudentRole() {
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ email: 'student@voltspace.id', password: 'student123' })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    location.href = '/student/bookings/create';
+                } else {
+                    alert('Gagal switch role: kredensial student tidak ditemukan.');
+                }
+            } catch(e) {
+                alert('Koneksi gagal saat switch role.');
+            }
         }
 
         function updateClock() {
@@ -208,6 +225,90 @@
         updateClock();
     </script>
     @include('partials.voltspace-api')
+
+    <!-- Global Custom Alert Modal -->
+    <div id="vs-alert-modal" class="fixed inset-0 z-[9999] hidden" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="vsAlert.close()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[400px] p-4">
+            <div class="glass-effect rounded-[20px] shadow-2xl overflow-hidden">
+                <div class="p-6 flex justify-between items-center border-b border-white/10">
+                    <div class="flex items-center gap-3">
+                        <div id="vs-alert-icon" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"></div>
+                        <h3 id="vs-alert-title" class="text-[17px] font-bold text-white"></h3>
+                    </div>
+                    <button onclick="vsAlert.close()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5"/></svg>
+                    </button>
+                </div>
+                <div class="px-6 py-5">
+                    <p id="vs-alert-message" class="text-[14px] text-slate-300 leading-relaxed"></p>
+                </div>
+                <div class="px-6 pb-6 flex gap-3" id="vs-alert-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const vsAlert = {
+        _resolve: null,
+        show({ type = 'info', title, message, confirmText = 'OK', cancelText = null, confirmClass = null }) {
+            const modal   = document.getElementById('vs-alert-modal');
+            const iconEl  = document.getElementById('vs-alert-icon');
+            const titleEl = document.getElementById('vs-alert-title');
+            const msgEl   = document.getElementById('vs-alert-message');
+            const actions = document.getElementById('vs-alert-actions');
+
+            const themes = {
+                success: { bg: 'bg-emerald-500/15 border border-emerald-500/20', color: 'text-emerald-400', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>', btnClass: 'bg-emerald-500 hover:bg-emerald-600' },
+                error:   { bg: 'bg-red-500/15 border border-red-500/20',     color: 'text-red-400',     svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>', btnClass: 'bg-red-500 hover:bg-red-600' },
+                warning: { bg: 'bg-yellow-500/15 border border-yellow-500/20', color: 'text-yellow-400', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>', btnClass: 'bg-yellow-500 hover:bg-yellow-600' },
+                info:    { bg: 'bg-[#00aaff]/15 border border-[#00aaff]/20',  color: 'text-[#00aaff]',  svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>', btnClass: 'bg-[#00d4aa] hover:bg-[#00bfa0]' },
+                confirm: { bg: 'bg-orange-500/15 border border-orange-500/20', color: 'text-orange-400', svg: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>', btnClass: 'bg-orange-500 hover:bg-orange-600' },
+            };
+
+            const t = themes[type] || themes.info;
+            iconEl.className = `w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${t.bg} ${t.color}`;
+            iconEl.innerHTML = t.svg;
+            titleEl.textContent = title;
+            msgEl.innerHTML = message;
+
+            const finalBtnClass = confirmClass || t.btnClass;
+            actions.innerHTML = '';
+
+            return new Promise((resolve) => {
+                this._resolve = resolve;
+                const confirmBtn = document.createElement('button');
+                confirmBtn.className = `flex-1 py-3 ${finalBtnClass} text-white font-bold rounded-xl transition-colors text-[14px]`;
+                confirmBtn.textContent = confirmText;
+                confirmBtn.onclick = () => { this.close(); resolve(true); };
+                actions.appendChild(confirmBtn);
+
+                if (cancelText) {
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.className = 'flex-1 py-3 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-colors text-[14px]';
+                    cancelBtn.textContent = cancelText;
+                    cancelBtn.onclick = () => { this.close(); resolve(false); };
+                    actions.insertBefore(cancelBtn, confirmBtn);
+                }
+
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+        },
+        close() {
+            document.getElementById('vs-alert-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        },
+        // Shortcuts
+        success(title, message) { return this.show({ type: 'success', title, message }); },
+        error(title, message)   { return this.show({ type: 'error',   title, message }); },
+        warning(title, message) { return this.show({ type: 'warning', title, message }); },
+        info(title, message)    { return this.show({ type: 'info',    title, message }); },
+        confirm(title, message, confirmText = 'Ya, Konfirmasi', cancelText = 'Batal') {
+            return this.show({ type: 'confirm', title, message, confirmText, cancelText });
+        },
+    };
+    </script>
     <script>
         // ── Sidebar user info ──────────────────────────────────────────────
         async function loadSidebarUser() {
@@ -216,6 +317,12 @@
                 if (!res.ok) return;
                 const data = await res.json();
                 const user = data.data || data.user || data;
+
+                if (user.role === 'mahasiswa') {
+                    location.href = '/student/bookings';
+                    return;
+                }
+
                 if (user.name) {
                     const initials = user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
                     document.getElementById('sidebar-avatar').textContent = initials;

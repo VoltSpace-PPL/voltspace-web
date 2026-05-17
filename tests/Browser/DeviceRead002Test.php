@@ -2,44 +2,38 @@
 
 namespace Tests\Browser;
 
-use App\Models\Device;
-use App\Models\Ruangan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Concerns\CreatesTestRuangan;
 use Tests\DuskTestCase;
 
 class DeviceRead002Test extends DuskTestCase
 {
+    use CreatesTestRuangan;
     use DatabaseMigrations;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         User::factory()->create([
             'email' => 'admin@voltspace.id',
             'role' => 'admin',
-            'password' => bcrypt('admin123')
+            'password' => bcrypt('admin123'),
         ]);
-        
-        Ruangan::create([
-            'id' => 'R-001',
-            'nama_ruangan' => 'Server Room Alpha',
-            'lokasi' => 'Lantai 1',
-            'kapasitas' => 10,
-            'status' => 'tersedia'
-        ]);
+
+        $this->makeTestRuangan();
     }
 
     private function loginAdmin(Browser $browser)
     {
         $browser->visit('/login')
-                ->type('email', 'admin@voltspace.id')
-                ->type('password', 'admin123')
-                ->press('Sign In')
-                ->waitForLocation('/rooms')
-                ->pause(500);
+            ->type('email', 'admin@voltspace.id')
+            ->type('password', 'admin123')
+            ->press('Sign In')
+            ->waitForLocation('/rooms')
+            ->pause(500);
     }
 
     /**
@@ -51,12 +45,8 @@ class DeviceRead002Test extends DuskTestCase
             $this->loginAdmin($browser);
 
             $browser->visit('/devices')
-                    ->waitForText('Devices')
-                    ->script("localStorage.removeItem('token');");
-                    
-            $browser->refresh()
-                    ->pause(1000)
-                    ->assertPathIs('/login');
+                ->waitUntilMissingText('Loading devices...')
+                ->assertSee('No devices found');
         });
     }
 }
