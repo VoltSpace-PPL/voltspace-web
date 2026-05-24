@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\JadwalListrik;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -111,6 +112,95 @@ class JadwalListrikController extends Controller
         ]);
     }
 
+    public function iotCommand(Request $request): JsonResponse
+    {
+        $now = Carbon::now('Asia/Jakarta');
+
+        $today = strtolower($now->format('l')); 
+        $currentTime = $now->format('H:i');
+        $todayDate = $now->toDateString();
+
+        $query = JadwalListrik::query()
+            ->where('schedule_status', 'active')
+            ->where(function ($q) use ($todayDate) {
+                $q->whereNull('tanggal_mulai')
+                ->orWhereDate('tanggal_mulai', '<=', $todayDate);
+            })
+            ->where(function ($q) use ($todayDate) {
+                $q->whereNull('tanggal_selesai')
+                ->orWhereDate('tanggal_selesai', '>=', $todayDate);
+            });
+
+    // Opsional: kalau ESP32 kirim device_id
+    if ($request->filled('device_id')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('device_id', $request->integer('device_id'))
+              ->orWhereNull('device_id');
+        });
+    }
+
+    if ($request->filled('ruangan_id')) {
+        $query->where('ruangan_id', $request->input('ruangan_id'));
+    }
+
+    $jadwals = $query->latest()->get();
+
+    $relay = 0;
+    $activeSchedule = null;
+
+    foreach ($jadwals as $jadwal) {
+        $selectedDays = $jadwal->selected_days;
+
+        if (is_string($selectedDays)) {
+            $selectedDays = json_decode($selectedDays, true);
+        }
+
+        if (!is_array($selectedDays)) {
+            $selectedDays = [];
+        }
+
+        if (!empty($selectedDays) && !in_array($today, $selectedDays, true)) {
+            continue;
+        }
+
+        $start = $jadwal->start_time ?? $jadwal->waktu_mulai;
+        $end = $jadwal->end_time ?? $jadwal->waktu_selesai;
+
+        if (!$start || !$end) {
+            continue;
+        }
+
+        if ($this->isTimeInRange($currentTime, $start, $end)) {
+            $activeSchedule = $jadwal;
+            $relay = $jadwal->automation_action === 'on' ? 1 : 0;
+            break;
+        }
+    }
+
+    return response()->json([
+        'relay' => $relay,
+        'state' => $relay ? 'ON' : 'OFF',
+        'message' => $activeSchedule ? 'Jadwal aktif ditemukan' : 'Tidak ada jadwal aktif',
+        'active_schedule_id' => $activeSchedule?->id,
+        'automation_action' => $activeSchedule?->automation_action,
+        'server_time' => $now->format('Y-m-d H:i:s'),
+    ]);
+}
+
+private function isTimeInRange(string $now, string $start, string $end): bool
+{
+    $now = substr($now, 0, 5);
+    $start = substr($start, 0, 5);
+    $end = substr($end, 0, 5);
+
+    // Contoh normal: 08:00 - 17:00
+    if ($start <= $end) {
+        return $now >= $start && $now < $end;
+    }
+
+    // Contoh lewat tengah malam: 22:00 - 05:00
+    return $now >= $start || $now < $end;
+}
     public function destroy(JadwalListrik $jadwal): JsonResponse
     {
         $jadwal->delete();

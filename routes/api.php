@@ -88,3 +88,4 @@ Route::get('/devices/{device}/status', [DeviceControlController::class, 'status'
 Route::post('/devices/{device}/on', [DeviceControlController::class, 'on']);
 Route::post('/devices/{device}/off', [DeviceControlController::class, 'off']);
 Route::post('/devices/toggle', [DeviceControlController::class, 'toggle']);
+Route::get('/iot/schedule-command', [JadwalListrikController::class, 'iotCommand']);
