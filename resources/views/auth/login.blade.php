@@ -340,7 +340,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="text-center text-[11px] text-[#8892a4] mt-8">© 2024 VoltSpace. All rights reserved.</p>
+                <p class="text-center text-[11px] text-[#8892a4] mt-8">© {{ date('Y') }} VoltSpace. All rights reserved.</p>
             </div>
         </div>
     </div>
