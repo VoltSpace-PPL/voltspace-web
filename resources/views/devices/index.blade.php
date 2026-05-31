@@ -24,11 +24,11 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] overflow-hidden shadow-2xl">
+    <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] overflow-hidden shadow-2xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-[#0f172a] border-b border-[#334155]">
+                    <tr class="bg-[#161e2d] border-b border-[#1e2d45]">
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Device ID</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Name</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Type</th>

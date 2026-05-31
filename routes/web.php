@@ -12,13 +12,7 @@ Route::view('/dashboard', 'dashboard.index');
 Route::view('/users', 'users.index');
 Route::view('/rooms', 'rooms.index');
 Route::view('/devices', 'devices.index');
-Route::view('/schedule', 'schedule.index');
-Route::view('/settings', 'settings.index');
-
-
-Route::view('/student/rooms', 'student.rooms');
-Route::view('/student/bookings/create', 'student.bookings-create');
-Route::view('/student/bookings', 'student.bookings');
+Route::view('/bookings', 'bookings.index');
 
 // Keep a simple JSON health endpoint for the backend.
 Route::get('/health', function () {
