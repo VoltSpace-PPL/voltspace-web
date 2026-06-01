@@ -49,8 +49,10 @@
             <nav class="flex-1 min-h-0 px-4 space-y-1 overflow-y-auto custom-scrollbar">
                 @php
                     $studentMenu = [
-                        ['id' => 'new-booking',   'label' => 'New Booking',      'icon' => 'M12 4v16m8-8H4', 'route' => '/student/bookings/create'],
-                        ['id' => 'my-bookings',   'label' => 'My Bookings',      'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'route' => '/student/bookings'],
+                        ['id' => 'dashboard',          'label' => 'Dashboard',         'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', 'route' => '/student/dashboard'],
+                        ['id' => 'new-booking',        'label' => 'New Booking',       'icon' => 'M12 4v16m8-8H4', 'route' => '/student/bookings/create'],
+                        ['id' => 'room-availability',  'label' => 'Room Availability', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'route' => '/student/room-availability'],
+                        ['id' => 'my-bookings',        'label' => 'My Bookings',       'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'route' => '/student/bookings'],
                     ];
                 @endphp
 
@@ -123,9 +125,24 @@
                     </div>
 
                     <div class="flex items-center gap-3 self-start md:self-auto">
-                        <div class="relative">
-                            <div class="w-9 h-8 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-width="2"/></svg>
+                        <div class="relative shrink-0" id="notification-container">
+                            <div id="notification-btn" class="w-9 h-8 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer hover:border-[#475569]">
+                                <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-width="2"/></svg>
+                            </div>
+                            <span id="notification-badge" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 border-2 border-[#0b1120] rounded-full text-[8px] font-bold text-white flex items-center justify-center">0</span>
+
+                            <!-- Dropdown -->
+                            <div id="notification-dropdown" class="hidden absolute right-0 top-full mt-2 w-[340px] bg-[#0f172a] border border-[#1e293b] rounded-xl shadow-2xl z-50 overflow-hidden ring-1 ring-white/5">
+                                <div class="px-5 py-4 border-b border-[#1e293b] bg-gradient-to-r from-[#064e3b]/40 to-[#0f172a]">
+                                    <h3 class="text-[15px] font-bold text-white leading-none">Notifications</h3>
+                                    <p id="notification-header-count" class="text-[12px] text-slate-400 mt-1.5">0 unread</p>
+                                </div>
+                                <div id="notification-list" class="max-h-[320px] overflow-y-auto custom-scrollbar bg-[#0f172a]">
+                                    <!-- items injected by js -->
+                                </div>
+                                <div class="p-3 border-t border-[#1e293b] bg-[#0f172a] text-center">
+                                    <button class="text-[13px] font-bold text-[#00d4aa] hover:text-[#00bfa0] transition-colors w-full py-1">Mark all as read</button>
+                                </div>
                             </div>
                         </div>
                         <!-- Switch Role button (topbar) -->
@@ -323,9 +340,86 @@
         } catch(e) {}
     }
 
+    // ── Topbar Notifications ───────────────────────────────────────────
+    async function loadTopbarNotifications() {
+        try {
+            const res = await apiFetch('/notifications');
+            if (!res.ok) return;
+            const data = await res.json();
+            
+            const peminjaman = data.peminjaman || [];
+            const energy = data.energy_alerts || [];
+            const allNotifs = [...peminjaman, ...energy].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            const badge = document.getElementById('notification-badge');
+            const list = document.getElementById('notification-list');
+            const headerCount = document.getElementById('notification-header-count');
+            
+            if (allNotifs.length > 0) {
+                if (badge) {
+                    badge.textContent = allNotifs.length;
+                    badge.classList.remove('hidden');
+                }
+                if (headerCount) {
+                    headerCount.textContent = `${allNotifs.length} unread`;
+                }
+                if (list) {
+                    list.innerHTML = allNotifs.map(n => {
+                        let dotColor = 'bg-[#00d4aa]'; // Default green
+                        if (n.type === 'energy') {
+                            dotColor = n.severity === 'critical' ? 'bg-red-500' : 'bg-yellow-500';
+                        } else if (n.type === 'peminjaman') {
+                            dotColor = (n.meta && n.meta.status === 'pending') ? 'bg-blue-500' : ((n.meta && n.meta.status === 'rejected') ? 'bg-red-500' : 'bg-[#00d4aa]');
+                        }
+                        
+                        const timeAgo = new Date(n.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+
+                        return `
+                            <div class="px-5 py-4 border-b border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors flex gap-4">
+                                <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0" style="box-shadow: 0 0 8px var(--tw-ring-color, currentColor); color: ${dotColor.replace('bg-', '')};"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-[13px] font-bold text-white truncate">${n.title}</p>
+                                    <p class="text-[12px] text-slate-400 line-clamp-2 mt-1 leading-relaxed">${n.body}</p>
+                                    <p class="text-[11px] text-slate-500 mt-2">${timeAgo}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } else {
+                if (badge) badge.classList.add('hidden');
+                if (headerCount) headerCount.textContent = '0 unread';
+                if (list) list.innerHTML = '<div class="p-8 text-center text-[13px] text-slate-500">No new notifications</div>';
+            }
+        } catch (e) {
+            // Ignore
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         loadStudentUser();
         loadBookingBadge();
+        loadTopbarNotifications();
+        
+        // Notification Dropdown Toggle
+        const btn = document.getElementById('notification-btn');
+        const dropdown = document.getElementById('notification-dropdown');
+        if (btn && dropdown) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('hidden');
+            });
+            document.addEventListener('click', (e) => {
+                if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        setInterval(() => {
+            loadBookingBadge();
+            loadTopbarNotifications();
+        }, 30000); // Check every 30s
     });
     </script>
     @stack('scripts')

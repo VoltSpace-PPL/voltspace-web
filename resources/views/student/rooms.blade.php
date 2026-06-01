@@ -16,9 +16,9 @@
 <div class="flex items-center gap-3 mb-6 flex-wrap">
     <div class="relative flex-1 min-w-[200px]">
         <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2"/></svg>
-        <input id="room-search" type="text" placeholder="Cari nama ruangan..." class="w-full pl-10 pr-4 py-2.5 bg-[#1e293b] border border-[#334155] rounded-xl text-white text-[13px] placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
+        <input id="room-search" type="text" placeholder="Cari nama ruangan..." class="w-full pl-10 pr-4 py-2.5 bg-[#161e2d] border border-[#1e2d45] rounded-xl text-white text-[13px] placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
     </div>
-    <select id="room-status-filter" class="px-4 py-2.5 bg-[#1e293b] border border-[#334155] rounded-xl text-white text-[13px] focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
+    <select id="room-status-filter" class="px-4 py-2.5 bg-[#161e2d] border border-[#1e2d45] rounded-xl text-white text-[13px] focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
         <option value="">Semua Status</option>
         <option value="tersedia">Tersedia</option>
         <option value="digunakan">Sedang Digunakan</option>
@@ -62,7 +62,7 @@
         grid.innerHTML = rooms.map(r => {
             const s = statusInfo(r.status);
             const isAvailable = r.status === 'tersedia';
-            return `<div class="bg-[#1e293b] border border-[#334155] rounded-2xl p-5 transition-all hover:border-slate-500 group">
+            return `<div class="bg-[#161e2d] border border-[#1e2d45] rounded-2xl p-5 transition-all hover:border-slate-500 group">
                 <div class="flex items-start justify-between gap-3 mb-4">
                     <div class="flex items-center gap-3 min-w-0 flex-1">
                         <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(0,170,255,0.12); border:1px solid rgba(0,170,255,0.2);">
@@ -79,7 +79,7 @@
                     </span>
                 </div>
 
-                <div class="flex items-center gap-4 py-3 px-4 bg-[#0f172a] rounded-xl mb-4 border border-[#1e293b]">
+                <div class="flex items-center gap-4 py-3 px-4 bg-[#161e2d] rounded-xl mb-4 border border-[#1e2d45]">
                     <div class="flex items-center gap-2 text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"/></svg>
                         <span class="text-[13px]">Kapasitas</span>

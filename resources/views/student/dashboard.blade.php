@@ -3,106 +3,118 @@
 @section('content')
 {{-- Page Header --}}
 <div class="mb-8">
-    <h1 class="text-[28px] font-extrabold text-white tracking-tight leading-none">Dashboard</h1>
-    <p class="text-slate-400 text-[14px] mt-2">Selamat datang di Student Portal VoltSpace</p>
+    <h1 class="text-[26px] font-bold text-white tracking-tight leading-none">Student Dashboard</h1>
+    <p class="text-slate-400 text-[13px] mt-1.5">Welcome to VoltSpace Room Booking System</p>
 </div>
 
 {{-- Stats Cards --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="student-stats">
-    <div class="rounded-2xl p-5 relative overflow-hidden transition-all duration-300" style="background:#161d2e; border:1px solid #232c3d;">
-        <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(99,179,237,0.15); border:1px solid rgba(99,179,237,0.2);">
-                <svg class="w-5 h-5" style="color:#63b3ed" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2"/></svg>
-            </div>
+    <!-- Total Requests -->
+    <div class="rounded-2xl p-6 flex items-center justify-between" style="background:#161e2d; border:1px solid #1e2d45;">
+        <div>
+            <p class="text-slate-400 text-[12px] font-medium mb-3">Total Requests</p>
+            <h3 class="text-[36px] font-bold text-white leading-none" id="stat-total">—</h3>
         </div>
-        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Total Requests</p>
-        <p class="text-[26px] font-extrabold text-white leading-none" id="stat-total">—</p>
+        <div class="rounded-full flex items-center justify-center flex-shrink-0" style="width:52px;height:52px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.25);">
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        </div>
     </div>
 
-    <div class="rounded-2xl p-5 relative overflow-hidden transition-all duration-300" style="background:#161d2e; border:1px solid #232c3d;">
-        <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(246,173,85,0.15); border:1px solid rgba(246,173,85,0.2);">
-                <svg class="w-5 h-5" style="color:#f6ad55" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
-            </div>
+    <!-- Pending -->
+    <div class="rounded-2xl p-6 flex items-center justify-between" style="background:#161e2d; border:1px solid #1e2d45;">
+        <div>
+            <p class="text-slate-400 text-[12px] font-medium mb-3">Pending</p>
+            <h3 class="text-[36px] font-bold text-white leading-none" id="stat-pending">—</h3>
         </div>
-        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Pending</p>
-        <p class="text-[26px] font-extrabold text-white leading-none" id="stat-pending">—</p>
+        <div class="rounded-full flex items-center justify-center flex-shrink-0" style="width:52px;height:52px;background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.25);">
+            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
     </div>
 
-    <div class="rounded-2xl p-5 relative overflow-hidden transition-all duration-300" style="background:#161d2e; border:1px solid #232c3d;">
-        <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,212,170,0.15); border:1px solid rgba(0,212,170,0.2);">
-                <svg class="w-5 h-5" style="color:#00d4aa" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
-            </div>
+    <!-- Approved -->
+    <div class="rounded-2xl p-6 flex items-center justify-between" style="background:#161e2d; border:1px solid #1e2d45;">
+        <div>
+            <p class="text-slate-400 text-[12px] font-medium mb-3">Approved</p>
+            <h3 class="text-[36px] font-bold text-white leading-none" id="stat-approved">—</h3>
         </div>
-        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Approved</p>
-        <p class="text-[26px] font-extrabold text-white leading-none" id="stat-approved">—</p>
+        <div class="rounded-full flex items-center justify-center flex-shrink-0" style="width:52px;height:52px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);">
+            <svg class="w-6 h-6 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        </div>
     </div>
 
-    <div class="rounded-2xl p-5 relative overflow-hidden transition-all duration-300" style="background:#161d2e; border:1px solid #232c3d;">
-        <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(248,113,113,0.15); border:1px solid rgba(248,113,113,0.2);">
-                <svg class="w-5 h-5" style="color:#f87171" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
-            </div>
+    <!-- Rejected -->
+    <div class="rounded-2xl p-6 flex items-center justify-between" style="background:#161e2d; border:1px solid #1e2d45;">
+        <div>
+            <p class="text-slate-400 text-[12px] font-medium mb-3">Rejected</p>
+            <h3 class="text-[36px] font-bold text-white leading-none" id="stat-rejected">—</h3>
         </div>
-        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Rejected</p>
-        <p class="text-[26px] font-extrabold text-white leading-none" id="stat-rejected">—</p>
+        <div class="rounded-full flex items-center justify-center flex-shrink-0" style="width:52px;height:52px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);">
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9l-6 6M9 9l6 6"/></svg>
+        </div>
     </div>
 </div>
 
 {{-- Quick Actions --}}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-    <a href="/student/rooms" class="group flex items-center gap-4 p-5 rounded-2xl transition-all hover:scale-[1.02]" style="background:rgba(0,170,255,0.08); border:1px solid rgba(0,170,255,0.2);">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-[#00aaff]/15 border border-[#00aaff]/20 flex-shrink-0">
-            <svg class="w-6 h-6 text-[#00aaff]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/></svg>
-        </div>
-        <div>
-            <p class="text-white font-bold text-[15px]">Room Available</p>
-            <p class="text-slate-400 text-[12px] mt-0.5">Lihat ketersediaan ruangan</p>
-        </div>
-        <svg class="w-5 h-5 text-slate-600 ml-auto group-hover:text-[#00aaff] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2"/></svg>
-    </a>
+<div class="mb-8">
+    <h2 class="text-[16px] font-bold text-white mb-4">Quick Actions</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="/student/room-availability" class="group flex flex-col p-6 rounded-2xl transition-all hover:scale-[1.02] hover:border-blue-500/50" style="background:#161e2d; border:1px solid #1e2d45;">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.25);">
+                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/></svg>
+            </div>
+            <p class="text-white font-bold text-[15px] mb-1">View Available Rooms</p>
+            <p class="text-slate-400 text-[12px]">Check room availability and usage status</p>
+        </a>
 
-    <a href="/student/bookings/create" class="group flex items-center gap-4 p-5 rounded-2xl transition-all hover:scale-[1.02]" style="background:rgba(0,212,170,0.08); border:1px solid rgba(0,212,170,0.2);">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-[#00d4aa]/15 border border-[#00d4aa]/20 flex-shrink-0">
-            <svg class="w-6 h-6 text-[#00d4aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5"/></svg>
-        </div>
-        <div>
-            <p class="text-white font-bold text-[15px]">New Booking</p>
-            <p class="text-slate-400 text-[12px] mt-0.5">Ajukan peminjaman ruangan</p>
-        </div>
-        <svg class="w-5 h-5 text-slate-600 ml-auto group-hover:text-[#00d4aa] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2"/></svg>
-    </a>
+        <a href="/student/bookings/create" class="group flex flex-col p-6 rounded-2xl transition-all hover:scale-[1.02] hover:border-emerald-500/50" style="background:#161e2d; border:1px solid #1e2d45;">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);">
+                <svg class="w-6 h-6 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/></svg>
+            </div>
+            <p class="text-white font-bold text-[15px] mb-1">New Booking Request</p>
+            <p class="text-slate-400 text-[12px]">Submit a new room borrowing request</p>
+        </a>
 
-    <a href="/student/bookings" class="group flex items-center gap-4 p-5 rounded-2xl transition-all hover:scale-[1.02]" style="background:rgba(183,148,246,0.08); border:1px solid rgba(183,148,246,0.2);">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-[#b794f6]/15 border border-[#b794f6]/20 flex-shrink-0">
-            <svg class="w-6 h-6 text-[#b794f6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2"/></svg>
-        </div>
-        <div>
-            <p class="text-white font-bold text-[15px]">My Bookings</p>
-            <p class="text-slate-400 text-[12px] mt-0.5">Lihat semua pengajuanmu</p>
-        </div>
-        <svg class="w-5 h-5 text-slate-600 ml-auto group-hover:text-[#b794f6] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2"/></svg>
-    </a>
+        <a href="/student/bookings" class="group flex flex-col p-6 rounded-2xl transition-all hover:scale-[1.02] hover:border-purple-500/50" style="background:#161e2d; border:1px solid #1e2d45;">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);">
+                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2"/></svg>
+            </div>
+            <p class="text-white font-bold text-[15px] mb-1">My Bookings</p>
+            <p class="text-slate-400 text-[12px]">View your booking requests and status</p>
+        </a>
+    </div>
 </div>
 
 {{-- Recent Bookings --}}
-<div class="bg-[#1c2333] border border-[#2a3347] rounded-2xl p-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h2 class="text-[18px] font-bold text-white">Recent Bookings</h2>
-            <p class="text-slate-500 text-[12px] mt-0.5">5 pengajuan terakhirmu</p>
-        </div>
-        <a href="/student/bookings" class="flex items-center gap-1.5 text-[#00d4aa] text-[13px] font-semibold hover:underline">
-            Lihat Semua
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2"/></svg>
+<div class="sm:rounded-2xl -mx-6 lg:mx-0 px-6 sm:px-6 pt-5 pb-2 mb-10" style="background:#161e2d; border:1px solid #1e2d45;">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-[16px] font-bold text-white">Recent Booking Requests</h2>
+        <a href="/student/bookings" class="text-[#00d4aa] text-[13px] font-bold hover:underline flex items-center gap-1">
+            View All &rarr;
         </a>
     </div>
-    <div id="recent-bookings-list">
-        <div class="flex flex-col items-center justify-center py-10 gap-3">
-            <div class="w-7 h-7 border-2 border-[#00d4aa] border-t-transparent rounded-full animate-spin"></div>
-            <span class="text-slate-500 text-[13px]">Memuat data...</span>
-        </div>
+    
+    <div class="overflow-x-auto custom-scrollbar -mx-6 sm:mx-0 px-6 sm:px-0">
+        <table class="w-full text-left border-collapse min-w-[700px]">
+            <thead>
+                <tr class="text-slate-400 text-[12px]" style="border-bottom:1px solid #1e2d45;">
+                    <th class="px-6 py-4 font-medium w-[120px]">ID</th>
+                    <th class="px-6 py-4 font-medium">Room</th>
+                    <th class="px-6 py-4 font-medium">Date</th>
+                    <th class="px-6 py-4 font-medium">Time</th>
+                    <th class="px-6 py-4 font-medium">Status</th>
+                </tr>
+            </thead>
+            <tbody id="recent-bookings-list">
+                <tr>
+                    <td colspan="5" class="px-6 py-14 text-center">
+                        <div class="flex flex-col items-center justify-center gap-3">
+                            <div class="w-7 h-7 border-2 border-[#00d4aa] border-t-transparent rounded-full animate-spin"></div>
+                            <span class="text-slate-500 text-[13px]">Loading data...</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection
@@ -115,8 +127,7 @@
             const res = await apiFetch('/mahasiswa/dashboard/peminjaman');
             if (!res.ok) {
                 if (res.status === 403) {
-                    // Not mahasiswa - show info
-                    document.getElementById('recent-bookings-list').innerHTML = '<p class="text-slate-500 text-center py-6 text-[13px]">Fitur ini khusus untuk akun mahasiswa.</p>';
+                    document.getElementById('recent-bookings-list').innerHTML = '<tr><td colspan="5" class="text-slate-500 text-center py-6 text-[13px]">Feature restricted to students.</td></tr>';
                 }
                 return;
             }
@@ -134,44 +145,54 @@
 
     function statusBadge(status) {
         const map = {
-            'pending':    { cls: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20',  label: 'Pending' },
-            'disetujui':  { cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20', label: 'Approved' },
-            'ditolak':    { cls: 'bg-red-500/15 text-red-400 border-red-500/20',            label: 'Rejected' },
-            'dibatalkan': { cls: 'bg-slate-500/15 text-slate-400 border-slate-500/20',      label: 'Cancelled' },
+            'pending':    { bg: 'rgba(234,179,8,0.12)',   color: '#eab308', border: 'rgba(234,179,8,0.3)',   label: 'Pending' },
+            'disetujui':  { bg: 'rgba(34,197,94,0.12)',   color: '#22c55e', border: 'rgba(34,197,94,0.3)',   label: 'Approved' },
+            'ditolak':    { bg: 'rgba(239,68,68,0.12)',   color: '#ef4444', border: 'rgba(239,68,68,0.3)',   label: 'Rejected' },
+            'dibatalkan': { bg: 'rgba(100,116,139,0.12)', color: '#94a3b8', border: 'rgba(100,116,139,0.3)', label: 'Cancelled' },
         };
-        const t = map[status] || { cls: 'bg-slate-500/15 text-slate-400 border-slate-500/20', label: status };
-        return `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${t.cls}">${t.label}</span>`;
+        const s = map[status] || { bg: 'rgba(100,116,139,0.12)', color: '#94a3b8', border: 'rgba(100,116,139,0.3)', label: status };
+        return `<span class="px-3 py-1.5 rounded-full text-[11px] font-bold" style="background:${s.bg};color:${s.color};border:1px solid ${s.border};">${s.label}</span>`;
     }
 
     function renderRecentBookings(bookings) {
         const el = document.getElementById('recent-bookings-list');
         if (!bookings.length) {
-            el.innerHTML = `<div class="text-center py-10">
-                <svg class="w-12 h-12 text-slate-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="2"/></svg>
-                <p class="text-slate-500 text-[14px]">Belum ada pengajuan peminjaman.</p>
-                <a href="/student/bookings/create" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-[#00d4aa] text-white rounded-xl font-bold text-[13px] hover:bg-[#00bfa0] transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2.5"/></svg>
-                    Buat Peminjaman
-                </a>
-            </div>`;
+            el.innerHTML = `<tr><td colspan="5" class="text-center py-10">
+                <p class="text-slate-500 text-[13px]">No recent bookings found.</p>
+            </td></tr>`;
             return;
         }
 
         el.innerHTML = bookings.map(b => {
             const room = b.ruangan || {};
-            const tanggal = b.tanggal_mulai ? new Date(b.tanggal_mulai).toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'}) : '-';
-            const waktu = `${(b.waktu_mulai||'').substring(0,5)} - ${(b.waktu_selesai||'').substring(0,5)}`;
-            return `<div class="flex items-center justify-between py-4 border-b border-[#2a3347] last:border-0 gap-4">
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="text-white font-bold text-[14px] truncate">${room.nama_ruangan || 'Ruangan'}</span>
+            const id = 'BK' + String(b.id).padStart(3, '0');
+            const date = b.tanggal_mulai ? b.tanggal_mulai.substring(0, 10) : '-';
+            const time = `${(b.waktu_mulai||'').substring(0,5)} - ${(b.waktu_selesai||'').substring(0,5)}`;
+            
+            return `
+                <tr class="transition-colors" style="border-bottom:1px solid rgba(30,45,69,0.7);" onmouseenter="this.style.background='rgba(255,255,255,0.015)'" onmouseleave="this.style.background=''">
+                    <td class="px-6 py-5 text-[14px] font-bold text-white whitespace-nowrap">${id}</td>
+                    <td class="px-6 py-5">
+                        <p class="text-[14px] font-bold text-white truncate max-w-[200px]">${room.nama_ruangan || 'Ruangan'}</p>
+                        <p class="text-[12px] text-slate-500 truncate max-w-[200px] mt-0.5">${room.kode || '-'}</p>
+                    </td>
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-2 text-[13px] text-slate-300">
+                            <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            ${date}
+                        </div>
+                    </td>
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-2 text-[13px] text-slate-300 whitespace-nowrap">
+                            <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            ${time}
+                        </div>
+                    </td>
+                    <td class="px-6 py-5 whitespace-nowrap">
                         ${statusBadge(b.status)}
-                    </div>
-                    <p class="text-slate-500 text-[12px]">${tanggal} &bull; ${waktu}</p>
-                    <p class="text-slate-600 text-[12px] truncate mt-0.5">${b.tujuan || '-'}</p>
-                </div>
-                <a href="/student/bookings" class="flex-shrink-0 text-[#00d4aa] hover:underline text-[12px] font-semibold">Detail →</a>
-            </div>`;
+                    </td>
+                </tr>
+            `;
         }).join('');
     }
 

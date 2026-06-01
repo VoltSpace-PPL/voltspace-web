@@ -4,7 +4,7 @@
 {{-- Page Header --}}
 <div class="flex items-center gap-4 mb-2">
     <a href="/student/bookings"
-       class="flex items-center justify-center w-9 h-9 rounded-xl bg-[#1e293b] border border-[#334155] text-slate-400 hover:text-white hover:border-slate-500 transition-all flex-shrink-0">
+       class="flex items-center justify-center w-9 h-9 rounded-xl bg-[#161e2d] border border-[#1e2d45] text-slate-400 hover:text-white hover:border-slate-500 transition-all flex-shrink-0">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2"/></svg>
     </a>
     <div>
@@ -16,7 +16,7 @@
 <div class="mt-7 max-w-3xl">
     <div class="space-y-6">
         {{-- Room Selection --}}
-        <div class="rounded-2xl p-6" style="background:#1a2236; border:1px solid #263047;">
+        <div class="rounded-2xl p-6" style="background:#161e2d; border:1px solid #1e2d45;">
             <div class="flex items-center gap-3 mb-5">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                      style="background:rgba(0,212,170,0.15); border:1px solid rgba(0,212,170,0.25);">
@@ -33,7 +33,7 @@
             <div class="relative">
                 <select id="ruangan_id" name="ruangan_id" required
                     class="w-full appearance-none rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all cursor-pointer pr-10"
-                    style="background:#0f172a; border:1.5px solid #334155;">
+                    style="background:#161e2d; border:1px solid #1e2d45;">
                     <option value="">Choose a room...</option>
                 </select>
                 <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none"
@@ -44,7 +44,7 @@
 
             {{-- Room Info Card - hidden until selected --}}
             <div id="room-info-card" class="hidden mt-4 rounded-xl p-4 flex items-center gap-5"
-                 style="background:#0f172a; border:1px solid #1e293b;">
+                 style="background:#161e2d; border:1px solid #1e2d45;">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                      style="background:rgba(0,170,255,0.12); border:1px solid rgba(0,170,255,0.2);">
                     <svg class="w-5 h-5 text-[#00aaff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +66,7 @@
         </div>
 
         {{-- Schedule Details --}}
-        <div class="rounded-2xl p-6" style="background:#1a2236; border:1px solid #263047;">
+        <div class="rounded-2xl p-6" style="background:#161e2d; border:1px solid #1e2d45;">
             <div class="flex items-center gap-3 mb-5">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                      style="background:rgba(0,170,255,0.15); border:1px solid rgba(0,170,255,0.25);">
@@ -84,7 +84,7 @@
                     </label>
                     <input type="date" id="tanggal_mulai" name="tanggal_mulai" required
                         class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all [color-scheme:dark]"
-                        style="background:#0f172a; border:1.5px solid #334155;">
+                        style="background:#161e2d; border:1px solid #1e2d45;">
                 </div>
                 <div>
                     <label class="block text-[13px] font-semibold text-slate-300 mb-2">
@@ -92,7 +92,7 @@
                     </label>
                     <input type="time" id="waktu_mulai" name="waktu_mulai" required
                         class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all [color-scheme:dark]"
-                        style="background:#0f172a; border:1.5px solid #334155;">
+                        style="background:#161e2d; border:1px solid #1e2d45;">
                 </div>
                 <div>
                     <label class="block text-[13px] font-semibold text-slate-300 mb-2">
@@ -100,7 +100,7 @@
                     </label>
                     <input type="time" id="waktu_selesai" name="waktu_selesai" required
                         class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all [color-scheme:dark]"
-                        style="background:#0f172a; border:1.5px solid #334155;">
+                        style="background:#161e2d; border:1px solid #1e2d45;">
                 </div>
             </div>
 
@@ -113,7 +113,7 @@
         </div>
 
         {{-- Purpose --}}
-        <div class="rounded-2xl p-6" style="background:#1a2236; border:1px solid #263047;">
+        <div class="rounded-2xl p-6" style="background:#161e2d; border:1px solid #1e2d45;">
             <div class="flex items-center gap-3 mb-5">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                      style="background:rgba(183,148,246,0.15); border:1px solid rgba(183,148,246,0.25);">
@@ -130,11 +130,11 @@
             <textarea id="tujuan" name="tujuan" rows="4" required
                 placeholder="Describe the purpose of room usage (e.g., study group, meeting, presentation, workshop)"
                 class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all resize-none"
-                style="background:#0f172a; border:1.5px solid #334155;"></textarea>
+                style="background:#161e2d; border:1px solid #1e2d45;"></textarea>
         </div>
 
         {{-- Evidence (Bukti Peminjaman) --}}
-        <div class="rounded-2xl p-6" style="background:#1a2236; border:1px solid #263047;">
+        <div class="rounded-2xl p-6" style="background:#161e2d; border:1px solid #1e2d45;">
             <div class="flex items-center gap-3 mb-5">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                      style="background:rgba(255,170,0,0.15); border:1px solid rgba(255,170,0,0.25);">
@@ -145,22 +145,28 @@
                 <h2 class="text-[16px] font-bold text-white">Evidence / Document</h2>
             </div>
 
-            <label class="block text-[13px] font-semibold text-slate-300 mb-2">
-                Upload File (Optional)
-            </label>
-            <div class="relative">
-                <input type="file" id="evidence" name="evidence" accept=".pdf,.png,.jpg,.jpeg"
-                    class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[12px] file:font-semibold file:bg-[#00d4aa]/10 file:text-[#00d4aa] hover:file:bg-[#00d4aa]/20 transition-all cursor-pointer"
-                    style="background:#0f172a; border:1.5px solid #334155;">
+            <div class="flex items-center justify-between mb-3">
+                <label class="block text-[13px] font-semibold text-slate-300">
+                    Upload File (Optional)
+                </label>
+                <button type="button" id="download-template-btn" class="text-[12px] text-[#00d4aa] bg-[#00d4aa]/10 border border-[#00d4aa]/20 hover:bg-[#00d4aa]/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-bold transition-all focus:outline-none shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5"/></svg>
+                    Download Template Surat
+                </button>
             </div>
-            <p class="text-[11px] text-slate-500 mt-2">Format yang didukung: PDF, PNG, JPG, JPEG. (Maks 5MB)</p>
+            <div class="relative">
+                <input type="file" id="surat_peminjaman" name="surat_peminjaman" accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[12px] file:font-semibold file:bg-[#00d4aa]/10 file:text-[#00d4aa] hover:file:bg-[#00d4aa]/20 transition-all cursor-pointer"
+                    style="background:#161e2d; border:1px solid #1e2d45;">
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2">Format yang didukung: PDF, DOC, DOCX, XLS, XLSX. (Maks 5MB)</p>
         </div>
 
         {{-- Action Buttons --}}
         <div class="flex gap-4">
             <a href="/student/bookings"
                class="flex-1 flex items-center justify-center py-3.5 rounded-xl font-bold text-[14px] text-white transition-all"
-               style="background:#1e293b; border:1px solid #334155;">
+               style="background:#1e293b; border:1px solid #1e2d45;">
                 Cancel
             </a>
             <button type="submit" form="booking-form" id="submit-booking-btn"
@@ -258,9 +264,8 @@
         btn.innerHTML = '<div class="w-4 h-4 border-2 border-[#0b1120] border-t-transparent rounded-full animate-spin mr-2"></div> Mengirim...';
 
         try {
-            const evidenceFile = document.getElementById('evidence').files[0];
+            const evidenceFile = document.getElementById('surat_peminjaman').files[0];
             
-            // For file uploads, we generally need FormData.
             const formData = new FormData();
             formData.append('ruangan_id', ruanganId);
             formData.append('tanggal_mulai', tanggal);
@@ -269,7 +274,7 @@
             formData.append('waktu_selesai', waktuSel);
             formData.append('tujuan', tujuan);
             if (evidenceFile) {
-                formData.append('evidence', evidenceFile);
+                formData.append('surat_peminjaman', evidenceFile);
             }
 
             // Notice: When using FormData, we cannot use apiFetch with Content-Type: application/json.
@@ -306,6 +311,34 @@
 
     /* ── Event listeners ─────────────────────────────── */
     document.getElementById('ruangan_id').addEventListener('change', function () { updateRoomInfo(this.value); });
+
+    document.getElementById('download-template-btn').addEventListener('click', async function() {
+        try {
+            const btn = this;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = 'Downloading...';
+            btn.disabled = true;
+
+            const res = await apiFetch('/peminjaman/template/download');
+            if (!res.ok) { throw new Error('Gagal mengunduh template'); }
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Template_Surat_Peminjaman.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+        } catch(e) {
+            vsAlert.error('Error', 'Gagal mengunduh template surat peminjaman.');
+            this.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2"/></svg> Download Template Surat';
+            this.disabled = false;
+        }
+    });
 
     // Attach submit to the real button (outside hidden form)
     document.getElementById('submit-booking-btn').addEventListener('click', submitBooking);

@@ -22,7 +22,7 @@
     <form id="settings-form" class="space-y-6">
 
         {{-- Profile Settings Card --}}
-        <div class="rounded-2xl p-6" style="background:#131c2f; border:1px solid #1e293b;">
+        <div class="rounded-2xl p-6" style="background:#161e2d; border:1px solid #1e2d45;">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                      style="background:rgba(0,170,255,0.15); border:1px solid rgba(0,170,255,0.25);">
@@ -42,22 +42,20 @@
                         Full Name
                     </label>
                     <input type="text" id="profile_name" name="profile_name" readonly
-                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none transition-all cursor-not-allowed"
-                        style="background:#1e293b; border:1.5px solid #334155;">
+                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none transition-all cursor-not-allowed bg-white/5 border border-white/10">
                 </div>
                 <div>
                     <label class="block text-[13px] font-semibold text-slate-400 mb-2">
                         Email
                     </label>
                     <input type="email" id="profile_email" name="profile_email" readonly
-                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none transition-all cursor-not-allowed"
-                        style="background:#1e293b; border:1.5px solid #334155;">
+                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none transition-all cursor-not-allowed bg-white/5 border border-white/10">
                 </div>
             </div>
         </div>
 
         {{-- Energy Threshold Configuration Card --}}
-        <div class="rounded-2xl p-6" style="background:#131c2f; border:1px solid #1e293b;">
+        <div class="rounded-2xl p-6" style="background:#161e2d; border:1px solid #1e2d45;">
             <div class="flex items-center gap-4 mb-6">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                      style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.25);">
@@ -77,16 +75,14 @@
                         High Usage Threshold (kWh)
                     </label>
                     <input type="number" step="0.01" id="high_usage_threshold_kwh" name="high_usage_threshold_kwh" required
-                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all"
-                        style="background:#1e293b; border:1.5px solid #334155;">
+                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all bg-white/5 border border-white/10">
                 </div>
                 <div>
                     <label class="block text-[13px] font-semibold text-slate-400 mb-2">
                         Peak Demand Limit (kW)
                     </label>
                     <input type="number" step="0.01" id="peak_demand_limit_kw" name="peak_demand_limit_kw" required
-                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all"
-                        style="background:#1e293b; border:1.5px solid #334155;">
+                        class="w-full rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all bg-white/5 border border-white/10">
                 </div>
             </div>
         </div>

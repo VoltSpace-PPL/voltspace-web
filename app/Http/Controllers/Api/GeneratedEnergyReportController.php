@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\GeneratedEnergyReport;
 use App\Services\EnergyReportService;
+use App\Services\XlsxService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -150,9 +151,11 @@ class GeneratedEnergyReportController extends Controller
 
         $downloadName = $this->downloadFilename($report);
 
-        return Storage::disk($report->disk)->download($report->path, $downloadName, [
-            'Content-Type' => $report->mime,
-        ]);
+        return Storage::disk($report->disk)->download(
+            $report->path,
+            XlsxService::sanitizeFilename($downloadName),
+            XlsxService::responseHeaders(),
+        );
     }
 
     public function destroy(Request $request, GeneratedEnergyReport $report): JsonResponse
