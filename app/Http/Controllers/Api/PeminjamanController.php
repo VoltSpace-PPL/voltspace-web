@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
 use App\Services\PeminjamanJadwalSyncService;
-use App\Services\XlsxService;
 use App\Support\RoomScheduleGuard;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +13,9 @@ use Illuminate\Support\Facades\Storage;
 
 class PeminjamanController extends Controller
 {
+    public function __construct(
+        private readonly PeminjamanJadwalSyncService $jadwalSync,
+    ) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -109,6 +111,66 @@ class PeminjamanController extends Controller
         ], 201);
     }
 
+    public function approve(Request $request, Peminjaman $peminjaman): JsonResponse
+    {
+        if (! $request->user()->isStaffAdmin()) {
+            return response()->json(['message' => 'Akses ditolak.'], 403);
+        }
+        if ($peminjaman->status !== 'pending') {
+            return response()->json(['message' => 'Hanya pengajuan pending yang dapat disetujui.'], 422);
+        }
+
+        $dMulai = Carbon::parse($peminjaman->tanggal_mulai)->startOfDay();
+        $dSelesai = Carbon::parse($peminjaman->tanggal_selesai)->startOfDay();
+        $wm = substr((string) $peminjaman->waktu_mulai, 0, 5);
+        $ws = substr((string) $peminjaman->waktu_selesai, 0, 5);
+
+        if (RoomScheduleGuard::peminjamanBlocks($peminjaman->ruangan_id, $dMulai, $dSelesai, $wm, $ws, ['ditolak', 'dibatalkan', 'pending'], $peminjaman->id)) {
+            return response()->json(['message' => 'Tidak dapat menyetujui karena bentrok dengan peminjaman lain.'], 422);
+        }
+        if (RoomScheduleGuard::jadwalListrikBlocks($peminjaman->ruangan_id, $dMulai, $dSelesai, $wm, $ws)) {
+            return response()->json(['message' => 'Tidak dapat menyetujui karena bentrok dengan jadwal perkuliahan reguler (Jadwal Listrik).'], 422);
+        }
+
+        $peminjaman->update([
+            'status' => 'disetujui',
+            'reviewed_at' => now(),
+            'reviewed_by' => $request->user()->id,
+            'catatan_admin' => null,
+        ]);
+
+        $jadwal = $this->jadwalSync->syncOnApprove($peminjaman->fresh());
+
+        return response()->json([
+            'message' => 'Disetujui. Jadwal listrik otomatis dibuat dan lampu diset nyala.',
+            'data' => $peminjaman->fresh()->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
+            'jadwal_listrik' => $jadwal,
+        ]);
+    }
+
+    public function reject(Request $request, Peminjaman $peminjaman): JsonResponse
+    {
+        if (! $request->user()->isStaffAdmin()) {
+            return response()->json(['message' => 'Akses ditolak.'], 403);
+        }
+        if ($peminjaman->status !== 'pending') {
+            return response()->json(['message' => 'Hanya pengajuan pending yang dapat ditolak.'], 422);
+        }
+
+        $data = $request->validate([
+            'catatan_admin' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $peminjaman->update([
+            'status' => 'ditolak',
+            'catatan_admin' => $data['catatan_admin'] ?? null,
+            'reviewed_at' => now(),
+            'reviewed_by' => $request->user()->id,
+        ]);
+
+        return response()->json(['message' => 'Ditolak.', 'data' => $peminjaman->fresh()]);
+    }
+
     public function cancel(Request $request, Peminjaman $peminjaman): JsonResponse
     {
         $user = $request->user();
@@ -144,20 +206,19 @@ class PeminjamanController extends Controller
         return response()->json(['message' => 'Peminjaman berhasil dibatalkan.', 'data' => $peminjaman->fresh()]);
     }
 
-    public function downloadTemplate(Request $request)
+    public function downloadTemplate()
     {
-        $downloadName = XlsxService::filenameFromRequest($request, 'Template_Surat_Peminjaman.xlsx');
         $path = storage_path('app/templates/template_surat_peminjaman.xlsx');
-
-        if (is_readable($path) && XlsxService::isSpreadsheetFile($path)) {
-            return XlsxService::downloadFromPath($path, 'Template_Surat_Peminjaman.xlsx', $downloadName);
+        
+        if (!file_exists($path)) {
+            if (!file_exists(storage_path('app/templates'))) {
+                mkdir(storage_path('app/templates'), 0755, true);
+            }
+            // Fallback just in case
+            file_put_contents($path, 'Template belum digenerate.');
         }
 
-        return XlsxService::download('Template_Surat_Peminjaman.xlsx', function ($spreadsheet): void {
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setCellValue('A1', 'SURAT PERMOHONAN PEMINJAMAN RUANGAN');
-            $sheet->setCellValue('A3', 'Isi template sesuai format kampus, lalu unggah saat mengajukan peminjaman.');
-        }, $downloadName);
+        return response()->download($path, 'Template_Surat_Peminjaman.xlsx');
     }
 
     public function previewSurat(Request $request, Peminjaman $peminjaman)
@@ -166,11 +227,11 @@ class PeminjamanController extends Controller
             return response()->json(['message' => 'Akses ditolak.'], 403);
         }
 
-        if (! $peminjaman->surat_peminjaman) {
+        if (!$peminjaman->surat_peminjaman) {
             return response()->json(['message' => 'Surat peminjaman tidak ada.'], 404);
         }
 
-        if (! Storage::disk('public')->exists($peminjaman->surat_peminjaman)) {
+        if (!Storage::disk('public')->exists($peminjaman->surat_peminjaman)) {
             return response()->json(['message' => 'File tidak ditemukan di server.'], 404);
         }
 
