@@ -18,7 +18,7 @@
             <p class="text-[14px] text-slate-500 mt-1">User management and role assignment</p>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="document.getElementById('import-file').click()" class="px-5 py-2.5 bg-[#1e293b] text-white rounded-xl text-[13px] font-bold border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2">
+            <button onclick="document.getElementById('import-file').click()" class="px-5 py-2.5 bg-[#161e2d] text-white rounded-xl text-[13px] font-bold border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2.5"/></svg>
                 Import Users
             </button>
@@ -33,7 +33,7 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
+        <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
             <div class="w-14 h-14 rounded-xl bg-[#00aaff]/10 flex items-center justify-center text-[#00aaff] border border-[#00aaff]/20">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
@@ -42,7 +42,7 @@
                 <h3 id="stat-total" class="text-[28px] font-bold text-white leading-none">0</h3>
             </div>
         </div>
-        <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
+        <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
             <div class="w-14 h-14 rounded-xl bg-[#f59e0b]/10 flex items-center justify-center text-[#f59e0b] border border-[#f59e0b]/20">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
             </div>
@@ -51,7 +51,7 @@
                 <h3 id="stat-superadmins" class="text-[28px] font-bold text-white leading-none">0</h3>
             </div>
         </div>
-        <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
+        <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
             <div class="w-14 h-14 rounded-xl bg-[#10b981]/10 flex items-center justify-center text-[#10b981] border border-[#10b981]/20">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             </div>
@@ -60,7 +60,7 @@
                 <h3 id="stat-admins" class="text-[28px] font-bold text-white leading-none">0</h3>
             </div>
         </div>
-        <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
+        <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] p-6 flex items-center gap-5 group transition-all hover:border-slate-500 shadow-lg">
             <div class="w-14 h-14 rounded-xl bg-[#9b59b6]/10 flex items-center justify-center text-[#9b59b6] border border-[#9b59b6]/20">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             </div>
@@ -72,11 +72,11 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] overflow-hidden shadow-2xl">
+    <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] overflow-hidden shadow-2xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-[#0f172a] border-b border-[#334155]">
+                    <tr class="bg-[#161e2d] border-b border-[#1e2d45]">
                         <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">User ID</th>
                         <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Name</th>
                         <th class="px-8 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Email</th>

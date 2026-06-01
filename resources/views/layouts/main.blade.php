@@ -68,6 +68,7 @@
             <nav class="flex-1 min-h-0 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
                 @php
                     $menu = [
+<<<<<<< HEAD
                         ['id' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => '/dashboard'],
                         ['id' => 'rooms', 'label' => 'Rooms', 'icon' => 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', 'route' => '/rooms'],
                         ['id' => 'devices', 'label' => 'Devices', 'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'route' => '/devices'],
@@ -77,6 +78,17 @@
                         ['id' => 'reports', 'label' => 'Reports', 'icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
                         ['id' => 'users', 'label' => 'Users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'route' => '/users'],
                         ['id' => 'settings', 'label' => 'Settings', 'route' => '/settings', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', 'route' => '/settings'],
+=======
+                        ['id' => 'dashboard',          'label' => 'Dashboard',           'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => '/dashboard'],
+                        ['id' => 'alerts',             'label' => 'Alerts',              'icon' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z', 'route' => '/alerts'],
+                        ['id' => 'rooms',              'label' => 'Rooms',               'icon' => 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', 'route' => '/rooms'],
+                        ['id' => 'devices',            'label' => 'Devices',             'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'route' => '/devices'],
+                        ['id' => 'bookings',           'label' => 'Room Bookings',       'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'route' => '/bookings'],
+                        ['id' => 'schedule',           'label' => 'Electricity Schedule','icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'route' => '/schedule'],
+                        ['id' => 'reports',            'label' => 'Reports',             'icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'route' => '/reports'],
+                        ['id' => 'users',              'label' => 'Users',               'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'route' => '/users'],
+                        ['id' => 'settings',           'label' => 'Settings',            'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', 'route' => '/settings'],
+>>>>>>> pll/main
                     ];
                 @endphp
 
@@ -86,8 +98,11 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="{{ $item['icon'] }}"/></svg>
                             <span class="text-[15px] font-medium">{{ $item['label'] }}</span>
                         </div>
-                        @if(isset($item['badge']))
-                            <span class="w-5 h-5 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold flex items-center justify-center">{{ $item['badge'] }}</span>
+                        @if($item['id'] === 'alerts')
+                            <span id="global-alerts-badge" class="hidden w-5 h-5 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold flex items-center justify-center">0</span>
+                        @endif
+                        @if($item['id'] === 'bookings')
+                            <span id="global-bookings-badge" class="hidden w-5 h-5 rounded-full bg-yellow-500/20 text-yellow-500 text-[10px] font-bold flex items-center justify-center">0</span>
                         @endif
                     </a>
                 @endforeach
@@ -144,11 +159,25 @@
                     <div class="flex items-center gap-6 self-stretch md:self-auto min-w-0 w-full md:w-auto">
                         <div class="flex flex-col items-stretch md:items-end gap-4 text-slate-400 w-full md:w-auto min-w-0">
                             <div class="flex flex-wrap items-center gap-2 sm:gap-4 justify-end md:flex-nowrap md:whitespace-nowrap">
-                                <div class="relative shrink-0">
-                                    <div class="w-10 h-8 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45 flex items-center justify-center hover:border-[#475569] transition-colors">
-                                        <svg class="w-4 h-4 cursor-pointer hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-width="2"/></svg>
+                                <div class="relative shrink-0" id="notification-container">
+                                    <div id="notification-btn" class="w-10 h-8 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45 flex items-center justify-center hover:border-[#475569] transition-colors cursor-pointer">
+                                        <svg class="w-4 h-4 text-slate-400 hover:text-white transition-colors pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-width="2"/></svg>
                                     </div>
-                                    <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 border-2 border-[#0b1120] rounded-full text-[8px] font-bold text-white flex items-center justify-center">3</span>
+                                    <span id="notification-badge" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 border-2 border-[#0b1120] rounded-full text-[8px] font-bold text-white flex items-center justify-center">0</span>
+
+                                    <!-- Dropdown -->
+                                    <div id="notification-dropdown" class="hidden absolute right-0 top-full mt-2 w-[340px] bg-[#0f172a] border border-[#1e293b] rounded-xl shadow-2xl z-50 overflow-hidden ring-1 ring-white/5">
+                                        <div class="px-5 py-4 border-b border-[#1e293b] bg-gradient-to-r from-[#064e3b]/40 to-[#0f172a]">
+                                            <h3 class="text-[15px] font-bold text-white leading-none">Notifications</h3>
+                                            <p id="notification-header-count" class="text-[12px] text-slate-400 mt-1.5">0 unread</p>
+                                        </div>
+                                        <div id="notification-list" class="max-h-[320px] overflow-y-auto custom-scrollbar bg-[#0f172a]">
+                                            <!-- items injected by js -->
+                                        </div>
+                                        <div class="p-3 border-t border-[#1e293b] bg-[#0f172a] text-center">
+                                            <button class="text-[13px] font-bold text-[#00d4aa] hover:text-[#00bfa0] transition-colors w-full py-1">Mark all as read</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors shrink-0 h-8 px-3 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke-width="2"/></svg>
@@ -349,8 +378,154 @@
             location.href = '/login';
         }
 
-        document.addEventListener('DOMContentLoaded', loadSidebarUser);
+        // ── Global Alerts Polling ─────────────────────────────────────────
+        async function loadGlobalAlerts() {
+            try {
+                const badge = document.getElementById('global-alerts-badge');
+                if (!badge) return;
+
+                const now = new Date();
+                const res = await apiFetch(`/energy-alerts?bulan=${now.getMonth() + 1}&tahun=${now.getFullYear()}`);
+                if (!res.ok) return;
+                
+                const data = await res.json();
+                const allAlerts = data.alerts || [];
+                
+                // Exclude dismissed alerts
+                const dismissedRaw = sessionStorage.getItem('vs_dismissed_alerts') || '[]';
+                const dismissed = JSON.parse(dismissedRaw);
+                const active = allAlerts.filter(a => !dismissed.includes(a.ruangan_id + '_' + a.severity));
+                
+                if (active.length > 0) {
+                    badge.textContent = active.length;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            } catch (e) { /* silently ignore */ }
+        }
+
+        // ── Pending Bookings Polling ──────────────────────────────────────
+        async function loadPendingBookings() {
+            try {
+                const badge = document.getElementById('global-bookings-badge');
+                if (!badge) return;
+
+                const res = await apiFetch('/peminjaman?status=pending');
+                if (!res.ok) return;
+                
+                const data = await res.json();
+                const pendingCount = data.total || 0;
+                
+                if (pendingCount > 0) {
+                    badge.textContent = pendingCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            } catch (e) { /* silently ignore */ }
+        }
+
+        // ── Topbar Notifications ───────────────────────────────────────────
+        async function loadTopbarNotifications() {
+            try {
+                const res = await apiFetch('/notifications');
+                if (!res.ok) return;
+                const data = await res.json();
+                
+                const peminjaman = data.peminjaman || [];
+                const energy = data.energy_alerts || [];
+                const allNotifs = [...peminjaman, ...energy].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                
+                const badge = document.getElementById('notification-badge');
+                const list = document.getElementById('notification-list');
+                const headerCount = document.getElementById('notification-header-count');
+                
+                if (allNotifs.length > 0) {
+                    if (badge) {
+                        badge.textContent = allNotifs.length;
+                        badge.classList.remove('hidden');
+                    }
+                    if (headerCount) {
+                        headerCount.textContent = `${allNotifs.length} unread`;
+                    }
+                    if (list) {
+                        list.innerHTML = allNotifs.map(n => {
+                            let dotColor = 'bg-[#00d4aa]'; // Default green
+                            if (n.type === 'energy') {
+                                dotColor = n.severity === 'critical' ? 'bg-red-500' : 'bg-yellow-500';
+                            } else if (n.type === 'peminjaman') {
+                                dotColor = (n.meta && n.meta.status === 'pending') ? 'bg-blue-500' : ((n.meta && n.meta.status === 'rejected') ? 'bg-red-500' : 'bg-[#00d4aa]');
+                            }
+                            
+                            const timeAgo = new Date(n.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+
+                            return `
+                                <div class="px-5 py-4 border-b border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors flex gap-4">
+                                    <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0" style="box-shadow: 0 0 8px var(--tw-ring-color, currentColor); color: ${dotColor.replace('bg-', '')};"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-[13px] font-bold text-white truncate">${n.title}</p>
+                                        <p class="text-[12px] text-slate-400 line-clamp-2 mt-1 leading-relaxed">${n.body}</p>
+                                        <p class="text-[11px] text-slate-500 mt-2">${timeAgo}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                } else {
+                    if (badge) badge.classList.add('hidden');
+                    if (headerCount) headerCount.textContent = '0 unread';
+                    if (list) list.innerHTML = '<div class="p-8 text-center text-[13px] text-slate-500">No new notifications</div>';
+                }
+            } catch (e) {
+                // Ignore
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSidebarUser();
+            loadGlobalAlerts();
+            loadPendingBookings();
+            loadTopbarNotifications();
+            
+            // Notification Dropdown Toggle
+            const btn = document.getElementById('notification-btn');
+            const dropdown = document.getElementById('notification-dropdown');
+            if (btn && dropdown) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('hidden');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+                        dropdown.classList.add('hidden');
+                    }
+                });
+            }
+
+            setInterval(() => {
+                loadGlobalAlerts();
+                loadPendingBookings();
+                loadTopbarNotifications();
+            }, 30000); // Check every 30s
+        });
     </script>
     @stack('scripts')
+    <!-- Submenu Toggle Script -->
+    <script>
+        function toggleAdminSubmenu(id) {
+            const menu = document.getElementById('submenu-' + id);
+            const arrow = document.getElementById('arrow-' + id);
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('block');
+                arrow.classList.add('rotate-180');
+            } else {
+                menu.classList.remove('block');
+                menu.classList.add('hidden');
+                arrow.classList.remove('rotate-180');
+            }
+        }
+    </script>
 </body>
 </html>
