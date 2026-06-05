@@ -17,6 +17,7 @@ Route::view('/schedule', 'schedule.index');
 Route::view('/bookings', 'bookings.index');
 Route::view('/settings', 'settings.index');
 Route::view('/alerts', 'alerts.index');
+Route::view('/reports', 'reports.index');
 
 // Student Portal Routes (PBI 30, 31, 32)
 Route::view('/student/dashboard', 'student.dashboard');
