@@ -19,7 +19,7 @@ Route::view('/settings', 'settings.index');
 Route::view('/alerts', 'alerts.index');
 Route::view('/reports', 'reports.index');
 
-
+Route::view('/student/dashboard', 'student.dashboard');
 Route::view('/student/rooms', 'student.rooms');
 Route::view('/student/room-availability', 'student.room-availability');
 Route::view('/student/bookings/create', 'student.bookings-create');
