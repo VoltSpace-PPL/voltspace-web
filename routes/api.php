@@ -46,7 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/peminjaman/{peminjaman}/reject', [PeminjamanController::class, 'reject']);
     Route::post('/peminjaman/{peminjaman}/cancel', [PeminjamanController::class, 'cancel']);
 
-    Route::get('/mahasiswa/dashboard/peminjaman', MahasiswaPeminjamanDashboardController::class);
 
     Route::get('/ruangan', [RuanganController::class, 'index']);
     Route::get('/devices', [DeviceController::class, 'index']);
