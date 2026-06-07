@@ -99,8 +99,18 @@
                     </div>
                 </div>
 
+                <!-- Schedule Type Toggle -->
+                <div class="space-y-3">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Schedule Mode</label>
+                    <div class="flex items-center gap-2 p-1 bg-white/5 border border-white/10 rounded-xl w-max">
+                        <button type="button" id="add-mode-days-btn" onclick="setAddScheduleMode('days')" class="px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all">Days of Week</button>
+                        <button type="button" id="add-mode-date-btn" onclick="setAddScheduleMode('date')" class="px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all">Specific Date</button>
+                    </div>
+                    <input type="hidden" name="schedule_mode" id="add-schedule-mode" value="days">
+                </div>
+
                 <!-- Select Days -->
-                <div class="space-y-2">
+                <div class="space-y-2" id="add-days-section">
                     <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                         Select Days <span class="text-[10px] text-slate-500 lowercase font-normal tracking-normal">(Multiple selection allowed)</span>
                     </label>
@@ -114,6 +124,18 @@
                         <button type="button" data-day="sunday" class="day-btn py-2 rounded-lg border border-white/10 text-[13px] font-medium text-slate-400 hover:bg-white/5 transition-colors">Sunday</button>
                     </div>
                     <input type="hidden" name="selected_days" id="add-selected-days">
+                </div>
+
+                <!-- Select Date -->
+                <div class="space-y-2 hidden" id="add-date-section">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Specific Date</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/></svg>
+                        </span>
+                        <input type="date" name="specific_date" id="add-specific-date"
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
+                    </div>
                 </div>
 
                 <!-- Time -->
@@ -219,8 +241,18 @@
                     </div>
                 </div>
 
+                <!-- Schedule Type Toggle -->
+                <div class="space-y-3">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Schedule Mode</label>
+                    <div class="flex items-center gap-2 p-1 bg-white/5 border border-white/10 rounded-xl w-max">
+                        <button type="button" id="edit-mode-days-btn" onclick="setEditScheduleMode('days')" class="px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all">Days of Week</button>
+                        <button type="button" id="edit-mode-date-btn" onclick="setEditScheduleMode('date')" class="px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all">Specific Date</button>
+                    </div>
+                    <input type="hidden" name="edit_schedule_mode" id="edit-schedule-mode" value="days">
+                </div>
+
                 <!-- Select Days -->
-                <div class="space-y-2">
+                <div class="space-y-2" id="edit-days-section">
                     <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                         Select Days <span class="text-[10px] text-slate-500 lowercase font-normal tracking-normal">(Multiple selection allowed)</span>
                     </label>
@@ -234,6 +266,18 @@
                         <button type="button" data-day="sunday" class="day-btn py-2 rounded-lg border border-white/10 text-[13px] font-medium text-slate-400 hover:bg-white/5 transition-colors">Sunday</button>
                     </div>
                     <input type="hidden" name="edit_selected_days" id="edit-selected-days">
+                </div>
+
+                <!-- Select Date -->
+                <div class="space-y-2 hidden" id="edit-date-section">
+                    <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Specific Date</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/></svg>
+                        </span>
+                        <input type="date" name="edit_specific_date" id="edit-specific-date"
+                               class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
+                    </div>
                 </div>
 
                 <!-- Time -->
@@ -472,8 +516,14 @@
                 const roomName = roomsMap[s.ruangan_id] || s.ruangan_id || '–';
                 
                 // Format days nicely
-                const daysMap = { monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday', sunday:'Sunday' };
-                const days = (s.selected_days || []).map(d => daysMap[d] || d).join(', ');
+                let days = '';
+                if (s.tanggal_mulai) {
+                    const d = new Date(s.tanggal_mulai);
+                    days = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                } else {
+                    const daysMap = { monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday', sunday:'Sunday' };
+                    days = (s.selected_days || []).map(d => daysMap[d] || d).join(', ');
+                }
                 
                 // Format time (remove seconds if present)
                 const startTime = (s.start_time || '').substring(0,5);
@@ -551,10 +601,55 @@
         }
     }
 
+    function setAddScheduleMode(mode) {
+        document.getElementById('add-schedule-mode').value = mode;
+        const btnDays = document.getElementById('add-mode-days-btn');
+        const btnDate = document.getElementById('add-mode-date-btn');
+        const secDays = document.getElementById('add-days-section');
+        const secDate = document.getElementById('add-date-section');
+        
+        if (mode === 'days') {
+            btnDays.className = 'px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all';
+            btnDate.className = 'px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all';
+            secDays.classList.remove('hidden');
+            secDate.classList.add('hidden');
+            document.getElementById('add-specific-date').required = false;
+        } else {
+            btnDate.className = 'px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all';
+            btnDays.className = 'px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all';
+            secDate.classList.remove('hidden');
+            secDays.classList.add('hidden');
+            document.getElementById('add-specific-date').required = true;
+        }
+    }
+
+    function setEditScheduleMode(mode) {
+        document.getElementById('edit-schedule-mode').value = mode;
+        const btnDays = document.getElementById('edit-mode-days-btn');
+        const btnDate = document.getElementById('edit-mode-date-btn');
+        const secDays = document.getElementById('edit-days-section');
+        const secDate = document.getElementById('edit-date-section');
+        
+        if (mode === 'days') {
+            btnDays.className = 'px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all';
+            btnDate.className = 'px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all';
+            secDays.classList.remove('hidden');
+            secDate.classList.add('hidden');
+            document.getElementById('edit-specific-date').required = false;
+        } else {
+            btnDate.className = 'px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all';
+            btnDays.className = 'px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all';
+            secDate.classList.remove('hidden');
+            secDays.classList.add('hidden');
+            document.getElementById('edit-specific-date').required = true;
+        }
+    }
+
     function openAddScheduleModal() {
         const form = document.getElementById('add-schedule-form');
         form.reset();
         addDayManager.reset();
+        setAddScheduleMode('days');
         document.getElementById('add-schedule-modal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
@@ -581,8 +676,16 @@
             r.checked = (r.value === schedule.schedule_status);
         });
 
-        // Set days
-        editDayManager.setDays(schedule.selected_days || []);
+        // Set days or date
+        if (schedule.tanggal_mulai) {
+            setEditScheduleMode('date');
+            form.edit_specific_date.value = schedule.tanggal_mulai.split(' ')[0] || schedule.tanggal_mulai;
+            editDayManager.setDays([]);
+        } else {
+            setEditScheduleMode('days');
+            form.edit_specific_date.value = '';
+            editDayManager.setDays(schedule.selected_days || []);
+        }
 
         document.getElementById('edit-schedule-modal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -611,8 +714,17 @@
         const roomName = roomsMap[schedule.ruangan_id] || schedule.ruangan_id || '–';
         const scheduleId = 'SCH-' + String(schedule.id).padStart(3, '0');
         
-        const daysMap = { monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday', sunday:'Sunday' };
-        const days = (schedule.selected_days || []).map(d => `<span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 text-[12px] font-medium">${daysMap[d] || d}</span>`).join('');
+        let daysDisplay = '';
+        if (schedule.tanggal_mulai) {
+            const d = new Date(schedule.tanggal_mulai);
+            const dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            daysDisplay = `<span class="px-2.5 py-1 rounded-md bg-[#00d4aa]/10 border border-[#00d4aa]/20 text-[#00d4aa] text-[12px] font-bold">${dateStr}</span>`;
+            document.getElementById('view-schedule-days-label').textContent = 'Specific Date';
+        } else {
+            const daysMap = { monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday', sunday:'Sunday' };
+            daysDisplay = (schedule.selected_days || []).map(d => `<span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 text-[12px] font-medium">${daysMap[d] || d}</span>`).join('');
+            document.getElementById('view-schedule-days-label').textContent = 'Selected Days';
+        }
         
         const startTime = (schedule.start_time || '').substring(0,5);
         const endTime = (schedule.end_time || '').substring(0,5);
@@ -638,9 +750,9 @@
             </div>
             
             <div class="space-y-2">
-                <span class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">Selected Days</span>
+                <span id="view-schedule-days-label" class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">Selected Days</span>
                 <div class="flex flex-wrap gap-2">
-                    ${days || '<span class="text-slate-500 text-[13px]">No days selected</span>'}
+                    ${daysDisplay || '<span class="text-slate-500 text-[13px]">No days selected</span>'}
                 </div>
             </div>
 
@@ -683,30 +795,42 @@
             return;
         }
 
-        let selectedDays = [];
-        try { selectedDays = JSON.parse(f.selected_days.value || '[]'); } catch(e){}
-        if (selectedDays.length === 0) {
-            vsAlert.warning('Pilih Hari', 'Harap pilih minimal satu hari untuk jadwal ini.');
-            return;
-        }
-
         if (!f.start_time.value || !f.end_time.value) {
             vsAlert.warning('Waktu Tidak Lengkap', 'Harap isi waktu mulai dan waktu selesai.');
             return;
         }
 
-        const btn = f.querySelector('button[type="submit"]');
-        const origText = btn.textContent;
-        btn.disabled = true; btn.textContent = 'Menyimpan...';
-
-        const payload = {
+        const mode = f.schedule_mode.value;
+        let payload = {
             ruangan_id: f.ruangan_id.value,
-            selected_days: selectedDays,
             start_time: f.start_time.value.substring(0, 5),
             end_time: f.end_time.value.substring(0, 5),
             automation_action: f.automation_action.value,
             schedule_status: f.querySelector('input[name="schedule_status"]:checked').value
         };
+
+        if (mode === 'days') {
+            let selectedDays = [];
+            try { selectedDays = JSON.parse(f.selected_days.value || '[]'); } catch(e){}
+            if (selectedDays.length === 0) {
+                vsAlert.warning('Pilih Hari', 'Harap pilih minimal satu hari untuk jadwal ini.');
+                return;
+            }
+            payload.selected_days = selectedDays;
+        } else {
+            const specificDate = f.specific_date.value;
+            if (!specificDate) {
+                vsAlert.warning('Pilih Tanggal', 'Harap pilih tanggal untuk jadwal ini.');
+                return;
+            }
+            payload.tanggal_mulai = specificDate;
+            payload.tanggal_selesai = specificDate;
+            payload.selected_days = [];
+        }
+
+        const btn = f.querySelector('button[type="submit"]');
+        const origText = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
 
         try {
             const res = await apiFetch('/jadwal-listrik', { method: 'POST', body: JSON.stringify(payload) });
@@ -736,13 +860,6 @@
             return;
         }
 
-        let selectedDays = [];
-        try { selectedDays = JSON.parse(f.edit_selected_days.value || '[]'); } catch(e){}
-        if (selectedDays.length === 0) {
-            vsAlert.warning('Pilih Hari', 'Harap pilih minimal satu hari untuk jadwal ini.');
-            return;
-        }
-
         if (!f.edit_start_time.value || !f.edit_end_time.value) {
             vsAlert.warning('Waktu Tidak Lengkap', 'Harap isi waktu mulai dan waktu selesai.');
             return;
@@ -751,32 +868,61 @@
         // Validasi H-1: cek apakah jadwal yang sedang diedit sudah dalam kurang dari 1 jam ke depan
         const sch = schedulesMap[id];
         if (sch && sch.schedule_status === 'active') {
+            let schedStart = new Date();
+            if (sch.tanggal_mulai) {
+                // Jika jadwal spesifik tanggal, gunakan tanggal tersebut
+                schedStart = new Date(sch.tanggal_mulai);
+            }
             const now = new Date();
             const [sh, sm] = (sch.start_time || '').split(':').map(Number);
-            const schedStart = new Date();
             schedStart.setHours(sh, sm, 0, 0);
-            const diffMs = schedStart - now;
-            if (diffMs > 0 && diffMs < 3600000) {
-                vsAlert.warning(
-                    'Tidak Dapat Diedit',
-                    'Jadwal ini akan aktif dalam kurang dari 1 jam. Perubahan tidak dapat dilakukan kurang dari H-1 jam dari waktu penggunaan.'
-                );
-                return;
+            
+            // Cek jika jadwal hari ini atau tanggal spesifik yang sama
+            if (schedStart.toDateString() === now.toDateString() || !sch.tanggal_mulai) {
+                const diffMs = schedStart - now;
+                if (diffMs > 0 && diffMs < 3600000) {
+                    vsAlert.warning(
+                        'Tidak Dapat Diedit',
+                        'Jadwal ini akan aktif dalam kurang dari 1 jam. Perubahan tidak dapat dilakukan kurang dari H-1 jam dari waktu penggunaan.'
+                    );
+                    return;
+                }
             }
         }
 
-        const btn = f.querySelector('button[type="submit"]');
-        const origText = btn.textContent;
-        btn.disabled = true; btn.textContent = 'Memperbarui...';
-
-        const payload = {
+        const mode = f.edit_schedule_mode.value;
+        let payload = {
             ruangan_id: f.edit_ruangan_id.value,
-            selected_days: selectedDays,
             start_time: f.edit_start_time.value.substring(0, 5),
             end_time: f.edit_end_time.value.substring(0, 5),
             automation_action: f.edit_automation_action.value,
             schedule_status: f.querySelector('input[name="edit_schedule_status"]:checked').value
         };
+
+        if (mode === 'days') {
+            let selectedDays = [];
+            try { selectedDays = JSON.parse(f.edit_selected_days.value || '[]'); } catch(e){}
+            if (selectedDays.length === 0) {
+                vsAlert.warning('Pilih Hari', 'Harap pilih minimal satu hari untuk jadwal ini.');
+                return;
+            }
+            payload.selected_days = selectedDays;
+            payload.tanggal_mulai = null;
+            payload.tanggal_selesai = null;
+        } else {
+            const specificDate = f.edit_specific_date.value;
+            if (!specificDate) {
+                vsAlert.warning('Pilih Tanggal', 'Harap pilih tanggal untuk jadwal ini.');
+                return;
+            }
+            payload.tanggal_mulai = specificDate;
+            payload.tanggal_selesai = specificDate;
+            payload.selected_days = [];
+        }
+
+        const btn = f.querySelector('button[type="submit"]');
+        const origText = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Memperbarui...';
 
         try {
             const res = await apiFetch('/jadwal-listrik/' + id, { method: 'PUT', body: JSON.stringify(payload) });

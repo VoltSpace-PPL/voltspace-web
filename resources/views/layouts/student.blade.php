@@ -27,6 +27,19 @@
         .main-shell { min-width: 0; }
         /* Status badge animations */
         @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        /* ── Fix native <select> dropdown styling for dark theme ── */
+        select, select option {
+            background-color: #161e2d;
+            color: #e2e8f0;
+        }
+        select option:checked {
+            background-color: #1e3a5f;
+            color: #fff;
+        }
+        select option:hover {
+            background-color: #1e293b;
+        }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden grid-pattern">
