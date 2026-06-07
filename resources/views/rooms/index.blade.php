@@ -27,7 +27,7 @@
     <div class="mb-6 flex">
         <div class="relative min-w-[200px]">
             <label class="block text-[11px] text-slate-500 font-bold uppercase tracking-wider mb-2">Select Floor</label>
-            <select id="floor-filter" onchange="renderRooms()" class="w-full bg-[#1a2236] border border-[#00d4aa] rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all cursor-pointer appearance-none">
+            <select id="floor-filter" onchange="renderRooms()" class="w-full bg-[#161e2d] border border-[#00d4aa] rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 transition-all cursor-pointer appearance-none">
                 <option value="all">All Floors</option>
                 <option value="1">Floor 1</option>
                 <option value="2">Floor 2</option>
@@ -531,7 +531,7 @@ async function loadRoomDevices() {
             const safeId = String(room.id).replace(/[^a-zA-Z0-9]/g, '-');
 
             return `
-            <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] p-6 transition-all hover:border-slate-500 group shadow-lg min-w-0">
+            <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] p-6 transition-all hover:border-slate-500 group shadow-lg min-w-0">
                 <div class="flex justify-between items-start gap-3 mb-5 min-w-0">
                     <div class="flex items-center gap-4 min-w-0 flex-1">
                         <div class="w-12 h-12 rounded-xl bg-[#00aaff]/10 flex items-center justify-center text-[#00aaff] border border-[#00aaff]/20 shrink-0">
@@ -548,7 +548,7 @@ async function loadRoomDevices() {
                 </div>
 
                 <!-- Consumption highlight + chart -->
-                <div class="rounded-xl p-4 mb-5" style="background:#0f172a; border:1px solid #1e293b;">
+                <div class="rounded-xl p-4 mb-5" style="background:#161e2d; border:1px solid #1e2d45;">
                     <div class="flex items-start justify-between mb-3">
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Annual Consumption (${new Date().getFullYear()})</p>
@@ -565,12 +565,12 @@ async function loadRoomDevices() {
                 </div>
 
                 <!-- Info rows -->
-                <div class="rounded-xl p-3 mb-5" style="background:#162032; border:1px solid #1e293b;">
+                <div class="rounded-xl p-3 mb-5" style="background:#162032; border:1px solid #1e2d45;">
                         <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Devices</p>
                         <p class="text-[20px] font-extrabold text-white">${kapasitas}</p>
                 </div>
 
-                <div class="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-[#334155] mb-5">
+                <div class="flex items-center justify-between p-4 bg-[#161e2d] rounded-xl border border-[#1e2d45] mb-5">
                     <span class="text-[13px] font-bold text-slate-400">Power</span>
                     <div class="flex items-center gap-3">
                         <label class="switch">

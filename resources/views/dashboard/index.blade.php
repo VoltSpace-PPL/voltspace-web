@@ -14,6 +14,28 @@
     <p class="text-slate-400 text-[14px] mt-2">Essential energy metrics and system overview</p>
 </div>
 
+{{-- Dashboard Alerts Section --}}
+<div class="mb-8" id="dashboard-alerts-section" style="display: none;">
+    <div class="bg-[#161d2e] border border-red-500/30 rounded-2xl overflow-hidden relative">
+        <div class="absolute inset-0 bg-red-500/5 pointer-events-none"></div>
+        <div class="px-6 py-4 border-b border-[#232c3d] flex items-center justify-between cursor-pointer" onclick="document.getElementById('dashboard-alerts-list').classList.toggle('hidden'); document.getElementById('alerts-collapse-text').textContent = document.getElementById('dashboard-alerts-list').classList.contains('hidden') ? 'Expand' : 'Collapse';">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-red-500/20 text-red-500 flex items-center justify-center border border-red-500/30">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-[15px] flex items-center gap-2">Alerts <span id="dashboard-alerts-count" class="w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">0</span></h3>
+                    <p class="text-red-400 text-[11px] mt-0.5" id="alerts-collapse-text">Collapse</p>
+                </div>
+            </div>
+            <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke-width="2"/></svg>
+        </div>
+        <div id="dashboard-alerts-list" class="p-4 space-y-3">
+            <!-- Alerts will be loaded here -->
+        </div>
+    </div>
+</div>
+
 {{-- Summary Cards --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8" id="summary-cards">
     {{-- Total Energy - TEAL icon --}}
@@ -77,11 +99,11 @@
             <p class="text-slate-500 text-[12px] mt-0.5">12 months • Monthly consumption</p>
         </div>
         <div class="flex items-center gap-2">
-            <button id="trend-prev" class="w-8 h-8 rounded-lg bg-[#1e293b] border border-[#334155] text-slate-400 hover:text-white hover:border-[#475569] transition-all flex items-center justify-center">
+            <button id="trend-prev" class="w-8 h-8 rounded-lg bg-[#161e2d] border border-[#1e2d45] text-slate-400 hover:text-white hover:border-[#475569] transition-all flex items-center justify-center">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-width="2"/></svg>
             </button>
             <span id="trend-year" class="px-4 h-8 rounded-lg bg-[#00d4aa] text-[#0b1120] font-bold text-[13px] flex items-center">2026</span>
-            <button id="trend-next" class="w-8 h-8 rounded-lg bg-[#1e293b] border border-[#334155] text-slate-400 hover:text-white hover:border-[#475569] transition-all flex items-center justify-center">
+            <button id="trend-next" class="w-8 h-8 rounded-lg bg-[#161e2d] border border-[#1e2d45] text-slate-400 hover:text-white hover:border-[#475569] transition-all flex items-center justify-center">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2"/></svg>
             </button>
         </div>
@@ -111,7 +133,7 @@
             <h2 class="text-[18px] font-bold text-white">Room Energy Overview</h2>
             <p class="text-slate-500 text-[12px] mt-0.5">Energy consumption per room this period</p>
         </div>
-        <div id="rooms-period-badge" class="px-3 py-1.5 rounded-lg text-slate-400 text-[12px] font-medium" style="background:#253044; border:1px solid #334155;">—</div>
+        <div id="rooms-period-badge" class="px-3 py-1.5 rounded-lg text-slate-400 text-[12px] font-medium" style="background:#253044; border:1px solid #1e2d45;">—</div>
     </div>
 
     <div class="overflow-x-auto">
@@ -477,14 +499,108 @@
         loadTrend(currentYear);
     });
 
+    async function loadDashboardAlerts() {
+        try {
+            const now = new Date();
+            const res = await window.apiFetch(`/energy-alerts?bulan=${now.getMonth() + 1}&tahun=${now.getFullYear()}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            const alerts = data.alerts || [];
+            
+            const container = document.getElementById('dashboard-alerts-section');
+            const list = document.getElementById('dashboard-alerts-list');
+            const countEl = document.getElementById('dashboard-alerts-count');
+            
+            container.style.display = 'block';
+            
+            if (alerts.length === 0) {
+                countEl.textContent = '0';
+                countEl.className = 'w-5 h-5 rounded-full bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center';
+                
+                const header = container.querySelector('.bg-\\[\\#161d2e\\]');
+                header.className = 'bg-[#161d2e] border border-emerald-500/30 rounded-2xl overflow-hidden relative';
+                header.querySelector('.absolute').className = 'absolute inset-0 bg-emerald-500/5 pointer-events-none';
+                
+                const iconContainer = header.querySelector('.w-8');
+                iconContainer.className = 'w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center border border-emerald-500/30';
+                iconContainer.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2"/></svg>';
+                
+                header.querySelector('h3').innerHTML = 'System Status <span class="text-emerald-400 text-[12px] font-normal ml-2">All Clear</span>';
+                header.querySelector('p').textContent = 'No energy anomalies detected.';
+                header.querySelector('p').className = 'text-emerald-400 text-[11px] mt-0.5';
+                
+                list.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-6">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-3">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
+                    </div>
+                    <p class="text-white text-[14px] font-bold">Energy Usage Normal</p>
+                    <p class="text-slate-400 text-[12px] mt-1">All rooms are operating within safe limits.</p>
+                </div>`;
+                return;
+            }
+            
+            countEl.textContent = alerts.length;
+            countEl.className = 'w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center';
+            
+            const header = container.querySelector('.bg-\\[\\#161d2e\\]');
+            header.className = 'bg-[#161d2e] border border-red-500/30 rounded-2xl overflow-hidden relative';
+            header.querySelector('.absolute').className = 'absolute inset-0 bg-red-500/5 pointer-events-none';
+            
+            const iconContainer = header.querySelector('.w-8');
+            iconContainer.className = 'w-8 h-8 rounded-full bg-red-500/20 text-red-500 flex items-center justify-center border border-red-500/30';
+            iconContainer.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-width="2"/></svg>';
+            
+            header.querySelector('h3').innerHTML = `Alerts <span id="dashboard-alerts-count" class="w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">${alerts.length}</span>`;
+            header.querySelector('p').textContent = 'Collapse';
+            header.querySelector('p').className = 'text-red-400 text-[11px] mt-0.5';
+            
+            const sorted = [...alerts].sort((a, b) => {
+                const order = { danger: 0, warning: 1 };
+                return (order[a.severity] ?? 2) - (order[b.severity] ?? 2);
+            });
+            
+            list.innerHTML = sorted.map(alert => {
+                const isDanger = alert.severity === 'danger';
+                const color = isDanger ? 'red' : 'yellow';
+                const label = isDanger ? 'High' : 'Medium';
+                
+                return `
+                <div class="p-4 rounded-xl border border-${color}-500/20" style="background:rgba(${isDanger ? '239,68,68' : '234,179,8'},0.05);">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <h4 class="text-white text-[13px] font-bold flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-${color}-500"></span>
+                                ${isDanger ? 'High Energy Consumption' : 'Peak Demand Warning'}
+                            </h4>
+                            <p class="text-slate-400 text-[12px] mt-1">${escHtml(alert.message)}</p>
+                            <p class="text-slate-500 text-[11px] mt-2 flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
+                                Just now
+                            </p>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-[10px] font-bold border border-${color}-500/30 text-${color}-400 bg-${color}-500/10">
+                            ${label}
+                        </span>
+                    </div>
+                </div>`;
+            }).join('');
+            
+        } catch (e) {
+            console.error('[Dashboard] alerts error:', e);
+        }
+    }
+
     loadSummary();
     loadTrend(currentYear);
     loadRooms();
+    loadDashboardAlerts();
 
     setInterval(() => {
         loadSummary();
         loadRooms();
         loadTrend(currentYear);
+        loadDashboardAlerts();
     }, 5000);
 })();
 </script>

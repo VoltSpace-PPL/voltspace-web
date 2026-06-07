@@ -11,13 +11,17 @@ Route::view('/login', 'auth.login')->name('login');
 Route::view('/dashboard', 'dashboard.index');
 Route::view('/users', 'users.index');
 Route::view('/rooms', 'rooms.index');
+Route::view('/room-availability', 'room-availability.index');
 Route::view('/devices', 'devices.index');
 Route::view('/schedule', 'schedule.index');
+Route::view('/bookings', 'bookings.index');
 Route::view('/settings', 'settings.index');
+Route::view('/alerts', 'alerts.index');
+Route::view('/reports', 'reports.index');
 
-// Student Portal Routes (PBI 30, 31, 32)
 Route::view('/student/dashboard', 'student.dashboard');
 Route::view('/student/rooms', 'student.rooms');
+Route::view('/student/room-availability', 'student.room-availability');
 Route::view('/student/bookings/create', 'student.bookings-create');
 Route::view('/student/bookings', 'student.bookings');
 

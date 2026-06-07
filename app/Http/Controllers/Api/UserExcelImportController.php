@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\XlsxService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,7 +29,21 @@ class UserExcelImportController extends Controller
         if (! $request->user()->isSuperAdmin()) {
             return response()->json(['message' => 'Hanya super admin.'], 403);
         }
-        $request->validate(['file' => ['required', 'file', 'mimes:xlsx,xls']]);
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'max:10240',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (! $value instanceof UploadedFile) {
+                        $fail('File tidak valid.');
+
+                        return;
+                    }
+                    XlsxService::validateUploadedSpreadsheet($value, $fail);
+                },
+            ],
+        ]);
         $path = $request->file('file')->getRealPath();
         if (! $path) {
             return response()->json(['message' => 'File tidak valid.'], 422);

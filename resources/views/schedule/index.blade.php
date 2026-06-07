@@ -25,30 +25,30 @@
 
     <!-- Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-        <div class="bg-[#1e293b] border border-[#334155] rounded-[16px] p-5">
+        <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[16px] p-5">
             <h3 class="text-[13px] font-bold text-slate-400 mb-2">Total Schedules</h3>
             <div class="text-[32px] font-bold text-white leading-none" id="stat-total">0</div>
         </div>
-        <div class="bg-[#1e293b] border border-[#334155] rounded-[16px] p-5">
+        <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[16px] p-5">
             <h3 class="text-[13px] font-bold text-slate-400 mb-2">Active</h3>
             <div class="text-[32px] font-bold text-[#00d4aa] leading-none" id="stat-active">0</div>
         </div>
-        <div class="bg-[#1e293b] border border-[#334155] rounded-[16px] p-5">
+        <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[16px] p-5">
             <h3 class="text-[13px] font-bold text-slate-400 mb-2">Rooms Scheduled</h3>
             <div class="text-[32px] font-bold text-[#00aaff] leading-none" id="stat-rooms">0</div>
         </div>
     </div>
 
     <!-- Table -->
-    <div class="bg-[#1e293b] border border-[#334155] rounded-[24px] overflow-hidden shadow-2xl">
-        <div class="p-6 border-b border-[#334155] flex items-center gap-3">
+    <div class="bg-[#161e2d] border border-[#1e2d45] rounded-[24px] overflow-hidden shadow-2xl">
+        <div class="p-6 border-b border-[#1e2d45] flex items-center gap-3">
             <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"/></svg>
             <h2 class="text-[16px] font-bold text-white">Weekly Schedule</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-[#0f172a] border-b border-[#334155]">
+                    <tr class="bg-[#161e2d] border-b border-[#1e2d45]">
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Room</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest w-1/3">Day</th>
                         <th class="px-6 py-5 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Time</th>
@@ -93,7 +93,7 @@
                         </span>
                         <select name="ruangan_id" required
                                 class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-10 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                            <option value="" class="bg-[#1e293b]">— Select Room —</option>
+                            <option value="" class="bg-[#161e2d]">— Select Room —</option>
                         </select>
                         <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
                     </div>
@@ -168,8 +168,8 @@
                     <div class="relative">
                         <select name="automation_action" required
                                 class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                            <option value="on" class="bg-[#1e293b]">⚡ Turn ON Automatically</option>
-                            <option value="off" class="bg-[#1e293b]">🔌 Turn OFF Automatically</option>
+                            <option value="on" class="bg-[#161e2d]">⚡ Turn ON Automatically</option>
+                            <option value="off" class="bg-[#161e2d]">🔌 Turn OFF Automatically</option>
                         </select>
                         <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
                     </div>
@@ -235,7 +235,7 @@
                         </span>
                         <select name="edit_ruangan_id" required
                                 class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-10 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                            <option value="" class="bg-[#1e293b]">— Select Room —</option>
+                            <option value="" class="bg-[#161e2d]">— Select Room —</option>
                         </select>
                         <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
                     </div>
@@ -310,8 +310,8 @@
                     <div class="relative">
                         <select name="edit_automation_action" required
                                 class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                            <option value="on" class="bg-[#1e293b]">⚡ Turn ON Automatically</option>
-                            <option value="off" class="bg-[#1e293b]">🔌 Turn OFF Automatically</option>
+                            <option value="on" class="bg-[#161e2d]">⚡ Turn ON Automatically</option>
+                            <option value="off" class="bg-[#161e2d]">🔌 Turn OFF Automatically</option>
                         </select>
                         <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
                     </div>
@@ -470,7 +470,7 @@
                 roomsMap[r.id] = r.nama_ruangan;
                 const opt1 = document.createElement('option');
                 opt1.value = r.id;
-                opt1.className = 'bg-[#1e293b]';
+                opt1.className = 'bg-[#161e2d]';
                 opt1.textContent = r.nama_ruangan + (r.id ? ` (${r.id})` : '');
                 
                 const opt2 = opt1.cloneNode(true);

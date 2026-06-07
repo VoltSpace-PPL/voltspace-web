@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
 use App\Services\PeminjamanJadwalSyncService;
+use App\Services\XlsxService;
 use App\Support\RoomScheduleGuard;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -206,19 +207,20 @@ class PeminjamanController extends Controller
         return response()->json(['message' => 'Peminjaman berhasil dibatalkan.', 'data' => $peminjaman->fresh()]);
     }
 
-    public function downloadTemplate()
+    public function downloadTemplate(Request $request)
     {
+        $downloadName = XlsxService::filenameFromRequest($request, 'Template_Surat_Peminjaman.xlsx');
         $path = storage_path('app/templates/template_surat_peminjaman.xlsx');
-        
-        if (!file_exists($path)) {
-            if (!file_exists(storage_path('app/templates'))) {
-                mkdir(storage_path('app/templates'), 0755, true);
-            }
-            // Fallback just in case
-            file_put_contents($path, 'Template belum digenerate.');
+
+        if (is_readable($path) && XlsxService::isSpreadsheetFile($path)) {
+            return XlsxService::downloadFromPath($path, 'Template_Surat_Peminjaman.xlsx', $downloadName);
         }
 
-        return response()->download($path, 'Template_Surat_Peminjaman.xlsx');
+        return XlsxService::download('Template_Surat_Peminjaman.xlsx', function ($spreadsheet): void {
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setCellValue('A1', 'SURAT PERMOHONAN PEMINJAMAN RUANGAN');
+            $sheet->setCellValue('A3', 'Isi template sesuai format kampus, lalu unggah saat mengajukan peminjaman.');
+        }, $downloadName);
     }
 
     public function previewSurat(Request $request, Peminjaman $peminjaman)
@@ -227,11 +229,11 @@ class PeminjamanController extends Controller
             return response()->json(['message' => 'Akses ditolak.'], 403);
         }
 
-        if (!$peminjaman->surat_peminjaman) {
+        if (! $peminjaman->surat_peminjaman) {
             return response()->json(['message' => 'Surat peminjaman tidak ada.'], 404);
         }
 
-        if (!Storage::disk('public')->exists($peminjaman->surat_peminjaman)) {
+        if (! Storage::disk('public')->exists($peminjaman->surat_peminjaman)) {
             return response()->json(['message' => 'File tidak ditemukan di server.'], 404);
         }
 
