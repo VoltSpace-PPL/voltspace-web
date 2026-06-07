@@ -18,6 +18,10 @@
             <p class="text-[14px] text-slate-500 mt-1">User management and role assignment</p>
         </div>
         <div class="flex items-center gap-3">
+            <button onclick="downloadUserTemplate(this)" class="px-5 py-2.5 bg-[#161e2d] text-[#00d4aa] rounded-xl text-[13px] font-bold border border-[#00d4aa]/20 hover:bg-[#00d4aa]/10 transition-all flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5"/></svg>
+                Download Template
+            </button>
             <button onclick="document.getElementById('import-file').click()" class="px-5 py-2.5 bg-[#161e2d] text-white rounded-xl text-[13px] font-bold border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2.5"/></svg>
                 Import Users
@@ -433,6 +437,15 @@
             btn.innerHTML = originalText;
         }
     });
+
+    function downloadUserTemplate(btn) {
+        const a = document.createElement('a');
+        a.href = '/template_import_users.xlsx';
+        a.download = 'Template_Import_Users.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
 
     async function handleImport(input) {
         if (!input.files || input.files.length === 0) return;

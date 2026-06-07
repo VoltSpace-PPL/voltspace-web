@@ -47,6 +47,19 @@
         }
         /* Prevent flex children from forcing horizontal scroll on narrow viewports */
         .main-shell { min-width: 0; }
+
+        /* ── Fix native <select> dropdown styling for dark theme ── */
+        select, select option {
+            background-color: #161e2d;
+            color: #e2e8f0;
+        }
+        select option:checked {
+            background-color: #1e3a5f;
+            color: #fff;
+        }
+        select option:hover {
+            background-color: #1e293b;
+        }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden grid-pattern">
@@ -70,6 +83,7 @@
                     $menu = [
                         ['id' => 'dashboard', 'label' => 'Dashboard',            'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => '/dashboard'],
                         ['id' => 'rooms',     'label' => 'Rooms',                'icon' => 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', 'route' => '/rooms'],
+                        ['id' => 'room-availability', 'label' => 'Room Availability', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'route' => '/room-availability'],
                         ['id' => 'devices',   'label' => 'Devices',              'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'route' => '/devices'],
                         ['id' => 'schedule',  'label' => 'Electricity Schedule', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'route' => '/schedule'],
                         ['id' => 'bookings',  'label' => 'Room Bookings',        'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'route' => '/bookings'],
@@ -208,7 +222,7 @@
                 const data = await res.json();
                 if (res.ok) {
                     localStorage.setItem('token', data.token);
-                    location.href = '/student/bookings/create';
+                    location.href = '/student/dashboard';
                 } else {
                     alert('Gagal switch role: kredensial student tidak ditemukan.');
                 }
