@@ -83,14 +83,13 @@
                 @php
                     $menu = [
                         ['id' => 'dashboard', 'label' => 'Dashboard',            'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => '/dashboard'],
+                        ['id' => 'alerts',    'label' => 'Alerts',               'icon' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z', 'route' => '/alerts'],
                         ['id' => 'rooms',     'label' => 'Rooms',                'icon' => 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', 'route' => '/rooms'],
-                        ['id' => 'room-availability', 'label' => 'Room Availability', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'route' => '/room-availability'],
-                        ['id' => 'devices',   'label' => 'Devices',              'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'route' => '/devices'],
-                        ['id' => 'schedule',  'label' => 'Electricity Schedule', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'route' => '/schedule'],
+                        ['id' => 'devices',   'label' => 'Device',               'icon' => 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4', 'route' => '/devices'],
                         ['id' => 'bookings',  'label' => 'Room Bookings',        'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'route' => '/bookings'],
-                        ['id' => 'alerts',    'label' => 'Energy Alerts',        'icon' => 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z', 'route' => '/alerts'],
+                        ['id' => 'schedule',  'label' => 'Electricity Schedule', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'route' => '/schedule'],
                         ['id' => 'reports',   'label' => 'Reports',              'icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'route' => '/reports'],
-                        ['id' => 'users',     'label' => 'Users',                'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'route' => '/users'],
+                        ['id' => 'users',     'label' => 'User',                 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'route' => '/users'],
                         ['id' => 'settings',  'label' => 'Settings',             'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', 'route' => '/settings'],
                     ];
                 @endphp
@@ -134,7 +133,7 @@
         <!-- Main Content Area -->
         <main class="main-shell flex-1 lg:ml-[320px] min-h-screen w-full max-w-full bg-[#0b1120]">
             <!-- Top Bar -->
-            <header class="bg-[#0b1120]/80 backdrop-blur-md px-6 lg:px-10 py-6 border-b border-[#334155]/30">
+            <header class="relative z-40 bg-[#0b1120]/80 backdrop-blur-md px-6 lg:px-10 py-6 border-b border-[#334155]/30">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
                     <div class="min-w-0">
                         <div class="flex items-center gap-3 lg:hidden mb-4">
@@ -178,7 +177,7 @@
                                             <!-- items injected by js -->
                                         </div>
                                         <div class="p-3 border-t border-[#1e293b] bg-[#0f172a] text-center">
-                                            <button class="text-[13px] font-bold text-[#00d4aa] hover:text-[#00bfa0] transition-colors w-full py-1">Mark all as read</button>
+                                            <button id="mark-all-read-btn" class="text-[13px] font-bold text-[#00d4aa] hover:text-[#00bfa0] transition-colors w-full py-1">Mark all as read</button>
                                         </div>
                                     </div>
                                 </div>
@@ -186,10 +185,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke-width="2"/></svg>
                                     <span class="text-[11px] font-bold uppercase tracking-wider">ID</span>
                                 </div>
-                                <div class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors shrink-0 h-8 px-3 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45" onclick="switchToStudentRole()">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-width="2"/></path></svg>
-                                    <span class="text-[11px] font-bold uppercase tracking-wider">Switch Role</span>
-                                </div>
+
                             </div>
                             <div id="real-time-clock" class="text-[13px] font-medium text-slate-500 flex items-center gap-2 shrink-0 justify-end">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
@@ -438,22 +434,34 @@
                 
                 const peminjaman = data.peminjaman || [];
                 const energy = data.energy_alerts || [];
-                const allNotifs = [...peminjaman, ...energy].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                const allNotifs = [...peminjaman, ...energy].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3);
+                
+                const lastReadRaw = localStorage.getItem('vs_last_read_notifications_at');
+                const lastReadDate = lastReadRaw ? new Date(lastReadRaw) : new Date(0);
+                
+                const unreadNotifs = allNotifs.filter(n => new Date(n.created_at) > lastReadDate);
                 
                 const badge = document.getElementById('notification-badge');
                 const list = document.getElementById('notification-list');
                 const headerCount = document.getElementById('notification-header-count');
                 
-                if (allNotifs.length > 0) {
+                if (unreadNotifs.length > 0) {
                     if (badge) {
-                        badge.textContent = allNotifs.length;
+                        badge.textContent = unreadNotifs.length;
                         badge.classList.remove('hidden');
                     }
                     if (headerCount) {
-                        headerCount.textContent = `${allNotifs.length} unread`;
+                        headerCount.textContent = `${unreadNotifs.length} unread`;
                     }
-                    if (list) {
+                } else {
+                    if (badge) badge.classList.add('hidden');
+                    if (headerCount) headerCount.textContent = '0 unread';
+                }
+
+                if (list) {
+                    if (allNotifs.length > 0) {
                         list.innerHTML = allNotifs.map(n => {
+                            const isRead = new Date(n.created_at) <= lastReadDate;
                             let dotColor = 'bg-[#00d4aa]'; // Default green
                             if (n.type === 'energy') {
                                 dotColor = n.severity === 'critical' ? 'bg-red-500' : 'bg-yellow-500';
@@ -464,8 +472,8 @@
                             const timeAgo = new Date(n.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
 
                             return `
-                                <div class="px-5 py-4 border-b border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors flex gap-4">
-                                    <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0" style="box-shadow: 0 0 8px var(--tw-ring-color, currentColor); color: ${dotColor.replace('bg-', '')};"></div>
+                                <div class="px-5 py-4 border-b border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors flex gap-4 ${isRead ? 'opacity-50' : ''}">
+                                    <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0" ${isRead ? '' : `style="box-shadow: 0 0 8px var(--tw-ring-color, currentColor); color: ${dotColor.replace('bg-', '')};"`}></div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-[13px] font-bold text-white truncate">${n.title}</p>
                                         <p class="text-[12px] text-slate-400 line-clamp-2 mt-1 leading-relaxed">${n.body}</p>
@@ -474,9 +482,6 @@
                                 </div>
                             `;
                         }).join('');
-                    }
-                } else {
-                    if (badge) badge.classList.add('hidden');
                     if (headerCount) headerCount.textContent = '0 unread';
                     if (list) list.innerHTML = '<div class="p-8 text-center text-[13px] text-slate-500">No new notifications</div>';
                 }
@@ -494,6 +499,15 @@
             // Notification Dropdown Toggle
             const btn = document.getElementById('notification-btn');
             const dropdown = document.getElementById('notification-dropdown');
+            const markAllReadBtn = document.getElementById('mark-all-read-btn');
+            
+            if (markAllReadBtn) {
+                markAllReadBtn.addEventListener('click', () => {
+                    localStorage.setItem('vs_last_read_notifications_at', new Date().toISOString());
+                    loadTopbarNotifications();
+                });
+            }
+
             if (btn && dropdown) {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();

@@ -293,7 +293,7 @@
                     <div>
                         <label class="block text-[15px] font-medium text-white mb-3">Email Address</label>
                         <div class="relative">
-                            <input type="email" name="email" placeholder="admin@voltspace.id" value="admin@voltspace.id" required
+                            <input type="email" name="email" placeholder="Enter your email address" required
                                    class="login-input-field">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#94a3b8] text-xl">✉</span>
                         </div>
@@ -301,7 +301,7 @@
                     <div>
                         <label class="block text-[15px] font-medium text-white mb-3">Password</label>
                         <div class="relative">
-                            <input type="password" id="login-password" name="password" placeholder="Enter your password" value="admin123" required
+                            <input type="password" id="login-password" name="password" placeholder="Enter your password" required
                                    class="login-input-field login-input-field--password" autocomplete="current-password">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#8892a4] text-lg pointer-events-none">🔒</span>
                             <button type="button" id="toggle-password" class="password-toggle-btn" aria-label="Show password" aria-pressed="false">
@@ -327,20 +327,6 @@
                     <button type="submit" class="btn-signin">Sign In</button>
                 </form>
 
-                <!-- Demo Credentials -->
-                <div class="mt-8">
-                    <p class="text-center text-[11px] text-[#8892a4] mb-4 uppercase tracking-widest font-bold">Demo Credentials:</p>
-                    <div class="space-y-2">
-                        <div class="demo-credential-box">
-                            <p class="text-[13px] font-medium text-white mb-1">Admin Account</p>
-                            <p class="text-[13px] font-mono" style="color: #00d4aa;">admin@voltspace.id / admin123</p>
-                        </div>
-                        <div class="demo-credential-box">
-                            <p class="text-[13px] font-medium text-white mb-1">Student Account</p>
-                            <p class="text-[13px] font-mono" style="color: #00d4aa;">student@voltspace.id / student123</p>
-                        </div>
-                    </div>
-                </div>
                 <p class="text-center text-[11px] text-[#8892a4] mt-8">© {{ date('Y') }} VoltSpace. All rights reserved.</p>
             </div>
         </div>

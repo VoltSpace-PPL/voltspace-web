@@ -12,16 +12,29 @@
     </nav>
 
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div>
             <h1 class="text-[32px] font-bold text-white leading-tight">Electricity Schedule</h1>
             <p class="text-[14px] text-slate-500 mt-1">Automate electricity control with schedules</p>
         </div>
-        <button onclick="openAddScheduleModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#00d4aa] hover:bg-[#00bfa0] text-white rounded-lg font-bold text-[14px] transition-all self-start sm:self-auto shadow-lg shadow-[#00d4aa]/20">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            Add Schedule
-        </button>
+        <div class="flex items-center gap-3 flex-wrap self-start sm:self-auto">
+            <button onclick="downloadScheduleTemplate()" class="flex items-center gap-2 px-5 py-2.5 bg-[#161e2d] text-[#00d4aa] rounded-xl text-[13px] font-bold border border-[#00d4aa]/20 hover:bg-[#00d4aa]/10 transition-all shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5"/></svg>
+                 Download Template
+            </button>
+            <label for="schedule-import-file" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl text-[13px] font-bold border border-indigo-500/20 hover:bg-indigo-500/20 transition-all shadow-sm cursor-pointer mb-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2"/></svg>
+                Import Schedule
+            </label>
+            <input type="file" id="schedule-import-file" class="hidden" accept=".xlsx" onchange="handleScheduleImport(this)">
+            <button onclick="openAddScheduleModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#00d4aa] hover:bg-[#00bfa0] text-white rounded-lg font-bold text-[14px] transition-all self-start sm:self-auto shadow-lg shadow-[#00d4aa]/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Add Schedule
+            </button>
+        </div>
     </div>
+
+
 
     <!-- Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
@@ -407,6 +420,68 @@
     let addDayManager, editDayManager;
     let roomsMap = {};
 
+    window.openViewScheduleModal = function(sch) {
+        if (!sch) return;
+        const modal = document.getElementById('view-schedule-modal');
+        const content = document.getElementById('view-schedule-content');
+        
+        const roomName = roomsMap[sch.ruangan_id] || sch.ruangan_id || '–';
+        
+        let days = '';
+        if (sch.tanggal_mulai) {
+            const d = new Date(sch.tanggal_mulai);
+            days = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        } else {
+            const daysMap = { monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday', sunday:'Sunday' };
+            days = (sch.selected_days || []).map(d => daysMap[d] || d).join(', ');
+        }
+        
+        const startTime = (sch.start_time || '').substring(0,5);
+        const endTime = (sch.end_time || '').substring(0,5);
+        const isAutoOn = sch.automation_action === 'on';
+        const isActive = sch.schedule_status === 'active';
+        
+        content.innerHTML = `
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Room</p>
+                    <p class="text-[14px] font-bold text-white">${roomName}</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Schedule Type</p>
+                    <p class="text-[14px] font-bold text-white">${sch.tanggal_mulai ? 'Specific Date' : 'Days of Week'}</p>
+                </div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Days / Date</p>
+                <p class="text-[14px] font-bold text-white">${days}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Time</p>
+                    <p class="text-[14px] font-bold text-white">${startTime} - ${endTime} WIB</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Action</p>
+                    <p class="text-[14px] font-bold ${isAutoOn ? 'text-[#00d4aa]' : 'text-red-500'}">${isAutoOn ? '⚡ Turn ON' : '🔌 Turn OFF'}</p>
+                </div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 flex justify-between items-center">
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</p>
+                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full ${isActive ? 'bg-[#00aaff]/10 text-[#00aaff] border border-[#00aaff]/20' : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'} text-[11px] font-bold tracking-wider">${isActive ? 'Active' : 'Inactive'}</span>
+            </div>
+        `;
+        
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeViewScheduleModal = function() {
+        const modal = document.getElementById('view-schedule-modal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    };
+
     function initDaySelector(containerId, inputId) {
         const container = document.getElementById(containerId);
         const input = document.getElementById(inputId);
@@ -553,7 +628,7 @@
                         <p class="text-[13px] text-slate-400 font-medium leading-relaxed">${days}</p>
                     </td>
                     <td class="px-6 py-5 whitespace-nowrap">
-                        <span class="text-[13px] font-bold text-white tracking-wider">${startTime} - ${endTime}</span>
+                        <span class="text-[13px] font-bold text-white tracking-wider">${startTime} - ${endTime} WIB</span>
                     </td>
                     <td class="px-6 py-5 text-center whitespace-nowrap">
                         ${actionBadge}
@@ -990,6 +1065,91 @@
         
         await loadRoomsDropdowns();
         await loadSchedules();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('room_id');
+        if (roomId) {
+            openAddScheduleModal();
+            const selectRoom = document.querySelector('select[name="ruangan_id"]');
+            if (selectRoom) {
+                selectRoom.value = roomId;
+            }
+        }
     });
+
+    /* ── Download Schedule Template ──────────────────── */
+    window.downloadScheduleTemplate = async function() {
+        try {
+            const res = await apiFetch('/jadwal-listrik/template/download');
+            if (!res.ok) throw new Error('Failed');
+            const blob = await res.blob();
+            const url  = window.URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href     = url;
+            a.download = 'Template_Jadwal_Listrik.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch(e) {
+            // Fallback: generate a simple notice if API not available
+            vsAlert.info('Template', 'Silakan download template jadwal listrik dari admin sistem atau hubungi IT support.');
+        }
+    };
+
+    /* ── Handle file selection for import ────────────── */
+    window.handleScheduleImport = function(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Validate extension
+        if (!file.name.toLowerCase().endsWith('.xlsx')) {
+            vsAlert.warning('Format Tidak Valid', 'Hanya file .xlsx yang diizinkan untuk import jadwal listrik.');
+            input.value = '';
+            return;
+        }
+
+        triggerScheduleImport();
+    };
+
+    /* ── Trigger schedule import API call ────────────── */
+    window.triggerScheduleImport = async function() {
+        const fileInput = document.getElementById('schedule-import-file');
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        vsAlert.info('Importing...', 'Memproses data jadwal listrik, mohon tunggu.');
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const token = localStorage.getItem('token');
+            const res = await fetch(window.VoltSpaceApi.getBase() + '/jadwal-listrik/import', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                await vsAlert.success('Import Berhasil!', `Jadwal listrik berhasil diimport. ${data.message || ''}`);
+                fileInput.value = '';
+                await loadSchedules();
+            } else {
+                const msg = data?.errors
+                    ? Object.values(data.errors).flat().join('\n')
+                    : (data.message || 'Gagal mengimport jadwal.');
+                vsAlert.error('Import Gagal', msg);
+                fileInput.value = '';
+            }
+        } catch(e) {
+            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server.');
+            fileInput.value = '';
+        }
+    };
 </script>
 @endpush

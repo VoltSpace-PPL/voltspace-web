@@ -197,7 +197,7 @@
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                 Time
             </p>
-            <p class="text-white font-bold text-[14px]">${time5(b.waktu_mulai)} - ${time5(b.waktu_selesai)}</p>
+            <p class="text-white font-bold text-[14px]">${time5(b.waktu_mulai)} - ${time5(b.waktu_selesai)} WIB</p>
         </div>
         <div class="rounded-xl px-4 py-3" style="background:#161e2d; border:1px solid #1e2d45;">
             <p class="flex items-center gap-1.5 text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-1.5">

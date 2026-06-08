@@ -95,13 +95,6 @@
                         <p class="text-[12px] text-slate-500 truncate mt-0.5" id="student-sidebar-email">mahasiswa@telyu.ac.id</p>
                     </div>
                 </div>
-                <button onclick="switchToAdmin()" id="switch-admin-btn"
-                    class="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1e293b] border border-[#334155] text-slate-300 hover:text-white hover:border-[#475569] transition-all text-[13px] font-semibold">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                    </svg>
-                    Switch to Admin
-                </button>
                 <button id="student-logout-btn" onclick="handleStudentLogout()"
                     class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -115,7 +108,7 @@
         <!-- Main Content Area -->
         <main class="main-shell flex-1 lg:ml-[320px] min-h-screen w-full max-w-full bg-[#0b1120]">
             <!-- Top Bar -->
-            <header class="bg-[#0b1120]/80 backdrop-blur-md px-6 lg:px-10 py-5 border-b border-[#334155]/30">
+            <header class="relative z-40 bg-[#0b1120]/80 backdrop-blur-md px-6 lg:px-10 py-5 border-b border-[#334155]/30">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
                     <div class="min-w-0">
                         <div class="flex items-center gap-3 lg:hidden mb-3">
@@ -155,15 +148,10 @@
                                     <!-- items injected by js -->
                                 </div>
                                 <div class="p-3 border-t border-[#1e293b] bg-[#0f172a] text-center">
-                                    <button class="text-[13px] font-bold text-[#00d4aa] hover:text-[#00bfa0] transition-colors w-full py-1">Mark all as read</button>
+                                    <button id="mark-all-read-btn" class="text-[13px] font-bold text-[#00d4aa] hover:text-[#00bfa0] transition-colors w-full py-1">Mark all as read</button>
                                 </div>
                             </div>
                         </div>
-                        <!-- Switch Role button (topbar) -->
-                        <button onclick="switchToAdmin()" class="flex items-center gap-1.5 h-8 px-3 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45 text-slate-400 hover:text-white hover:border-[#475569] transition-colors cursor-pointer text-[11px] font-bold uppercase tracking-wider">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            Switch Role
-                        </button>
                         <div id="student-real-time-clock" class="text-[12px] font-medium text-slate-500 flex items-center gap-1.5 h-8 px-3 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             <span>--:--</span>
@@ -363,22 +351,34 @@
             
             const peminjaman = data.peminjaman || [];
             const energy = data.energy_alerts || [];
-            const allNotifs = [...peminjaman, ...energy].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            const allNotifs = [...peminjaman, ...energy].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 3);
+            
+            const lastReadRaw = localStorage.getItem('vs_last_read_notifications_at');
+            const lastReadDate = lastReadRaw ? new Date(lastReadRaw) : new Date(0);
+            
+            const unreadNotifs = allNotifs.filter(n => new Date(n.created_at) > lastReadDate);
             
             const badge = document.getElementById('notification-badge');
             const list = document.getElementById('notification-list');
             const headerCount = document.getElementById('notification-header-count');
             
-            if (allNotifs.length > 0) {
+            if (unreadNotifs.length > 0) {
                 if (badge) {
-                    badge.textContent = allNotifs.length;
+                    badge.textContent = unreadNotifs.length;
                     badge.classList.remove('hidden');
                 }
                 if (headerCount) {
-                    headerCount.textContent = `${allNotifs.length} unread`;
+                    headerCount.textContent = `${unreadNotifs.length} unread`;
                 }
-                if (list) {
+            } else {
+                if (badge) badge.classList.add('hidden');
+                if (headerCount) headerCount.textContent = '0 unread';
+            }
+
+            if (list) {
+                if (allNotifs.length > 0) {
                     list.innerHTML = allNotifs.map(n => {
+                        const isRead = new Date(n.created_at) <= lastReadDate;
                         let dotColor = 'bg-[#00d4aa]'; // Default green
                         if (n.type === 'energy') {
                             dotColor = n.severity === 'critical' ? 'bg-red-500' : 'bg-yellow-500';
@@ -389,8 +389,8 @@
                         const timeAgo = new Date(n.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
 
                         return `
-                            <div class="px-5 py-4 border-b border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors flex gap-4">
-                                <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0" style="box-shadow: 0 0 8px var(--tw-ring-color, currentColor); color: ${dotColor.replace('bg-', '')};"></div>
+                            <div class="px-5 py-4 border-b border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors flex gap-4 ${isRead ? 'opacity-50' : ''}">
+                                <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0" ${isRead ? '' : `style="box-shadow: 0 0 8px var(--tw-ring-color, currentColor); color: ${dotColor.replace('bg-', '')};"`}></div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-[13px] font-bold text-white truncate">${n.title}</p>
                                     <p class="text-[12px] text-slate-400 line-clamp-2 mt-1 leading-relaxed">${n.body}</p>
@@ -399,11 +399,9 @@
                             </div>
                         `;
                     }).join('');
+                } else {
+                    list.innerHTML = '<div class="p-8 text-center text-[13px] text-slate-500">No new notifications</div>';
                 }
-            } else {
-                if (badge) badge.classList.add('hidden');
-                if (headerCount) headerCount.textContent = '0 unread';
-                if (list) list.innerHTML = '<div class="p-8 text-center text-[13px] text-slate-500">No new notifications</div>';
             }
         } catch (e) {
             // Ignore
@@ -418,6 +416,15 @@
         // Notification Dropdown Toggle
         const btn = document.getElementById('notification-btn');
         const dropdown = document.getElementById('notification-dropdown');
+        const markAllReadBtn = document.getElementById('mark-all-read-btn');
+        
+        if (markAllReadBtn) {
+            markAllReadBtn.addEventListener('click', () => {
+                localStorage.setItem('vs_last_read_notifications_at', new Date().toISOString());
+                loadTopbarNotifications();
+            });
+        }
+
         if (btn && dropdown) {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();

@@ -212,42 +212,49 @@
         }[c]));
     }
 
+    let _statusMapPromise = null;
+    let _statusMapTime = 0;
+
     async function getDeviceStatusMap() {
-    const map = {};
-
-    try {
-        const res = await window.apiFetch('/devices');
-        if (!res.ok) return map;
-
-        const data = await res.json();
-        const devices = Array.isArray(data) ? data : (data.data || []);
-
-        for (const device of devices) {
-            if (!device.ruangan_id) continue;
-
-            try {
-                const statusRes = await window.apiFetch('/devices/' + device.id + '/status');
-                if (!statusRes.ok) continue;
-
-                const status = await statusRes.json();
-
-                const relay = String(status.relay || 'OFF').trim().toUpperCase();
-                const energy = parseFloat(status.energy ?? 0) || 0;
-                const power = parseFloat(status.power ?? 0) || 0;
-
-                map[device.ruangan_id] = {
-                    relay: status.relay
-                        ? String(status.relay).trim().toUpperCase()
-                        : (status.online ? 'ON' : 'OFF'),
-                    energy: parseFloat(status.energy ?? 0) || 0,
-                    power: parseFloat(status.power ?? 0) || 0
-                };
-            } catch (e) {}
+        const now = Date.now();
+        // Cache valid for 4 seconds
+        if (_statusMapPromise && (now - _statusMapTime < 4000)) {
+            return _statusMapPromise;
         }
-    } catch (e) {}
 
-    return map;
-}
+        _statusMapTime = now;
+        _statusMapPromise = (async () => {
+            const map = {};
+            try {
+                const res = await window.apiFetch('/devices');
+                if (!res.ok) return map;
+
+                const data = await res.json();
+                const devices = Array.isArray(data) ? data : (data.data || []);
+
+                // Fetch all device statuses in parallel for better performance
+                await Promise.all(devices.map(async device => {
+                    if (!device.ruangan_id) return;
+
+                    try {
+                        const statusRes = await window.apiFetch('/devices/' + device.id + '/status');
+                        if (!statusRes.ok) return;
+
+                        const status = await statusRes.json();
+                        map[device.ruangan_id] = {
+                            relay: status.relay ? String(status.relay).trim().toUpperCase() : (status.online ? 'ON' : 'OFF'),
+                            energy: parseFloat(status.energy ?? 0) || 0,
+                            power: parseFloat(status.power ?? 0) || 0
+                        };
+                    } catch (e) {}
+                }));
+            } catch (e) {}
+
+            return map;
+        })();
+
+        return _statusMapPromise;
+    }
 
     function totalEnergyFromMap(statusMap) {
         let total = 0;
