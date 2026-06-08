@@ -377,7 +377,7 @@
                     localStorage.setItem('token', token);
                     const role = data.user?.role || data.data?.user?.role || '';
                     if (role === 'mahasiswa') {
-                        location.href = '/student/bookings';
+                        location.href = '/student/dashboard';
                     } else {
                         location.href = '/dashboard';
                     }
