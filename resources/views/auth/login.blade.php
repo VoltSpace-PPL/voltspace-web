@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>VoltSpace Login</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
     <meta name="color-scheme" content="dark">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -212,8 +213,8 @@
             <div>
                 <!-- Exact Logo implementation from Photo 1 -->
                 <div class="flex items-center gap-5 mb-10 lg:mb-16">
-                    <div class="w-14 h-14 relative overflow-hidden rounded-full bg-white p-1">
-                        <img src="/images/voltspace-logo.png" alt="VoltSpace Logo" class="w-full h-full object-contain">
+                    <div class="w-14 h-14 relative overflow-hidden rounded-full border border-white/10 shadow-sm">
+                        <img src="/images/favicon.png" alt="VoltSpace Logo" class="w-full h-full object-cover rounded-full">
                     </div>
                     <div>
                         <h1 class="text-[26px] font-bold text-white leading-none">VoltSpace</h1>

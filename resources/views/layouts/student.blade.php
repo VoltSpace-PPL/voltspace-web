@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VoltSpace - Student Portal</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,8 +50,8 @@
             <!-- Logo -->
             <div class="p-8 mb-4">
                 <div class="flex items-center gap-4 cursor-pointer">
-                    <div class="w-12 h-12 relative flex-shrink-0 overflow-hidden rounded-full bg-white p-1">
-                        <img src="/images/voltspace-logo.png" alt="VoltSpace Logo" class="w-full h-full object-contain">
+                    <div class="w-12 h-12 relative flex-shrink-0 overflow-hidden rounded-full border border-white/10 shadow-sm">
+                        <img src="/images/favicon.png" alt="VoltSpace Logo" class="w-full h-full object-cover rounded-full">
                     </div>
                     <div class="overflow-hidden">
                         <h2 class="text-[24px] font-bold text-white leading-none tracking-tight">VoltSpace</h2>
