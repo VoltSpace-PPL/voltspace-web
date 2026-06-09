@@ -29,17 +29,16 @@
         /* Status badge animations */
         @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-        /* ── Fix native <select> dropdown styling for dark theme ── */
-        select, select option {
+        /* ── Native select fallback (mostly hidden by custom select) ── */
+        select {
             background-color: #161e2d;
             color: #e2e8f0;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        select option:checked {
-            background-color: #1e3a5f;
-            color: #fff;
-        }
-        select option:hover {
-            background-color: #1e293b;
+        select option {
+            background-color: #161e2d;
+            color: #e2e8f0;
+            padding: 8px 12px;
         }
     </style>
 </head>
@@ -168,6 +167,7 @@
     </div>
 
     @include('partials.voltspace-api')
+    @include('partials.custom-select')
 
     <!-- Global Custom Alert Modal (reuse same style) -->
     <div id="vs-alert-modal" class="fixed inset-0 z-[9999] hidden" role="dialog" aria-modal="true">

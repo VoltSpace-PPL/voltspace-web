@@ -95,10 +95,24 @@
 {{-- ─── Generated Reports List ──────────────────────────────────────────────── --}}
 <div class="mb-10">
     <div class="flex items-center justify-between gap-4 mb-4">
-        <h2 class="text-[18px] font-bold text-white">Generated Reports</h2>
-        <span id="reports-count-badge" class="hidden px-3 py-1 rounded-full text-[12px] font-bold text-[#00d4aa] bg-[#00d4aa]/10 border border-[#00d4aa]/20">0 Reports</span>
+        <div class="flex items-center gap-3">
+            <h2 class="text-[18px] font-bold text-white">Generated Reports</h2>
+            <span id="reports-count-badge" class="hidden px-3 py-1 rounded-full text-[12px] font-bold text-[#00d4aa] bg-[#00d4aa]/10 border border-[#00d4aa]/20">0 Reports</span>
+        </div>
+        <button id="toggle-hidden-btn" onclick="toggleShowHidden()" class="hidden flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-all border"
+            style="background:rgba(148,163,184,0.08); border-color:rgba(148,163,184,0.2); color:#94a3b8;">
+            <svg id="toggle-hidden-icon-eye" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            </svg>
+            <svg id="toggle-hidden-icon-hide" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span id="toggle-hidden-label">See Hidden Reports</span>
+        </button>
     </div>
 
+    {{-- Main Visible Reports --}}
     <div class="rounded-[20px] glass-effect overflow-hidden">
         {{-- Loading --}}
         <div id="list-loading" class="flex flex-col items-center justify-center py-16 gap-3">
@@ -118,6 +132,19 @@
                 <p class="text-white font-bold text-[15px]">No Reports Yet</p>
                 <p class="text-slate-400 text-[13px] mt-1">Generate your first report above.</p>
             </div>
+        </div>
+    </div>
+
+    {{-- Hidden Reports Section --}}
+    <div id="hidden-reports-section" class="hidden mt-4">
+        <div class="flex items-center gap-3 mb-3 px-1">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            </svg>
+            <p class="text-[13px] font-bold text-slate-500 uppercase tracking-wider">Hidden Reports</p>
+        </div>
+        <div class="rounded-[20px] border border-dashed border-white/10 overflow-hidden">
+            <div id="hidden-list-container" class="divide-y divide-white/5"></div>
         </div>
     </div>
 </div>
@@ -361,23 +388,25 @@
         }
     };
 
-    /* ── Delete ──────────────────────────────────────────────────────────── */
-    window.deleteReport = async function (id, title) {
+    /* ── Toggle Hide ─────────────────────────────────────────────────────── */
+    window.toggleHideReport = async function (id, title, isHidden) {
+        const actionText = isHidden ? 'menampilkan kembali' : 'menyembunyikan';
         const ok = await vsAlert.confirm(
-            'Hapus Laporan',
-            `Yakin ingin menghapus "<strong>${title}</strong>"? File xlsx juga akan dihapus.`,
-            'Ya, Hapus', 'Batal'
+            isHidden ? 'Tampilkan Laporan' : 'Sembunyikan Laporan',
+            `Yakin ingin ${actionText} laporan "<strong>${title}</strong>"?`,
+            'Ya', 'Batal'
         );
         if (!ok) return;
 
         try {
-            const res = await apiFetch(`/laporan-energi/${id}`, { method: 'DELETE' });
+            const res = await apiFetch(`/laporan-energi/${id}/toggle-hide`, { method: 'POST' });
             if (res.ok) {
-                vsAlert.success('Dihapus', 'Laporan berhasil dihapus.');
+                const data = await res.json();
+                vsAlert.success('Berhasil', data.message || `Laporan berhasil ${isHidden ? 'ditampilkan' : 'disembunyikan'}.`);
                 loadReportList();
             } else {
                 const d = await res.json();
-                vsAlert.error('Gagal Hapus', d.message || 'Terjadi kesalahan.');
+                vsAlert.error('Gagal', d.message || 'Terjadi kesalahan.');
             }
         } catch (e) {
             vsAlert.error('Koneksi Error', 'Tidak dapat terhubung ke server.');
@@ -393,6 +422,7 @@
         
         const consumption = r.total_kwh_ringkasan || 0; 
         const totalRooms = r.jumlah_ruangan || 0;
+        const isHidden = r.is_hidden;
         
         return `
 <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 px-6 py-5 hover:bg-white/5 transition-colors">
@@ -430,16 +460,48 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 Download
             </button>
-            <button onclick="deleteReport(${r.id}, '${(r.title||'').replace(/'/g,"\\'")}' )"
-                class="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:bg-red-500/20 text-slate-400 hover:text-red-400"
+            <button onclick="toggleHideReport(${r.id}, '${(r.title||'').replace(/'/g,"\\'")}', ${isHidden ? 'true' : 'false'})"
+                class="w-9 h-9 rounded-xl flex items-center justify-center transition-all text-slate-400 hover:text-white"
                 style="background:rgba(255,255,255,0.05);"
-                title="Hapus laporan">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                title="${isHidden ? 'Tampilkan laporan' : 'Sembunyikan laporan'}">
+                ${isHidden
+                    ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>'
+                    : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>'
+                }
             </button>
         </div>
     </div>
 </div>`;
     }
+
+    /* ── Show/Hide Toggle ────────────────────────────────────────────────── */
+    let _showHidden = false;
+    window.toggleShowHidden = function() {
+        _showHidden = !_showHidden;
+        const btn = document.getElementById('toggle-hidden-btn');
+        const label = document.getElementById('toggle-hidden-label');
+        const iconEye = document.getElementById('toggle-hidden-icon-eye');
+        const iconHide = document.getElementById('toggle-hidden-icon-hide');
+        const hiddenSection = document.getElementById('hidden-reports-section');
+
+        if (_showHidden) {
+            label.textContent = 'Hide Hidden Reports';
+            btn.style.background = 'rgba(99,102,241,0.1)';
+            btn.style.borderColor = 'rgba(99,102,241,0.3)';
+            btn.style.color = '#818cf8';
+            iconEye.classList.add('hidden');
+            iconHide.classList.remove('hidden');
+            hiddenSection.classList.remove('hidden');
+        } else {
+            label.textContent = 'See Hidden Reports';
+            btn.style.background = 'rgba(148,163,184,0.08)';
+            btn.style.borderColor = 'rgba(148,163,184,0.2)';
+            btn.style.color = '#94a3b8';
+            iconEye.classList.remove('hidden');
+            iconHide.classList.add('hidden');
+            hiddenSection.classList.add('hidden');
+        }
+    };
 
     /* ── Load list ───────────────────────────────────────────────────────── */
     async function loadReportList() {
@@ -447,6 +509,9 @@
         const container = document.getElementById('list-container');
         const empty     = document.getElementById('list-empty');
         const badge     = document.getElementById('reports-count-badge');
+        const toggleBtn = document.getElementById('toggle-hidden-btn');
+        const hiddenContainer = document.getElementById('hidden-list-container');
+        const hiddenSection = document.getElementById('hidden-reports-section');
 
         loading.classList.remove('hidden');
         container.classList.add('hidden');
@@ -456,19 +521,31 @@
             const res  = await apiFetch('/laporan-energi?per_page=50');
             const data = await res.json();
 
-            const items = data.data || [];
+            const allItems = data.data || [];
+            const visibleItems = allItems.filter(r => !r.is_hidden);
+            const hiddenItems  = allItems.filter(r => r.is_hidden);
             loading.classList.add('hidden');
 
-            if (!items.length) {
+            // Update toggle button
+            if (hiddenItems.length > 0) {
+                toggleBtn.classList.remove('hidden');
+                hiddenContainer.innerHTML = hiddenItems.map(renderItem).join('');
+            } else {
+                toggleBtn.classList.add('hidden');
+                hiddenSection.classList.add('hidden');
+                _showHidden = false;
+            }
+
+            if (!visibleItems.length) {
                 empty.classList.remove('hidden');
                 badge.classList.add('hidden');
                 return;
             }
 
-            badge.textContent = `${items.length} Report${items.length > 1 ? 's' : ''}`;
+            badge.textContent = `${visibleItems.length} Report${visibleItems.length > 1 ? 's' : ''}`;
             badge.classList.remove('hidden');
 
-            container.innerHTML = items.map(renderItem).join('');
+            container.innerHTML = visibleItems.map(renderItem).join('');
             container.classList.remove('hidden');
         } catch (e) {
             loading.classList.add('hidden');

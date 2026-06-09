@@ -158,19 +158,18 @@ class GeneratedEnergyReportController extends Controller
         );
     }
 
-    public function destroy(Request $request, GeneratedEnergyReport $report): JsonResponse
+    public function toggleHide(Request $request, GeneratedEnergyReport $report): JsonResponse
     {
         if (! $request->user()->isStaffAdmin()) {
             return response()->json(['message' => 'Akses ditolak.'], 403);
         }
 
-        if (Storage::disk($report->disk)->exists($report->path)) {
-            Storage::disk($report->disk)->delete($report->path);
-        }
+        $report->is_hidden = !$report->is_hidden;
+        $report->save();
 
-        $report->delete();
+        $action = $report->is_hidden ? 'disembunyikan' : 'ditampilkan';
 
-        return response()->json(['message' => 'Laporan berhasil dihapus.']);
+        return response()->json(['message' => "Laporan berhasil $action.", 'is_hidden' => $report->is_hidden]);
     }
 
     /**
@@ -198,6 +197,7 @@ class GeneratedEnergyReportController extends Controller
             'created_by_name' => $report->author?->name,
             'created_at' => $report->created_at,
             'updated_at' => $report->updated_at,
+            'is_hidden' => $report->is_hidden,
         ];
     }
 
