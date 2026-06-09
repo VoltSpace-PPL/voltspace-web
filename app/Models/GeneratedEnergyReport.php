@@ -19,11 +19,13 @@ class GeneratedEnergyReport extends Model
         'path',
         'mime',
         'size_bytes',
+        'is_hidden',
     ];
 
     protected $casts = [
         'meta' => 'array',
         'total_kwh_ringkasan' => 'decimal:3',
+        'is_hidden' => 'boolean',
     ];
 
     public function author(): BelongsTo

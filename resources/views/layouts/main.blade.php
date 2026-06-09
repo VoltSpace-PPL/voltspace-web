@@ -50,16 +50,25 @@
         .main-shell { min-width: 0; }
 
         /* ── Fix native <select> dropdown styling for dark theme ── */
-        select, select option {
+        select {
             background-color: #161e2d;
             color: #e2e8f0;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        select option:checked {
-            background-color: #1e3a5f;
-            color: #fff;
+        select option {
+            background-color: #161e2d;
+            color: #e2e8f0;
+            padding: 8px 12px;
         }
-        select option:hover {
-            background-color: #1e293b;
+        select option:checked,
+        select option:focus {
+            background-color: #00d4aa;
+            color: #0f172a;
+        }
+        select:focus {
+            outline: none;
+            border-color: #00d4aa;
+            box-shadow: 0 0 0 2px rgba(0,212,170,0.15);
         }
     </style>
 </head>
@@ -253,6 +262,7 @@
         updateClock();
     </script>
     @include('partials.voltspace-api')
+    @include('partials.custom-select')
 
     <!-- Global Custom Alert Modal -->
     <div id="vs-alert-modal" class="fixed inset-0 z-[9999] hidden" role="dialog" aria-modal="true">
@@ -450,9 +460,7 @@
                         badge.textContent = unreadNotifs.length;
                         badge.classList.remove('hidden');
                     }
-                    if (headerCount) {
-                        headerCount.textContent = `${unreadNotifs.length} unread`;
-                    }
+                    if (headerCount) headerCount.textContent = `${unreadNotifs.length} unread`;
                 } else {
                     if (badge) badge.classList.add('hidden');
                     if (headerCount) headerCount.textContent = '0 unread';
@@ -462,18 +470,16 @@
                     if (allNotifs.length > 0) {
                         list.innerHTML = allNotifs.map(n => {
                             const isRead = new Date(n.created_at) <= lastReadDate;
-                            let dotColor = 'bg-[#00d4aa]'; // Default green
+                            let dotColor = 'bg-[#00d4aa]';
                             if (n.type === 'energy') {
                                 dotColor = n.severity === 'critical' ? 'bg-red-500' : 'bg-yellow-500';
                             } else if (n.type === 'peminjaman') {
                                 dotColor = (n.meta && n.meta.status === 'pending') ? 'bg-blue-500' : ((n.meta && n.meta.status === 'rejected') ? 'bg-red-500' : 'bg-[#00d4aa]');
                             }
-                            
                             const timeAgo = new Date(n.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-
                             return `
                                 <div class="px-5 py-4 border-b border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors flex gap-4 ${isRead ? 'opacity-50' : ''}">
-                                    <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0" ${isRead ? '' : `style="box-shadow: 0 0 8px var(--tw-ring-color, currentColor); color: ${dotColor.replace('bg-', '')};"`}></div>
+                                    <div class="mt-1.5 w-2 h-2 rounded-full ${dotColor} shrink-0"></div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-[13px] font-bold text-white truncate">${n.title}</p>
                                         <p class="text-[12px] text-slate-400 line-clamp-2 mt-1 leading-relaxed">${n.body}</p>
@@ -482,8 +488,9 @@
                                 </div>
                             `;
                         }).join('');
-                    if (headerCount) headerCount.textContent = '0 unread';
-                    if (list) list.innerHTML = '<div class="p-8 text-center text-[13px] text-slate-500">No new notifications</div>';
+                    } else {
+                        list.innerHTML = '<div class="p-8 text-center text-[13px] text-slate-500">No new notifications</div>';
+                    }
                 }
             } catch (e) {
                 // Ignore
