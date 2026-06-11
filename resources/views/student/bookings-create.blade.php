@@ -287,11 +287,11 @@
 
             populateRoomSelect(processedRooms);
 
-            const countAvailable = processedRooms.filter(r => r.is_available).length;
+            const countAvailable = processedRooms.filter(r => r.is_available !== false && r.status === 'tersedia').length;
             if (countAvailable === 0) {
                 showAvailabilityStatus('error', `Semua ruangan penuh pada jam ${waktuMulai}–${waktuSel}.`);
             } else {
-                showAvailabilityStatus('ok', `Menampilkan total ${processedRooms.length} ruangan (Tersedia: ${countAvailable}).`);
+                showAvailabilityStatus('ok', `${countAvailable} ruangan tersedia pada jam ${waktuMulai}–${waktuSel}.`);
             }
         } catch (e) {
             console.error('[NewBooking] availability check error:', e);
@@ -349,13 +349,12 @@
         }
 
         sel.innerHTML = '<option value="">Pilih ruangan...</option>' +
-            rooms.map(r => {
-                const name = `${r.nama_ruangan || r.id}${r.kode ? ' (' + r.kode + ')' : ''}`;
-                if (r.is_available === false) {
-                    return `<option value="" disabled style="color: #64748b;">${name} — Tidak Tersedia (${r.reason})</option>`;
-                }
-                return `<option value="${r.id}">${name} — Kapasitas: ${r.kapasitas ?? '?'}</option>`;
-            }).join('');
+            rooms
+                .filter(r => r.is_available !== false && r.status === 'tersedia')
+                .map(r => {
+                    const name = `${r.nama_ruangan || r.id}${r.kode ? ' (' + r.kode + ')' : ''}`;
+                    return `<option value="${r.id}">${name} — Kapasitas: ${r.kapasitas ?? '?'}</option>`;
+                }).join('');
 
         /* Pre-select from query param */
         const preRoom = new URLSearchParams(location.search).get('ruangan_id') || new URLSearchParams(location.search).get('room_id');

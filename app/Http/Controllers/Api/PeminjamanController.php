@@ -195,10 +195,17 @@ class PeminjamanController extends Controller
             return response()->json(['message' => 'Akses ditolak.'], 403);
         }
 
+        $data = $request->validate([
+            'catatan_admin' => ['nullable', 'string', 'max:500'],
+        ]);
+
         $updateData = ['status' => 'dibatalkan'];
         if ($user->isStaffAdmin()) {
             $updateData['reviewed_by'] = $user->id;
             $updateData['reviewed_at'] = now();
+            if ($request->has('catatan_admin')) {
+                $updateData['catatan_admin'] = $data['catatan_admin'];
+            }
         }
 
         $peminjaman->update($updateData);
