@@ -77,7 +77,7 @@
             <p class="text-[#00aaff] text-[13px] font-bold">Alert Thresholds</p>
             <p class="text-slate-400 text-[12px] mt-0.5">
                 High Usage: <strong class="text-white" id="banner-threshold">—</strong> kWh &nbsp;·&nbsp;
-                Warning at 85% &nbsp;·&nbsp; Critical at 100%
+                Warning at 80% &nbsp;·&nbsp; Critical at 85%
             </p>
         </div>
     </div>
