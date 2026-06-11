@@ -7,17 +7,6 @@
         <h1 class="text-[28px] font-extrabold text-white tracking-tight leading-none">Room Availability</h1>
         <p class="text-slate-400 text-[14px] mt-2">Monitor room usage and click any room to see its booking calendar</p>
     </div>
-    <div class="flex items-center gap-3">
-        <button id="import-schedule-btn" onclick="triggerImport()"
-            class="flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-bold text-[14px] transition-all hover:scale-[1.02] active:scale-[0.98]"
-            style="background:linear-gradient(135deg,#00d4aa,#0099cc); color:#0b1120; box-shadow:0 4px 20px rgba(0,212,170,0.3);">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-            </svg>
-            Import Schedule
-        </button>
-        <input type="file" id="import-file-input" accept=".xlsx" class="hidden" onchange="handleImportFile(this)">
-    </div>
 </div>
 
 {{-- Stats Cards --}}
@@ -79,19 +68,6 @@
             class="px-4 py-2.5 rounded-xl text-white text-[13px] focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/40 transition-all [color-scheme:dark]"
             style="background:#161e2d; border:1px solid #1e2d45;">
         <button id="clear-date-btn" class="hidden text-[12px] text-slate-400 hover:text-white px-2 py-1 rounded-lg hover:bg-white/5 transition-all">Clear</button>
-    </div>
-    <div class="flex items-center gap-2 flex-shrink-0">
-        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-width="2"/>
-        </svg>
-        <select id="status-filter"
-            class="px-4 py-2.5 rounded-xl text-white text-[13px] focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/40 transition-all cursor-pointer"
-            style="background:#161e2d; border:1px solid #1e2d45;">
-            <option value="">All Status</option>
-            <option value="tersedia">Available</option>
-            <option value="dipesan">Booked</option>
-            <option value="digunakan">In Use</option>
-        </select>
     </div>
 </div>
 
@@ -231,9 +207,8 @@
             const booking = activeBookings.find(b => b.ruangan_id === r.id && b.status === 'disetujui');
 
             return `
-<div class="rounded-2xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-xl cursor-pointer group"
-     style="background:#161e2d; border:1px solid #1e2d45;"
-     onclick="window.location.href='/room-availability/' + ${r.id}" >
+<div class="rounded-2xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-xl group"
+     style="background:#161e2d; border:1px solid #1e2d45;">
     <div class="px-5 pt-5 pb-4">
         <div class="flex items-start justify-between gap-3 mb-4">
             <div class="flex items-center gap-3 min-w-0 flex-1">
@@ -266,21 +241,15 @@
         </div>
     </div>
 
-    <div class="px-5 pb-4 pt-1">
-        <div class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[13px] font-bold transition-all group-hover:opacity-100"
-             style="background:rgba(0,170,255,0.08); border:1px solid rgba(0,170,255,0.2); color:#63b3ed;">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            View Booking Calendar
-        </div>
-        ${booking ? `
-        <button onclick="event.stopPropagation(); adminCancelBooking(${booking.id}, '${(r.nama_ruangan||'Room').replace(/'/g,"\\'")}', '${(booking.user?.name||'').replace(/'/g,"\\'")}' )"
-            class="w-full mt-2 flex items-center justify-center gap-2 py-2 rounded-xl font-bold text-[13px] transition-all hover:scale-[1.01]"
-            style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#f87171;">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    <div class="px-5 pb-5 pt-1">
+        <a href="/room-availability/${r.id}"
+            class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] hover:scale-[1.01] transition-all"
+            style="background:linear-gradient(135deg,rgba(0,212,170,0.15),rgba(0,170,255,0.15)); color:#00d4aa; border:1px solid rgba(0,212,170,0.3);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
-            Cancel Booking
-        </button>` : ''}
+            View Booking Calendar
+        </a>
     </div>
 </div>`;
         }).join('');
@@ -289,14 +258,13 @@
     /* ── Filter rooms ──────────────────────────────────── */
     function filterAndRender() {
         const q    = document.getElementById('room-search').value.toLowerCase();
-        const st   = document.getElementById('status-filter').value;
         const dateVal = document.getElementById('date-filter').value;
 
         let filtered = allRooms.filter(r => {
+            if (r.status !== 'tersedia') return false;
             const name = (r.nama_ruangan || '').toLowerCase();
             const kode = (r.kode || r.id || '').toLowerCase();
             if (q && !name.includes(q) && !kode.includes(q)) return false;
-            if (st && r.status !== st) return false;
             return true;
         });
 
@@ -591,7 +559,6 @@
 
     /* ── Event listeners ───────────────────────────────── */
     document.getElementById('room-search').addEventListener('input', filterAndRender);
-    document.getElementById('status-filter').addEventListener('change', filterAndRender);
     document.getElementById('date-filter').addEventListener('change', function() {
         document.getElementById('clear-date-btn').classList.toggle('hidden', !this.value);
         filterAndRender();
