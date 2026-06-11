@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 final class EnergyAlertService
 {
-    private const WARNING_RATIO = 0.85;
+    private const WARNING_RATIO  = 0.80;
+    private const CRITICAL_RATIO = 0.85;
 
     /**
      * Alert dihitung real-time dari monitoring + ambang global (tidak disimpan ke DB).
@@ -28,8 +29,9 @@ final class EnergyAlertService
         $month = $month ?? (int) $now->month;
 
         $global = EnergyAlertSetting::current();
-        $threshold = (float) $global->high_usage_threshold_kwh;
-        $warningAt = $threshold * self::WARNING_RATIO;
+        $threshold  = (float) $global->high_usage_threshold_kwh;
+        $criticalAt = $threshold * self::CRITICAL_RATIO;
+        $warningAt  = $threshold * self::WARNING_RATIO;
 
         $perRoom = MonitoringEnergi::query()
             ->select('ruangan_id', DB::raw('SUM(konsumsi_kwh) as total_kwh'))
@@ -45,16 +47,16 @@ final class EnergyAlertService
             $kwh = round((float) ($perRoom[$room->id] ?? 0), 3);
             $nama = $room->nama_ruangan;
 
-            if ($kwh >= $threshold) {
+            if ($kwh >= $criticalAt) {
                 $alerts[] = [
-                    'status' => 'exceeded',
-                    'severity' => 'danger',
-                    'ruangan_id' => $room->id,
-                    'nama_ruangan' => $nama,
-                    'total_kwh' => $kwh,
-                    'threshold_kwh' => $threshold,
+                    'status'           => 'exceeded',
+                    'severity'         => 'danger',
+                    'ruangan_id'       => $room->id,
+                    'nama_ruangan'     => $nama,
+                    'total_kwh'        => $kwh,
+                    'threshold_kwh'    => $threshold,
                     'persentase_ambang' => $threshold > 0 ? round(($kwh / $threshold) * 100, 1) : 100,
-                    'message' => "{$nama} telah melebihi batas konsumsi ({$kwh} kWh / batas {$threshold} kWh).",
+                    'message'          => "{$nama} telah melebihi batas konsumsi ({$kwh} kWh / batas {$threshold} kWh).",
                 ];
 
                 continue;
@@ -63,15 +65,15 @@ final class EnergyAlertService
             if ($kwh >= $warningAt) {
                 $sisa = round(max(0, $threshold - $kwh), 3);
                 $alerts[] = [
-                    'status' => 'almost_exceeded',
-                    'severity' => 'warning',
-                    'ruangan_id' => $room->id,
-                    'nama_ruangan' => $nama,
-                    'total_kwh' => $kwh,
-                    'threshold_kwh' => $threshold,
-                    'sisa_kwh_sebelum_batas' => $sisa,
-                    'persentase_ambang' => $threshold > 0 ? round(($kwh / $threshold) * 100, 1) : 0,
-                    'message' => "{$nama} hampir melebihi batas (tersisa {$sisa} kWh dari {$threshold} kWh).",
+                    'status'                   => 'almost_exceeded',
+                    'severity'                 => 'warning',
+                    'ruangan_id'               => $room->id,
+                    'nama_ruangan'             => $nama,
+                    'total_kwh'                => $kwh,
+                    'threshold_kwh'            => $threshold,
+                    'sisa_kwh_sebelum_batas'   => $sisa,
+                    'persentase_ambang'        => $threshold > 0 ? round(($kwh / $threshold) * 100, 1) : 0,
+                    'message'                  => "{$nama} hampir melebihi batas (tersisa {$sisa} kWh dari {$threshold} kWh).",
                 ];
             }
         }

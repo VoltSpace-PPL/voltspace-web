@@ -191,10 +191,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors shrink-0 h-8 px-3 rounded-[9px] border border-[#334155]/70 bg-[#0f1b38]/45">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke-width="2"/></svg>
-                                    <span class="text-[11px] font-bold uppercase tracking-wider">ID</span>
-                                </div>
 
                             </div>
                             <div id="real-time-clock" class="text-[13px] font-medium text-slate-500 flex items-center gap-2 shrink-0 justify-end">
