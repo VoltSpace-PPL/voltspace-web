@@ -454,7 +454,7 @@
                     ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20'
                     : 'bg-slate-500/15 text-slate-400 border-slate-500/20';
 
-                const statusLabel = r.status === 'digunakan' ? 'In Use' : 'Available';
+                const statusLabel = r.status === 'digunakan' ? 'Occupied' : 'Available';
 
                 const powerColor = r.power === 'ON'
                     ? 'bg-[#00d4aa]/15 text-[#00d4aa] border-[#00d4aa]/20'

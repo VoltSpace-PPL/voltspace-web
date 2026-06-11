@@ -119,6 +119,7 @@
                         <button type="button" id="add-mode-days-btn" onclick="setAddScheduleMode('days')" class="px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all">Days of Week</button>
                         <button type="button" id="add-mode-date-btn" onclick="setAddScheduleMode('date')" class="px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all">Specific Date</button>
                     </div>
+                    <p id="add-mode-lock-hint" class="hidden text-[11px] text-amber-400 mt-1">Clear the current selection to switch mode.</p>
                     <input type="hidden" name="schedule_mode" id="add-schedule-mode" value="days">
                 </div>
 
@@ -137,6 +138,7 @@
                         <button type="button" data-day="sunday" class="day-btn py-2 rounded-lg border border-white/10 text-[13px] font-medium text-slate-400 hover:bg-white/5 transition-colors">Sunday</button>
                     </div>
                     <input type="hidden" name="selected_days" id="add-selected-days">
+                    <button type="button" id="add-clear-days" onclick="clearAddDays()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline self-start">✕ Clear selection</button>
                 </div>
 
                 <!-- Select Date -->
@@ -149,6 +151,7 @@
                         <input type="date" name="specific_date" id="add-specific-date"
                                class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
                     </div>
+                    <button type="button" id="add-clear-date" onclick="clearAddDate()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline">✕ Clear date</button>
                 </div>
 
                 {{-- Time --}}
@@ -281,6 +284,7 @@
                         <button type="button" id="edit-mode-days-btn" onclick="setEditScheduleMode('days')" class="px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all">Days of Week</button>
                         <button type="button" id="edit-mode-date-btn" onclick="setEditScheduleMode('date')" class="px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all">Specific Date</button>
                     </div>
+                    <p id="edit-mode-lock-hint" class="hidden text-[11px] text-amber-400 mt-1">Clear the current selection to switch mode.</p>
                     <input type="hidden" name="edit_schedule_mode" id="edit-schedule-mode" value="days">
                 </div>
 
@@ -299,6 +303,7 @@
                         <button type="button" data-day="sunday" class="day-btn py-2 rounded-lg border border-white/10 text-[13px] font-medium text-slate-400 hover:bg-white/5 transition-colors">Sunday</button>
                     </div>
                     <input type="hidden" name="edit_selected_days" id="edit-selected-days">
+                    <button type="button" id="edit-clear-days" onclick="clearEditDays()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline self-start">✕ Clear selection</button>
                 </div>
 
                 <!-- Select Date -->
@@ -311,6 +316,7 @@
                         <input type="date" name="edit_specific_date" id="edit-specific-date"
                                class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
                     </div>
+                    <button type="button" id="edit-clear-date" onclick="clearEditDate()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline">✕ Clear date</button>
                 </div>
 
                 {{-- Time --}}
@@ -546,6 +552,25 @@
         function updateInput() {
             const selected = Array.from(btns).filter(b => b.classList.contains('selected')).map(b => b.dataset.day);
             input.value = JSON.stringify(selected);
+
+            // Lock logic: lock the OTHER mode button
+            if (containerId === 'add-days-container') {
+                if (selected.length > 0) {
+                    lockAddModeBtn('date');   // days selected → disable Specific Date btn
+                    document.getElementById('add-clear-days').classList.remove('hidden');
+                } else {
+                    lockAddModeBtn(null);
+                    document.getElementById('add-clear-days').classList.add('hidden');
+                }
+            } else if (containerId === 'edit-days-container') {
+                if (selected.length > 0) {
+                    lockEditModeBtn('date');  // days selected → disable Specific Date btn
+                    document.getElementById('edit-clear-days').classList.remove('hidden');
+                } else {
+                    lockEditModeBtn(null);
+                    document.getElementById('edit-clear-days').classList.add('hidden');
+                }
+            }
         }
         
         return {
@@ -716,13 +741,74 @@
         }
     }
 
+    function lockAddModeBtn(lockWhich) {
+        const disabledCls = 'opacity-40 cursor-not-allowed pointer-events-none';
+        const hint = document.getElementById('add-mode-lock-hint');
+        const btnDays = document.getElementById('add-mode-days-btn');
+        const btnDate = document.getElementById('add-mode-date-btn');
+        if (lockWhich === 'date') {
+            btnDate.classList.add(...disabledCls.split(' '));
+            btnDays.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else if (lockWhich === 'days') {
+            btnDays.classList.add(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else {
+            btnDays.classList.remove(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.add('hidden');
+        }
+    }
+
+    function lockEditModeBtn(lockWhich) {
+        const disabledCls = 'opacity-40 cursor-not-allowed pointer-events-none';
+        const hint = document.getElementById('edit-mode-lock-hint');
+        const btnDays = document.getElementById('edit-mode-days-btn');
+        const btnDate = document.getElementById('edit-mode-date-btn');
+        if (lockWhich === 'date') {
+            btnDate.classList.add(...disabledCls.split(' '));
+            btnDays.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else if (lockWhich === 'days') {
+            btnDays.classList.add(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else {
+            btnDays.classList.remove(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.add('hidden');
+        }
+    }
+
+    function clearAddDays() {
+        addDayManager && addDayManager.reset();
+        document.getElementById('add-clear-days').classList.add('hidden');
+        lockAddModeBtn(null);
+    }
+    function clearAddDate() {
+        document.getElementById('add-specific-date').value = '';
+        document.getElementById('add-clear-date').classList.add('hidden');
+        lockAddModeBtn(null);
+    }
+    function clearEditDays() {
+        editDayManager && editDayManager.reset();
+        document.getElementById('edit-clear-days').classList.add('hidden');
+        lockEditModeBtn(null);
+    }
+    function clearEditDate() {
+        document.getElementById('edit-specific-date').value = '';
+        document.getElementById('edit-clear-date').classList.add('hidden');
+        lockEditModeBtn(null);
+    }
+
     function setAddScheduleMode(mode) {
         document.getElementById('add-schedule-mode').value = mode;
         const btnDays = document.getElementById('add-mode-days-btn');
         const btnDate = document.getElementById('add-mode-date-btn');
         const secDays = document.getElementById('add-days-section');
         const secDate = document.getElementById('add-date-section');
-        
+
         if (mode === 'days') {
             btnDays.className = 'px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all';
             btnDate.className = 'px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all';
@@ -1127,6 +1213,27 @@
                 selectRoom.value = roomId;
             }
         }
+
+        // Date input locking logic
+        document.getElementById('add-specific-date').addEventListener('change', function(e) {
+            if (this.value) {
+                lockAddModeBtn('days');   // date filled → disable Days of Week btn
+                document.getElementById('add-clear-date').classList.remove('hidden');
+            } else {
+                lockAddModeBtn(null);
+                document.getElementById('add-clear-date').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('edit-specific-date').addEventListener('change', function(e) {
+            if (this.value) {
+                lockEditModeBtn('days');  // date filled → disable Days of Week btn
+                document.getElementById('edit-clear-date').classList.remove('hidden');
+            } else {
+                lockEditModeBtn(null);
+                document.getElementById('edit-clear-date').classList.add('hidden');
+            }
+        });
     });
 
     /* ── Download Schedule Template ──────────────────── */
