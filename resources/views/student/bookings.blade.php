@@ -90,7 +90,7 @@
 <div id="booking-list" class="space-y-4">
     <div class="flex flex-col items-center justify-center py-20 gap-3">
         <div class="w-8 h-8 border-2 border-[#00d4aa] border-t-transparent rounded-full animate-spin"></div>
-        <span class="text-slate-500 text-[13px]">Memuat pengajuan...</span>
+        <span class="text-slate-500 text-[13px]">Loading bookings...</span>
     </div>
 </div>
 @endsection
@@ -121,7 +121,7 @@
         if (['dibatalkan','ditolak'].includes(b.status)) return false;
         const tgl = new Date(b.tanggal_mulai); tgl.setHours(0,0,0,0);
         const now = new Date(); now.setHours(0,0,0,0);
-        return Math.floor((tgl - now) / 86400000) >= 2;
+        return Math.floor((tgl - now) / 86400000) >= 3;
     }
 
     function renderBookings(list) {
@@ -132,12 +132,12 @@
                 <svg class="w-14 h-14 text-slate-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-width="2"/>
                 </svg>
-                <p class="text-slate-500 text-[15px] font-medium">Tidak ada pengajuan ditemukan.</p>
+                <p class="text-slate-500 text-[15px] font-medium">No bookings found.</p>
                 <a href="/student/bookings/create"
                    class="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-[13px] transition-all"
                    style="background:#00d4aa; color:#0b1120;">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                    Buat Peminjaman Baru
+                    Create New Booking
                 </a>
             </div>`;
             return;
@@ -160,7 +160,7 @@
                 <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/>
                 </svg>
-                <span class="text-white font-bold text-[17px] truncate">${room.nama_ruangan || 'Ruangan'}</span>
+                <span class="text-white font-bold text-[17px] truncate">${room.nama_ruangan || 'Room'}</span>
             </div>
             {{-- Status badge --}}
             <span class="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${s.cls}">
@@ -222,7 +222,7 @@
     ${b.catatan_admin ? `
     <div class="px-6 pb-4">
         <div class="rounded-xl px-4 py-3" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
-            <p class="text-red-400 text-[11px] font-bold uppercase tracking-wider mb-1.5">Catatan Admin</p>
+            <p class="text-red-400 text-[11px] font-bold uppercase tracking-wider mb-1.5">${b.status === 'dibatalkan' ? 'Cancellation Reason' : (b.status === 'ditolak' ? 'Rejection Reason' : 'Admin Note')}</p>
             <p class="text-red-300 text-[13px]">${b.catatan_admin}</p>
         </div>
     </div>` : ''}
@@ -247,23 +247,23 @@
     /* ── Cancel booking ──────────────────────────────── */
     window.confirmCancel = async function (id) {
         const ok = await vsAlert.confirm(
-            'Batalkan Peminjaman?',
-            'Apakah kamu yakin ingin membatalkan pengajuan ini?<br><span class="text-yellow-400 text-[12px]">⚠ Pembatalan hanya bisa dilakukan maksimal H-2 sebelum tanggal acara.</span>',
-            'Ya, Batalkan',
-            'Tidak'
+            'Cancel Booking?',
+            'Are you sure you want to cancel this booking request?<br><span class="text-yellow-400 text-[12px]">⚠ Cancellation can only be done at least H-3 before the event date.</span>',
+            'Yes, Cancel',
+            'No'
         );
         if (!ok) return;
         try {
             const res  = await apiFetch(`/peminjaman/${id}/cancel`, { method: 'POST' });
             const data = await res.json();
             if (res.ok) {
-                vsAlert.success('Berhasil Dibatalkan', 'Pengajuan peminjaman berhasil dibatalkan.');
+                vsAlert.success('Successfully Cancelled', 'Booking request has been cancelled successfully.');
                 loadBookings();
             } else {
-                vsAlert.error('Gagal Membatalkan', data.message || 'Terjadi kesalahan.');
+                vsAlert.error('Failed to Cancel', data.message || 'An error occurred.');
             }
         } catch (e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server.');
         }
     };
 
@@ -301,7 +301,7 @@
             loadStats();
         } catch (e) {
             document.getElementById('booking-list').innerHTML =
-                '<div class="text-center py-16 text-slate-500">Gagal memuat data pengajuan.</div>';
+                '<div class="text-center py-16 text-slate-500">Failed to load booking data.</div>';
         }
     }
 
