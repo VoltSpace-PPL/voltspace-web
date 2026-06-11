@@ -184,9 +184,9 @@
                     </div>
                 </div>
 
-                {{-- Admin Note (if rejected) --}}
+                {{-- Admin Note (if rejected or cancelled) --}}
                 <div id="detail-rejection-section" class="hidden">
-                    <p class="text-[11px] font-bold text-red-500/70 uppercase tracking-wider mb-2">Rejection Reason</p>
+                    <p id="detail-rejection-title" class="text-[11px] font-bold text-red-500/70 uppercase tracking-wider mb-2">Admin Note</p>
                     <div class="bg-red-500/5 rounded-xl p-4 border border-red-500/20">
                         <p class="text-[13px] text-red-300 leading-relaxed" id="detail-rejection-reason">—</p>
                     </div>
@@ -576,9 +576,10 @@
         document.getElementById('detail-end-time').textContent   = formatTimeWib(item.waktu_selesai);
         document.getElementById('detail-purpose').textContent = item.tujuan || '—';
 
-        // Rejection reason
-        if (item.status === 'ditolak' && item.catatan_admin) {
+        // Rejection / Cancellation reason
+        if ((item.status === 'ditolak' || item.status === 'dibatalkan') && item.catatan_admin) {
             document.getElementById('detail-rejection-section').classList.remove('hidden');
+            document.getElementById('detail-rejection-title').textContent = item.status === 'ditolak' ? 'Rejection Reason' : 'Cancellation Reason';
             document.getElementById('detail-rejection-reason').textContent = item.catatan_admin;
         } else {
             document.getElementById('detail-rejection-section').classList.add('hidden');

@@ -69,3 +69,63 @@ Schedule::call(function () {
         }
     }
 })->everyMinute();
+
+/**
+ * Job 1: Kirim pengingat kepada admin untuk pengajuan pending yang belum diproses
+ * setelah 1×24 jam (dan belum melebihi 2×24 jam).
+ * Penanda: catatan_admin diset ke '__reminder_sent__' agar tidak dikirim berulang.
+ */
+Schedule::call(function () {
+    $now        = Carbon::now();
+    $threshold1 = $now->copy()->subHours(24); // lebih dari 24 jam lalu
+    $threshold2 = $now->copy()->subHours(48); // belum 48 jam
+
+    $pendings = \App\Models\Peminjaman::query()
+        ->where('status', 'pending')
+        ->where('created_at', '<=', $threshold1)
+        ->where('created_at', '>', $threshold2)
+        ->where(function ($q) {
+            // hanya yang belum pernah dikirim reminder (ditandai di catatan_admin)
+            $q->whereNull('catatan_admin')
+              ->orWhere('catatan_admin', '!=', '__reminder_sent__');
+        })
+        ->get();
+
+    foreach ($pendings as $p) {
+        // Tandai sudah dikirim reminder agar tidak berulang
+        $p->update(['catatan_admin' => '__reminder_sent__']);
+
+        // Log untuk debugging / bisa diperluas ke email/push di masa depan
+        \Illuminate\Support\Facades\Log::info('[AutoReminder] Pengajuan peminjaman #'.$p->id.' belum diproses selama >24 jam. Admin perlu segera memproses.');
+    }
+
+    if ($pendings->count() > 0) {
+        \Illuminate\Support\Facades\Log::info('[AutoReminder] '.$pendings->count().' pengajuan menunggu keputusan admin.');
+    }
+})->hourly();
+
+/**
+ * Job 2: Auto-reject pengajuan pending yang sudah melewati 2×24 jam tanpa keputusan admin.
+ */
+Schedule::call(function () {
+    $threshold = Carbon::now()->subHours(48);
+
+    $expired = \App\Models\Peminjaman::query()
+        ->where('status', 'pending')
+        ->where('created_at', '<=', $threshold)
+        ->get();
+
+    foreach ($expired as $p) {
+        $p->update([
+            'status'        => 'ditolak',
+            'catatan_admin' => 'Pengajuan otomatis ditolak oleh sistem karena tidak ada keputusan admin dalam 2×24 jam.',
+            'reviewed_at'   => Carbon::now(),
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('[AutoReject] Pengajuan peminjaman #'.$p->id.' ditolak otomatis (melewati batas 2×24 jam).');
+    }
+
+    if ($expired->count() > 0) {
+        \Illuminate\Support\Facades\Log::info('[AutoReject] '.$expired->count().' pengajuan ditolak otomatis.');
+    }
+})->hourly();

@@ -62,12 +62,12 @@ class PeminjamanController extends Controller
         }
 
         $data = $request->validate([
-            'ruangan_id' => ['required', 'string', 'exists:ruangans,id'],
-            'tanggal_mulai' => ['required', 'date', 'after_or_equal:today'],
+            'ruangan_id'      => ['required', 'string', 'exists:ruangans,id'],
+            'tanggal_mulai'   => ['required', 'date', 'after_or_equal:today'],
             'tanggal_selesai' => ['required', 'date', 'after_or_equal:tanggal_mulai'],
-            'waktu_mulai' => ['required', 'date_format:H:i'],
-            'waktu_selesai' => ['required', 'date_format:H:i', 'after:waktu_mulai'],
-            'tujuan' => ['required', 'string', 'max:500'],
+            'waktu_mulai'     => ['required', 'date_format:H:i'],
+            'waktu_selesai'   => ['required', 'date_format:H:i', 'after:waktu_mulai'],
+            'tujuan'          => ['required', 'string', 'max:500'],
             'surat_peminjaman' => ['nullable', 'file', 'mimes:docx,doc,pdf,xlsx,xls', 'max:5120'],
         ], [
             'tanggal_mulai.after_or_equal' => 'Tanggal peminjaman tidak boleh memilih hari yang sudah lewat.',
@@ -75,11 +75,16 @@ class PeminjamanController extends Controller
             'waktu_selesai.after' => 'Waktu selesai harus setelah waktu mulai.',
         ]);
 
+        // Aturan H-3: pengajuan wajib dilakukan minimal 3 hari sebelum tanggal mulai
+        $dMulai = Carbon::parse($data['tanggal_mulai'])->startOfDay();
+        if ($dMulai->lt(Carbon::today()->addDays(3))) {
+            return response()->json(['message' => 'Pengajuan peminjaman harus dilakukan paling lambat H-3 (3 hari sebelum tanggal kegiatan).'], 422);
+        }
+
         if ($data['waktu_selesai'] > '20:00') {
             return response()->json(['message' => 'Waktu maksimal peminjaman adalah sampai pukul 20:00 (8 malam).'], 422);
         }
 
-        $dMulai = Carbon::parse($data['tanggal_mulai'])->startOfDay();
         $dSelesai = Carbon::parse($data['tanggal_selesai'])->startOfDay();
 
         if (RoomScheduleGuard::peminjamanBlocks($data['ruangan_id'], $dMulai, $dSelesai, $data['waktu_mulai'], $data['waktu_selesai'], ['ditolak', 'dibatalkan'])) {
@@ -95,20 +100,20 @@ class PeminjamanController extends Controller
         }
 
         $row = Peminjaman::create([
-            'user_id' => $user->id,
-            'ruangan_id' => $data['ruangan_id'],
-            'tanggal_mulai' => $data['tanggal_mulai'],
-            'tanggal_selesai' => $data['tanggal_selesai'],
-            'waktu_mulai' => $data['waktu_mulai'],
-            'waktu_selesai' => $data['waktu_selesai'],
-            'tujuan' => $data['tujuan'],
+            'user_id'          => $user->id,
+            'ruangan_id'       => $data['ruangan_id'],
+            'tanggal_mulai'    => $data['tanggal_mulai'],
+            'tanggal_selesai'  => $data['tanggal_selesai'],
+            'waktu_mulai'      => $data['waktu_mulai'],
+            'waktu_selesai'    => $data['waktu_selesai'],
+            'tujuan'           => $data['tujuan'],
             'surat_peminjaman' => $filePath,
-            'status' => 'pending',
+            'status'           => 'pending',
         ]);
 
         return response()->json([
             'message' => 'Pengajuan berhasil dibuat.',
-            'data' => $row->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
+            'data'    => $row->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
         ], 201);
     }
 
@@ -134,17 +139,17 @@ class PeminjamanController extends Controller
         }
 
         $peminjaman->update([
-            'status' => 'disetujui',
-            'reviewed_at' => now(),
-            'reviewed_by' => $request->user()->id,
+            'status'       => 'disetujui',
+            'reviewed_at'  => now(),
+            'reviewed_by'  => $request->user()->id,
             'catatan_admin' => null,
         ]);
 
         $jadwal = $this->jadwalSync->syncOnApprove($peminjaman->fresh());
 
         return response()->json([
-            'message' => 'Disetujui. Jadwal listrik otomatis dibuat dan lampu diset nyala.',
-            'data' => $peminjaman->fresh()->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
+            'message'        => 'Disetujui. Jadwal listrik otomatis dibuat dan lampu diset nyala.',
+            'data'           => $peminjaman->fresh()->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
             'jadwal_listrik' => $jadwal,
         ]);
     }
@@ -163,15 +168,22 @@ class PeminjamanController extends Controller
         ]);
 
         $peminjaman->update([
-            'status' => 'ditolak',
+            'status'        => 'ditolak',
             'catatan_admin' => $data['catatan_admin'] ?? null,
-            'reviewed_at' => now(),
-            'reviewed_by' => $request->user()->id,
+            'reviewed_at'   => now(),
+            'reviewed_by'   => $request->user()->id,
         ]);
 
         return response()->json(['message' => 'Ditolak.', 'data' => $peminjaman->fresh()]);
     }
 
+    /**
+     * Pembatalan peminjaman.
+     * - Mahasiswa: TIDAK dapat membatalkan (setelah disetujui, hanya admin yang bisa membatalkan).
+     * - Admin: hanya dapat membatalkan peminjaman yang sudah DISETUJUI (kondisi darurat/prioritas institusi),
+     * - Mahasiswa: Dapat membatalkan hingga H-3 sebelum jadwal.
+     * - Admin: dapat membatalkan peminjaman yang sudah DISETUJUI, maksimal H-1.
+     */
     public function cancel(Request $request, Peminjaman $peminjaman): JsonResponse
     {
         $user = $request->user();
@@ -180,16 +192,21 @@ class PeminjamanController extends Controller
             return response()->json(['message' => 'Pengajuan sudah dalam status dibatalkan atau ditolak.'], 422);
         }
 
-        $dMulai = Carbon::parse($peminjaman->tanggal_mulai)->startOfDay();
+        $dMulai  = Carbon::parse($peminjaman->tanggal_mulai)->startOfDay();
         $hariIni = Carbon::today();
 
         if ($user->isStaffAdmin()) {
+            // Admin hanya bisa membatalkan peminjaman yang sudah disetujui
+            if ($peminjaman->status !== 'disetujui') {
+                return response()->json(['message' => 'Pembatalan hanya dapat dilakukan pada peminjaman yang sudah disetujui.'], 422);
+            }
             if ($hariIni->gt($dMulai->copy()->subDays(1))) {
-                return response()->json(['message' => 'Admin hanya dapat membatalkan peminjaman maksimal H-1 sebelum acara.'], 422);
+                return response()->json(['message' => 'Pembatalan hanya dapat dilakukan paling lambat H-1 sebelum jadwal penggunaan.'], 422);
             }
         } elseif ($user->isMahasiswa() && $peminjaman->user_id === $user->id) {
-            if ($hariIni->gt($dMulai->copy()->subDays(2))) {
-                return response()->json(['message' => 'Mahasiswa hanya dapat membatalkan peminjaman maksimal H-2 sebelum acara.'], 422);
+            // Mahasiswa maksimal H-3
+            if ($hariIni->gt($dMulai->copy()->subDays(3))) {
+                return response()->json(['message' => 'Pembatalan hanya dapat dilakukan paling lambat H-3 sebelum jadwal penggunaan.'], 422);
             }
         } else {
             return response()->json(['message' => 'Akses ditolak.'], 403);
