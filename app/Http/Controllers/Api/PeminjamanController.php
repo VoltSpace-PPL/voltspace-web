@@ -179,10 +179,11 @@ class PeminjamanController extends Controller
 
     /**
      * Pembatalan peminjaman.
-     * - Mahasiswa: TIDAK dapat membatalkan (setelah disetujui, hanya admin yang bisa membatalkan).
-     * - Admin: hanya dapat membatalkan peminjaman yang sudah DISETUJUI (kondisi darurat/prioritas institusi),
-     * - Mahasiswa: Dapat membatalkan hingga H-3 sebelum jadwal.
-     * - Admin: dapat membatalkan peminjaman yang sudah DISETUJUI, maksimal H-1.
+     * - Mahasiswa: HANYA dapat membatalkan pengajuan yang masih berstatus PENDING
+     *   (sebelum admin memberikan keputusan approve/reject).
+     *   Setelah disetujui atau ditolak, student tidak bisa membatalkan.
+     * - Admin: hanya dapat membatalkan peminjaman yang sudah DISETUJUI
+     *   (kondisi darurat/prioritas institusi), maksimal H-1.
      */
     public function cancel(Request $request, Peminjaman $peminjaman): JsonResponse
     {
@@ -204,9 +205,9 @@ class PeminjamanController extends Controller
                 return response()->json(['message' => 'Pembatalan hanya dapat dilakukan paling lambat H-1 sebelum jadwal penggunaan.'], 422);
             }
         } elseif ($user->isMahasiswa() && $peminjaman->user_id === $user->id) {
-            // Mahasiswa maksimal H-3
-            if ($hariIni->gt($dMulai->copy()->subDays(3))) {
-                return response()->json(['message' => 'Pembatalan hanya dapat dilakukan paling lambat H-3 sebelum jadwal penggunaan.'], 422);
+            // Mahasiswa hanya bisa membatalkan jika masih PENDING (belum diputuskan admin)
+            if ($peminjaman->status !== 'pending') {
+                return response()->json(['message' => 'Pembatalan hanya dapat dilakukan selama pengajuan masih berstatus Pending (belum disetujui atau ditolak oleh admin).'], 422);
             }
         } else {
             return response()->json(['message' => 'Akses ditolak.'], 403);

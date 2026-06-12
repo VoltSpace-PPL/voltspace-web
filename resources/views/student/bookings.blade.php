@@ -118,10 +118,7 @@
     function time5(t) { return (t || '').substring(0, 5); }
 
     function canCancel(b) {
-        if (['dibatalkan','ditolak'].includes(b.status)) return false;
-        const tgl = new Date(b.tanggal_mulai); tgl.setHours(0,0,0,0);
-        const now = new Date(); now.setHours(0,0,0,0);
-        return Math.floor((tgl - now) / 86400000) >= 3;
+        return b.status === 'pending';
     }
 
     function renderBookings(list) {
@@ -248,7 +245,7 @@
     window.confirmCancel = async function (id) {
         const ok = await vsAlert.confirm(
             'Cancel Booking?',
-            'Are you sure you want to cancel this booking request?<br><span class="text-yellow-400 text-[12px]">⚠ Cancellation can only be done at least H-3 before the event date.</span>',
+            'Are you sure you want to cancel this booking request?<br><span class="text-yellow-400 text-[12px]">⚠ Cancellation can only be done while the request is in Pending status.</span>',
             'Yes, Cancel',
             'No'
         );
