@@ -397,7 +397,6 @@
                             <input type="checkbox" class="w-4 h-4 rounded border-[#2a3a4a] bg-navy-950 text-accent-teal focus:ring-accent-teal/50">
                             <span class="text-[13px] text-[#8892a4]">Remember me</span>
                         </label>
-                        <a href="#" class="text-[13px] font-bold" style="color: #00d4aa;">Forgot password?</a>
                     </div>
 
                     <button type="submit" class="btn-signin">Sign In</button>

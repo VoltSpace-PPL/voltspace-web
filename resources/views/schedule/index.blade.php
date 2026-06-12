@@ -1038,14 +1038,14 @@
             if (res.ok) {
                 closeAddScheduleModal();
                 await loadSchedules();
-                vsAlert.success('Jadwal Ditambahkan', 'Jadwal listrik baru berhasil dibuat.');
+                vsAlert.success('Schedule Added', 'New electricity schedule has been created.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal membuat jadwal.');
-                vsAlert.error('Gagal Menyimpan', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to create schedule.');
+                vsAlert.error('Save Failed', msg);
             }
         } catch(err) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -1135,14 +1135,14 @@
             if (res.ok) {
                 closeEditScheduleModal();
                 await loadSchedules();
-                vsAlert.success('Jadwal Diperbarui', 'Jadwal listrik berhasil diperbarui.');
+                vsAlert.success('Schedule Updated', 'Electricity schedule has been successfully updated.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal memperbarui jadwal.');
-                vsAlert.error('Gagal Memperbarui', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to update schedule.');
+                vsAlert.error('Update Failed', msg);
             }
         } catch(err) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -1171,20 +1171,20 @@
 
         const btn = document.getElementById('confirm-delete-schedule-btn');
         const origText = btn.textContent;
-        btn.disabled = true; btn.textContent = 'Menghapus...';
+        btn.disabled = true; btn.textContent = 'Deleting...';
 
         try {
             const res = await apiFetch('/jadwal-listrik/' + deleteScheduleId, { method: 'DELETE' });
             if (res.ok) {
                 closeDeleteScheduleModal();
                 await loadSchedules();
-                vsAlert.success('Jadwal Dihapus', 'Jadwal listrik berhasil dihapus dari sistem.');
+                vsAlert.success('Schedule Deleted', 'Electricity schedule has been removed from the system.');
             } else {
                 const err = await res.json();
-                vsAlert.error('Gagal Menghapus', err.message || 'Terjadi kesalahan saat menghapus jadwal.');
+                vsAlert.error('Delete Failed', err.message || 'An error occurred while deleting the schedule.');
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -1288,18 +1288,18 @@
 
             const data = await res.json();
             if (res.ok) {
-                await vsAlert.success('Import Berhasil!', `Jadwal listrik berhasil diimport. ${data.message || ''}`);
+                await vsAlert.success('Import Successful!', `Electricity schedules have been imported. ${data.message || ''}`);
                 fileInput.value = '';
                 await loadSchedules();
             } else {
                 const msg = data?.errors
                     ? Object.values(data.errors).flat().join('\n')
-                    : (data.message || 'Gagal mengimport jadwal.');
-                vsAlert.error('Import Gagal', msg);
+                    : (data.message || 'Failed to import schedule.');
+                vsAlert.error('Import Failed', msg);
                 fileInput.value = '';
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server.');
             fileInput.value = '';
         }
     };

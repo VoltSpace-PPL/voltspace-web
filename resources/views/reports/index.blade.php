@@ -149,30 +149,6 @@
     </div>
 </div>
 
-{{-- ─── Key Insights ───────────────────────────────────────────────────────── --}}
-<div class="mb-8">
-    <h2 class="text-[18px] font-bold text-white mb-4">Key Insights</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {{-- Energy Savings --}}
-        <div class="rounded-2xl p-5 border border-emerald-500/20 bg-emerald-500/10 transition-all hover:bg-emerald-500/15 cursor-default">
-            <div class="flex items-center gap-2 mb-2">
-                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span class="font-bold text-[14px] text-emerald-400">Energy Savings</span>
-            </div>
-            <p class="text-slate-300 text-[13px] leading-relaxed">Campus achieved 15.7% energy savings compared to last year through efficiency improvements.</p>
-        </div>
-        
-        {{-- Peak Reduction --}}
-        <div class="rounded-2xl p-5 border border-blue-500/20 bg-blue-500/10 transition-all hover:bg-blue-500/15 cursor-default">
-            <div class="flex items-center gap-2 mb-2">
-                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span class="font-bold text-[14px] text-blue-400">Peak Reduction</span>
-            </div>
-            <p class="text-slate-300 text-[13px] leading-relaxed">Peak demand reduced by 12% through load management strategies.</p>
-        </div>
-    </div>
-</div>
-
 {{-- ─── Preview Modal ──────────────────────────────────────────────────────── --}}
 <div id="preview-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
     <!-- Backdrop -->
@@ -212,7 +188,7 @@
                     <div class="rounded-2xl border border-white/5 bg-[#1e293b]/40 p-4">
                         <div class="flex items-center gap-2 text-slate-400 mb-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
-                            <span class="text-[12px] uppercase tracking-wider font-semibold">Total Konsumsi</span>
+                            <span class="text-[12px] uppercase tracking-wider font-semibold">Total Consumption</span>
                         </div>
                         <div class="flex items-baseline gap-1 mt-1">
                             <span id="preview-kwh" class="text-[24px] font-bold text-[#00d4aa]">0</span>
@@ -223,24 +199,24 @@
                     <div class="rounded-2xl border border-white/5 bg-[#1e293b]/40 p-4">
                         <div class="flex items-center gap-2 text-slate-400 mb-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-width="2"/></svg>
-                            <span class="text-[12px] uppercase tracking-wider font-semibold">Jumlah Ruangan</span>
+                            <span class="text-[12px] uppercase tracking-wider font-semibold">Rooms</span>
                         </div>
                         <div class="flex items-baseline gap-1 mt-1">
                             <span id="preview-rooms-count" class="text-[24px] font-bold text-white">0</span>
-                            <span class="text-slate-400 text-[14px]">Ruangan</span>
+                            <span class="text-slate-400 text-[14px]">Rooms</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Rooms Table -->
                 <div>
-                    <h4 class="text-[14px] font-bold text-white mb-3 px-1">Rincian Ruangan</h4>
+                    <h4 class="text-[14px] font-bold text-white mb-3 px-1">Room Details</h4>
                     <div class="rounded-2xl border border-white/5 bg-[#1e293b]/30 overflow-hidden">
                         <table class="w-full text-left text-[13px]">
                             <thead class="bg-[#1e293b]/50 border-b border-white/5">
                                 <tr>
-                                    <th class="px-5 py-3 text-slate-400 font-semibold">Ruangan</th>
-                                    <th class="px-5 py-3 text-slate-400 font-semibold text-right">Konsumsi Energi</th>
+                                    <th class="px-5 py-3 text-slate-400 font-semibold">Room</th>
+                                    <th class="px-5 py-3 text-slate-400 font-semibold text-right">Energy Consumption</th>
                                 </tr>
                             </thead>
                             <tbody id="preview-rooms-list" class="divide-y divide-white/5">
@@ -255,7 +231,7 @@
         <!-- Footer -->
         <div class="px-6 py-5 border-t border-white/5 bg-[#0f172a]/50 rounded-b-2xl flex justify-end">
             <button onclick="closePreviewModal()" class="px-6 py-2.5 rounded-xl text-[13px] font-bold text-white bg-slate-700 hover:bg-slate-600 transition-colors">
-                Tutup
+                Close
             </button>
         </div>
     </div>
@@ -325,7 +301,7 @@
 
         if (type === 'bulanan') {
             const val = document.getElementById('input-month').value; 
-            if (!val) { vsAlert.warning('Pilih Bulan', 'Silakan pilih bulan terlebih dahulu.'); return; }
+            if (!val) { vsAlert.warning('Select Month', 'Please select a month first.'); return; }
             [tahun, bulan] = val.split('-').map(Number);
         } else {
             tahun = parseInt(document.getElementById('input-year').value);
@@ -347,14 +323,14 @@
             const data = await res.json();
 
             if (!res.ok) {
-                vsAlert.error('Gagal Generate', data.message || 'Terjadi kesalahan saat generate laporan.');
+                vsAlert.error('Failed to Generate', data.message || 'An error occurred while generating the report.');
                 return;
             }
 
-            vsAlert.success('Laporan Berhasil Dibuat', `"${data.data?.title}" berhasil digenerate.`);
+            vsAlert.success('Report Generated', `"${data.data?.title}" has been generated successfully.`);
             loadReportList();
         } catch (e) {
-            vsAlert.error('Koneksi Error', 'Tidak dapat terhubung ke server.');
+            vsAlert.error('Connection Error', 'Could not connect to the server.');
         } finally {
             btn.disabled = false;
             label.textContent = 'Generate Report';
@@ -372,7 +348,7 @@
 
             if (!res.ok) {
                 const d = await res.json().catch(() => ({}));
-                vsAlert.error('Download Gagal', d.message || 'File tidak tersedia.');
+                vsAlert.error('Download Failed', d.message || 'File not available.');
                 return;
             }
 
@@ -384,7 +360,7 @@
             a.click();
             URL.revokeObjectURL(url);
         } catch (e) {
-            vsAlert.error('Download Error', 'Terjadi kesalahan saat mengunduh laporan.');
+            vsAlert.error('Download Error', 'An error occurred while downloading the report.');
         }
     };
 
@@ -392,9 +368,9 @@
     window.toggleHideReport = async function (id, title, isHidden) {
         const actionText = isHidden ? 'menampilkan kembali' : 'menyembunyikan';
         const ok = await vsAlert.confirm(
-            isHidden ? 'Tampilkan Laporan' : 'Sembunyikan Laporan',
-            `Yakin ingin ${actionText} laporan "<strong>${title}</strong>"?`,
-            'Ya', 'Batal'
+            isHidden ? 'Show Report' : 'Hide Report',
+            `Are you sure you want to ${isHidden ? 'show' : 'hide'} the report "<strong>${title}</strong>"?`,
+            'Yes', 'Cancel'
         );
         if (!ok) return;
 
@@ -402,14 +378,14 @@
             const res = await apiFetch(`/laporan-energi/${id}/toggle-hide`, { method: 'POST' });
             if (res.ok) {
                 const data = await res.json();
-                vsAlert.success('Berhasil', data.message || `Laporan berhasil ${isHidden ? 'ditampilkan' : 'disembunyikan'}.`);
+                vsAlert.success('Success', data.message || `Report has been ${isHidden ? 'shown' : 'hidden'} successfully.`);
                 loadReportList();
             } else {
                 const d = await res.json();
-                vsAlert.error('Gagal', d.message || 'Terjadi kesalahan.');
+                vsAlert.error('Failed', d.message || 'An error occurred.');
             }
         } catch (e) {
-            vsAlert.error('Koneksi Error', 'Tidak dapat terhubung ke server.');
+            vsAlert.error('Connection Error', 'Could not connect to the server.');
         }
     };
 
@@ -440,7 +416,7 @@
     <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
         <div class="text-right">
             <p class="text-[11px] text-slate-400 uppercase tracking-wider">Rooms Analyzed</p>
-            <p class="text-[14px] font-bold text-white mt-0.5">${totalRooms} Ruangan</p>
+            <p class="text-[14px] font-bold text-white mt-0.5">${totalRooms} Rooms</p>
         </div>
         <div class="text-right">
             <p class="text-[11px] text-slate-400 uppercase tracking-wider">Total Consumption</p>
@@ -463,7 +439,7 @@
             <button onclick="toggleHideReport(${r.id}, '${(r.title||'').replace(/'/g,"\\'")}', ${isHidden ? 'true' : 'false'})"
                 class="w-9 h-9 rounded-xl flex items-center justify-center transition-all text-slate-400 hover:text-white"
                 style="background:rgba(255,255,255,0.05);"
-                title="${isHidden ? 'Tampilkan laporan' : 'Sembunyikan laporan'}">
+                title="${isHidden ? 'Show report' : 'Hide report'}">
                 ${isHidden
                     ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>'
                     : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>'
@@ -584,7 +560,7 @@
             
             if (!res.ok) {
                 closePreviewModal();
-                vsAlert.error('Gagal', data.message || 'Gagal memuat preview.');
+                vsAlert.error('Failed', data.message || 'Failed to load preview.');
                 return;
             }
 
@@ -611,7 +587,7 @@
                     </tr>
                 `).join('');
             } else {
-                roomsListEl.innerHTML = `<tr><td colspan="2" class="px-5 py-8 text-center text-slate-500 text-[13px]">Tidak ada rincian ruangan.</td></tr>`;
+                roomsListEl.innerHTML = `<tr><td colspan="2" class="px-5 py-8 text-center text-slate-500 text-[13px]">No room details available.</td></tr>`;
             }
             
             // Show data
@@ -620,7 +596,7 @@
             
         } catch (e) {
             closePreviewModal();
-            vsAlert.error('Koneksi Error', 'Tidak dapat terhubung ke server untuk memuat preview.');
+            vsAlert.error('Connection Error', 'Could not connect to the server to load the preview.');
         }
     };
 

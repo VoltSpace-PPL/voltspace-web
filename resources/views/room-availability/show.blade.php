@@ -369,13 +369,13 @@
                 
                 if (res.ok) {
                     document.getElementById('cancel-booking-modal').remove();
-                    vsAlert.success('Success', 'Peminjaman berhasil dibatalkan.');
+                    vsAlert.success('Success', 'Booking has been successfully cancelled.');
                     loadMonthData(calendarYear, calendarMonth);
                 } else {
-                    vsAlert.error('Failed', data.message || 'Gagal membatalkan peminjaman.');
+                    vsAlert.error('Failed', data.message || 'Failed to cancel the booking.');
                 }
             } catch (e) {
-                vsAlert.error('Error', 'Terjadi kesalahan jaringan.');
+                vsAlert.error('Error', 'A network error occurred.');
             }
         });
     };

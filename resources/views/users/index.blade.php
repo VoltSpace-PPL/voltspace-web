@@ -254,6 +254,18 @@
     function openModal() { 
         document.getElementById('user-modal').classList.remove('hidden'); 
         document.body.style.overflow = 'hidden';
+
+        const roleSelect = document.querySelector('select[name="role"]');
+        if (roleSelect) {
+            Array.from(roleSelect.options).forEach(opt => {
+                if (currentUserRole !== 'super_admin' && opt.value !== 'mahasiswa') {
+                    opt.remove();
+                }
+            });
+            if (currentUserRole !== 'super_admin') {
+                roleSelect.value = 'mahasiswa';
+            }
+        }
     }
     function closeModal() { 
         document.getElementById('user-modal').classList.add('hidden'); 
@@ -266,6 +278,16 @@
         f.edit_name.value    = user.name || '';
         f.edit_email.value   = user.email || '';
         f.edit_password.value = '';
+        
+        const roleSelect = f.edit_role;
+        if (roleSelect) {
+            Array.from(roleSelect.options).forEach(opt => {
+                if (currentUserRole !== 'super_admin' && opt.value !== 'mahasiswa') {
+                    opt.remove();
+                }
+            });
+        }
+        
         f.edit_role.value    = (user.role || 'mahasiswa').toLowerCase();
         document.getElementById('edit-user-modal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -317,9 +339,9 @@
         finally { btn.disabled = false; btn.innerHTML = orig; }
     });
 
-    // Global users store - keyed by id
     let usersMap = {};
     let currentUserId = null;
+    let currentUserRole = null;
 
     // Load current user logic
     async function loadCurrentUser() {
@@ -329,6 +351,7 @@
                 const meData = await meRes.json();
                 const meUser = meData.data || meData.user || meData;
                 currentUserId = meUser.id;
+                currentUserRole = (meUser.role || '').toLowerCase();
             }
         } catch (e) {
             console.error('Failed to load current user', e);
@@ -475,7 +498,7 @@
             btn.innerHTML = originalHtml;
             btn.disabled = false;
         } catch(e) {
-            vsAlert.info('Template', 'Gagal mengunduh template pengguna.');
+            vsAlert.info('Template', 'Failed to download user template.');
             btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4-4m4 4V4" stroke-width="2.5"/></svg> Download Template';
             btn.disabled = false;
         }
@@ -511,18 +534,18 @@
 
             const data = await res.json();
             if (res.ok) {
-                await vsAlert.success('Import Berhasil!', `User berhasil diimport. ${data.message || ''}`);
+                await vsAlert.success('Import Successful!', `Users have been imported. ${data.message || ''}`);
                 input.value = '';
                 await loadUsers();
             } else {
                 const msg = data?.errors
                     ? Object.values(data.errors).flat().join('\n')
-                    : (data.message || 'Gagal mengimport user.');
-                vsAlert.error('Import Gagal', msg);
+                    : (data.message || 'Failed to import users.');
+                vsAlert.error('Import Failed', msg);
                 input.value = '';
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server.');
             input.value = '';
         }
     }

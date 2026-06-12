@@ -323,19 +323,19 @@ async function loadRoomDevices() {
         if (!deleteRoomId) return;
         const btn = document.getElementById('confirm-delete-room-btn');
         btn.disabled = true;
-        btn.textContent = 'Menghapus...';
+        btn.textContent = 'Deleting...';
         try {
             const res = await apiFetch('/ruangan/' + deleteRoomId, { method: 'DELETE' });
             if (res.ok) {
                 closeDeleteModal();
                 await loadRooms();
-                vsAlert.success('Berhasil Dihapus', 'Room berhasil dihapus dari sistem.');
+                vsAlert.success('Deleted', 'Room has been successfully deleted from the system.');
             } else {
                 const err = await res.json();
-                vsAlert.error('Gagal Menghapus', err.message || 'Terjadi kesalahan saat menghapus room.');
+                vsAlert.error('Delete Failed', err.message || 'An error occurred while deleting the room.');
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false;
             btn.textContent = 'Delete Room';
@@ -348,13 +348,13 @@ async function loadRoomDevices() {
         const nameEn = f.edit_name_en ? f.edit_name_en.value.trim() : '';
         const nameId = f.edit_name_id ? f.edit_name_id.value.trim() : '';
         if (!nameEn && !nameId) {
-            vsAlert.warning('Form Tidak Lengkap', 'Harap isi minimal salah satu nama ruangan (EN atau ID).');
+            vsAlert.warning('Incomplete Form', 'Please fill in at least one room name (EN or ID).');
             return;
         }
         const btn = f.querySelector('button[type="submit"]');
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.textContent = 'Menyimpan...';
+        btn.textContent = 'Saving...';
         const id = f.edit_id.value;
         const rawKapasitas = parseInt(f.edit_devices.value, 10);
         const floor = f.edit_floor.value;
@@ -363,7 +363,7 @@ async function loadRoomDevices() {
         const finalName = nameEn || nameId;
         const exists = allRooms.find(r => r.nama_ruangan.toLowerCase() === finalName.toLowerCase() && String(r.id) !== String(id));
         if (exists) {
-            vsAlert.warning('Nama Ruangan Sama', 'Nama ruangan ini sudah digunakan oleh ruangan lain. Silakan gunakan nama yang berbeda.');
+            vsAlert.warning('Duplicate Room Name', 'This room name is already used by another room. Please use a different name.');
             btn.disabled = false;
             btn.innerHTML = originalText;
             return;
@@ -380,14 +380,14 @@ async function loadRoomDevices() {
             if (res.ok) {
                 closeEditModal();
                 await loadRooms();
-                vsAlert.success('Berhasil Diperbarui', 'Data room berhasil diperbarui.');
+                vsAlert.success('Updated', 'Room data has been successfully updated.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal memperbarui room.');
-                vsAlert.error('Gagal Memperbarui', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to update room.');
+                vsAlert.error('Update Failed', msg);
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -645,7 +645,7 @@ async function loadRoomDevices() {
 
         if (!device) {
             checkbox.checked = !checkbox.checked;
-            vsAlert.warning('Tidak Ada Perangkat', 'Belum ada device IoT yang terhubung untuk room ini.');
+            vsAlert.warning('No Device', 'No IoT device is connected to this room.');
             return;
         }
 
@@ -664,7 +664,7 @@ async function loadRoomDevices() {
 
             if (!res.ok) {
                 checkbox.checked = oldChecked;
-                vsAlert.error('Kontrol Gagal', 'Gagal mengontrol device IoT. Coba lagi.');
+                vsAlert.error('Control Failed', 'Failed to control IoT device. Please try again.');
                 return;
             }
 
@@ -675,7 +675,7 @@ async function loadRoomDevices() {
 
         } catch (e) {
             checkbox.checked = oldChecked;
-            vsAlert.error('Perangkat Tidak Terhubung', 'Device IoT tidak dapat dihubungi. Periksa koneksi jaringan.');
+            vsAlert.error('Device Unreachable', 'IoT device could not be reached. Please check the network connection.');
         }
     }
 
@@ -688,25 +688,25 @@ async function loadRoomDevices() {
         const nameId = f.name_id ? f.name_id.value.trim() : '';
         const floor = parseInt(f.floor.value, 10);
         if (!nameEn && !nameId) {
-            vsAlert.warning('Form Tidak Lengkap', 'Harap isi minimal salah satu nama ruangan (EN atau ID).');
+            vsAlert.warning('Incomplete Form', 'Please fill in at least one room name (EN or ID).');
             return;
         }
         const devicesVal = parseInt(f.devices.value, 10) || 0;
         if (isNaN(devicesVal) || devicesVal < 0) {
-            vsAlert.warning('Input Tidak Valid', 'Jumlah perangkat tidak boleh negatif.');
+            vsAlert.warning('Invalid Input', 'Number of devices cannot be negative.');
             return;
         }
         const btn = f.querySelector('button[type="submit"]');
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = 'Menyimpan...';
+        btn.innerHTML = 'Saving...';
 
         const finalName = nameId || nameEn;
 
         // Cek nama sama dengan ruangan lain (client-side)
         const exists = allRooms.find(r => r.nama_ruangan.toLowerCase() === finalName.toLowerCase());
         if (exists) {
-            vsAlert.warning('Nama Ruangan Sama', 'Nama ruangan ini sudah digunakan oleh ruangan lain. Silakan gunakan nama yang berbeda.');
+            vsAlert.warning('Duplicate Room Name', 'This room name is already used by another room. Please use a different name.');
             btn.disabled = false;
             btn.innerHTML = originalText;
             return;
@@ -725,14 +725,14 @@ async function loadRoomDevices() {
                 closeModal();
                 f.reset();
                 await loadRooms();
-                vsAlert.success('Berhasil Ditambahkan', 'Room baru berhasil ditambahkan.');
+                vsAlert.success('Room Added', 'New room has been successfully added.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal menambahkan room.');
-                vsAlert.error('Gagal Menambahkan', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to add room.');
+                vsAlert.error('Add Failed', msg);
             }
         } catch(err) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalText;

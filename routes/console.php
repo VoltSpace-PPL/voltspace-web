@@ -25,14 +25,67 @@ Schedule::call(function () {
         ->get();
 
     foreach ($schedules as $schedule) {
+        // ── Determine if today is a valid day for this schedule ──────────
+        $selectedDays = is_array($schedule->selected_days) ? $schedule->selected_days : [];
+        $startTime = substr((string) $schedule->start_time, 0, 5);
+        $endTime   = substr((string) $schedule->end_time,   0, 5);
+
+        // Date-range guard
+        if ($schedule->tanggal_mulai && $schedule->tanggal_mulai > $today) {
+            continue;
+        }
+        if ($schedule->tanggal_selesai && $schedule->tanggal_selesai < $today) {
+            continue;
+        }
+
+        // Day-of-week guard (only when selected_days is set)
+        if (!empty($selectedDays) && !in_array($currentDay, $selectedDays, true)) {
+            continue;
+        }
+
+        // ── TURN ON at start_time ────────────────────────────────────────
+        // Only for schedules with automation_action=on and
+        // NOT linked to a peminjaman (those are handled on approve).
+        if (
+            $startTime === $currentTime &&
+            $schedule->automation_action === 'on' &&
+            !$schedule->peminjaman_id &&
+            $schedule->ruangan_id
+        ) {
+            $devices = Device::query()->where('ruangan_id', $schedule->ruangan_id)->get();
+            foreach ($devices as $device) {
+                $ip = trim((string) $device->ip_address);
+                if ($ip) {
+                    if (!str_starts_with($ip, 'http://') && !str_starts_with($ip, 'https://')) {
+                        $ip = 'http://' . $ip;
+                    }
+                    $url = rtrim($ip, '/') . '/on';
+                    try {
+                        Http::timeout(5)->get($url);
+                    } catch (ConnectionException $e) {
+                        // IoT unreachable — log is skipped to avoid noise
+                    }
+                }
+                KontrolListrik::create([
+                    'user_id'    => null,
+                    'ruangan_id' => $schedule->ruangan_id,
+                    'device_id'  => $device->id,
+                    'aksi'       => 'on',
+                ]);
+            }
+
+            $schedule->update(['status_listrik' => 'nyala']);
+        }
+
+        // ── TURN OFF at end_time ─────────────────────────────────────────
         $shouldRunOff = false;
 
         if ($schedule->tanggal_selesai && $schedule->tanggal_selesai === $today) {
-            if (substr($schedule->end_time, 0, 5) === $currentTime) {
+            if ($endTime === $currentTime) {
                 $shouldRunOff = true;
             }
-        } elseif (!$schedule->tanggal_selesai && is_array($schedule->selected_days) && in_array($currentDay, $schedule->selected_days)) {
-            if (substr($schedule->end_time, 0, 5) === $currentTime) {
+        } elseif (!$schedule->tanggal_selesai && !empty($selectedDays)) {
+            if ($endTime === $currentTime) {
                 $shouldRunOff = true;
             }
         }
@@ -53,13 +106,13 @@ Schedule::call(function () {
                     }
                 }
                 KontrolListrik::create([
-                    'user_id' => null,
+                    'user_id'    => null,
                     'ruangan_id' => $schedule->ruangan_id,
-                    'device_id' => $device->id,
-                    'aksi' => 'off',
+                    'device_id'  => $device->id,
+                    'aksi'       => 'off',
                 ]);
             }
-            
+
             // Mark the schedule as inactive if it's tied to a one-time booking
             if ($schedule->peminjaman_id) {
                 $schedule->update(['schedule_status' => 'inactive', 'status_listrik' => 'mati']);
@@ -69,6 +122,7 @@ Schedule::call(function () {
         }
     }
 })->everyMinute();
+
 
 /**
  * Job 1: Kirim pengingat kepada admin untuk pengajuan pending yang belum diproses

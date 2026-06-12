@@ -44,9 +44,8 @@
             <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:rgba(0,212,170,0.15); border:1px solid rgba(0,212,170,0.2);">
                 <svg class="w-5 h-5" style="color:#00d4aa" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-width="2"/></svg>
             </div>
-            <span id="energy-change-badge" class="text-[11px] font-bold px-2 py-1 rounded-lg" style="color:#00d4aa; background:rgba(0,212,170,0.1);">+12.5%</span>
         </div>
-        <p class="text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-1">Total Energy Used Last Month</p>
+        <p class="text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-1">Total Energy Used</p>
         <p class="text-[28px] font-extrabold text-white leading-none" id="total-energy">—</p>
         <p class="text-slate-600 text-[12px] mt-1" id="energy-period">Loading...</p>
     </div>
@@ -61,7 +60,7 @@
         </div>
         <p class="text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-1">Energy Efficiency</p>
         <p class="text-[28px] font-extrabold text-white leading-none"><span id="efficiency-value">—</span><span class="text-[16px] text-slate-500 ml-1">%</span></p>
-        <p class="text-slate-600 text-[12px] mt-1" id="efficiency-subtitle">vs. bulan lalu</p>
+        <p class="text-slate-600 text-[12px] mt-1" id="efficiency-subtitle">vs. last month</p>
     </div>
 
     {{-- Active Rooms - PURPLE icon --}}
@@ -166,13 +165,7 @@
     </div>
 </div>
 
-{{-- Last Updated --}}
-<div class="mt-6 text-center">
-    <p class="text-slate-600 text-[12px] flex items-center justify-center gap-1.5">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
-        Last updated: <span id="last-updated-time">—</span>
-    </p>
-</div>
+
 @endsection
 
 @push('scripts')
