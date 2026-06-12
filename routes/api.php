@@ -78,6 +78,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/jadwal-listrik/template/download', [JadwalListrikExcelController::class, 'downloadTemplate']);
         Route::post('/jadwal-listrik/import', [JadwalListrikExcelController::class, 'import']);
 
+        Route::get('/users/template/download', [UserExcelImportController::class, 'downloadTemplate']);
+        Route::post('/users/import', [UserExcelImportController::class, 'import']);
+
         Route::get('/energy-alerts/settings', [EnergyAlertController::class, 'settings']);
         Route::put('/energy-alerts/settings', [EnergyAlertController::class, 'updateSettings']);
         Route::get('/energy-alerts', [EnergyAlertController::class, 'alerts']);
@@ -90,11 +93,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('super_admin');
-
-    Route::middleware('super_admin')->group(function () {
-        Route::get('/users/template/download', [UserExcelImportController::class, 'downloadTemplate']);
-        Route::post('/users/import', [UserExcelImportController::class, 'import']);
-    });
 });
 
 Route::get('/devices/{device}/status', [DeviceControlController::class, 'status']);

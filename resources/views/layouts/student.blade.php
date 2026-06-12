@@ -310,10 +310,10 @@
                 localStorage.setItem('token', data.token);
                 location.href = '/dashboard';
             } else {
-                alert('Gagal switch role: kredensial admin tidak ditemukan.');
+                alert('Switch role failed: admin credentials not found.');
             }
         } catch(e) {
-            alert('Koneksi gagal saat switch role.');
+            alert('Connection failed while switching role.');
         }
     }
 

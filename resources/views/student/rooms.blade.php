@@ -120,7 +120,7 @@
             allRooms = Array.isArray(data) ? data : (data.data || []);
             filterRooms();
         } catch(e) {
-            document.getElementById('student-rooms-grid').innerHTML = `<div class="col-span-3 text-center py-16 text-slate-500">Gagal memuat data ruangan.</div>`;
+            document.getElementById('student-rooms-grid').innerHTML = `<div class="col-span-3 text-center py-16 text-slate-500">Failed to load room data.</div>`;
         }
     }
 

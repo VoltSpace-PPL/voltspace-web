@@ -227,10 +227,10 @@
                     localStorage.setItem('token', data.token);
                     location.href = '/student/dashboard';
                 } else {
-                    alert('Gagal switch role: kredensial student tidak ditemukan.');
+                    alert('Switch role failed: student credentials not found.');
                 }
             } catch(e) {
-                alert('Koneksi gagal saat switch role.');
+                alert('Connection failed while switching role.');
             }
         }
 

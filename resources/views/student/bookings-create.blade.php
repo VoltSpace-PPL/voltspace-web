@@ -432,16 +432,16 @@
             });
             const data = await res.json();
             if (res.ok) {
-                await vsAlert.success('Pengajuan Berhasil!', 'Permintaan peminjaman ruangan telah dikirim. Tunggu persetujuan dari admin ya!');
+                await vsAlert.success('Submission Successful!', 'Your room booking request has been submitted. Please wait for admin approval.');
                 location.href = '/student/bookings';
             } else {
                 const msg = data?.errors
                     ? Object.values(data.errors).flat().join('<br>')
-                    : (data.message || 'Terjadi kesalahan.');
-                vsAlert.error('Gagal Mengajukan', msg);
+                    : (data.message || 'An error occurred.');
+                vsAlert.error('Submission Failed', msg);
             }
         } catch (err) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server.');
         } finally {
             btn.disabled = false;
             btn.innerHTML = orig;
@@ -467,7 +467,7 @@
             btn.disabled = true;
 
             const res = await apiFetch('/peminjaman/template/download');
-            if (!res.ok) { throw new Error('Gagal mengunduh template'); }
+            if (!res.ok) { throw new Error('Failed to download template'); }
             const blob = await res.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -481,7 +481,7 @@
             btn.innerHTML = originalHtml;
             btn.disabled = false;
         } catch(e) {
-            vsAlert.error('Error', 'Gagal mengunduh template surat peminjaman.');
+            vsAlert.error('Error', 'Failed to download the booking letter template.');
             this.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2"/></svg> Download Template Surat';
             this.disabled = false;
         }

@@ -26,8 +26,8 @@ class UserExcelImportController extends Controller
 
     public function import(Request $request): JsonResponse
     {
-        if (! $request->user()->isSuperAdmin()) {
-            return response()->json(['message' => 'Hanya super admin.'], 403);
+        if (! $request->user()->isSuperAdmin() && ! $request->user()->isAdmin()) {
+            return response()->json(['message' => 'Akses ditolak.'], 403);
         }
         $request->validate([
             'file' => [
@@ -76,6 +76,11 @@ class UserExcelImportController extends Controller
                 }
                 if (! in_array($role, ['admin', 'mahasiswa', 'super_admin'], true)) {
                     $errors[] = "Baris {$line}: role tidak valid";
+
+                    continue;
+                }
+                if (! $request->user()->isSuperAdmin() && $role !== 'mahasiswa') {
+                    $errors[] = "Baris {$line}: admin hanya dapat import mahasiswa";
 
                     continue;
                 }
