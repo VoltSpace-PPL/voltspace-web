@@ -32,10 +32,10 @@
             </div>
         </div>
 
-        {{-- Approved Today --}}
+        {{-- Approved --}}
         <div class="rounded-2xl p-6 flex items-center justify-between" style="background:#161e2d; border:1px solid #1e2d45;">
             <div>
-                <p class="text-slate-400 text-[12px] font-medium mb-3">Approved Today</p>
+                <p class="text-slate-400 text-[12px] font-medium mb-3">Approved</p>
                 <h3 class="text-[36px] font-bold text-white leading-none" id="stat-approved-today">—</h3>
             </div>
             <div class="rounded-xl flex items-center justify-center flex-shrink-0" style="width:52px;height:52px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);">

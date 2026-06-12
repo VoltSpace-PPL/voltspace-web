@@ -204,6 +204,45 @@
             border-radius: 10px;
             padding: 16px 20px;
         }
+
+        /* ── Gradient Dots Background ── */
+        .gradient-dots-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .gradient-dots-bg canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            mix-blend-mode: screen;
+        }
+        /* Color blob layer that animates underneath dots */
+        .gradient-dots-bg .color-blobs {
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            animation: blobsMove 40s ease-in-out infinite;
+            will-change: transform;
+        }
+        @keyframes blobsMove {
+            0%   { transform: translate(0%, 0%); }
+            25%  { transform: translate(-12%, 8%); }
+            50%  { transform: translate(-22%, -8%); }
+            75%  { transform: translate(-8%, -16%); }
+            100% { transform: translate(0%, 0%); }
+        }
+        .right-section {
+            position: relative;
+        }
+        .right-section > *:not(.gradient-dots-bg) {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="glow-bg">
@@ -271,8 +310,8 @@
                     <p class="text-[12px] font-semibold text-[#94a3b8] uppercase tracking-widest">Uptime</p>
                 </div>
                 <div class="stat-box">
-                    <p class="text-[32px] font-bold leading-none mb-2" style="color: #00aaff;">50+</p>
-                    <p class="text-[12px] font-semibold text-[#94a3b8] uppercase tracking-widest">Campuses</p>
+                    <p class="text-[32px] font-bold leading-none mb-2" style="color: #00aaff;">IoT</p>
+                    <p class="text-[12px] font-semibold text-[#94a3b8] uppercase tracking-widest">Integrated IoT</p>
                 </div>
                 <div class="stat-box">
                     <p class="text-[32px] font-bold leading-none mb-2" style="color: #9b59b6;">24/7</p>
@@ -283,6 +322,43 @@
 
         <!-- RIGHT SIDE: Login Card -->
         <div class="right-section">
+            <!-- Gradient Dots Background -->
+            <div class="gradient-dots-bg" id="gradient-dots-bg" aria-hidden="true">
+                <!-- Animated color blobs -->
+                <div class="color-blobs">
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <!-- Deep teal – top-left, matches left panel glow -->
+                            <radialGradient id="blob1" cx="25%" cy="25%" r="65%">
+                                <stop offset="0%" stop-color="#00d4aa" stop-opacity="0.30"/>
+                                <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+                            </radialGradient>
+                            <!-- Dark navy blue – top-right -->
+                            <radialGradient id="blob2" cx="80%" cy="15%" r="60%">
+                                <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.20"/>
+                                <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+                            </radialGradient>
+                            <!-- Muted teal – bottom-center -->
+                            <radialGradient id="blob3" cx="50%" cy="85%" r="60%">
+                                <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.18"/>
+                                <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+                            </radialGradient>
+                            <!-- Subtle indigo – bottom-left -->
+                            <radialGradient id="blob4" cx="15%" cy="75%" r="55%">
+                                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.15"/>
+                                <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#blob1)"/>
+                        <rect width="100%" height="100%" fill="url(#blob2)"/>
+                        <rect width="100%" height="100%" fill="url(#blob3)"/>
+                        <rect width="100%" height="100%" fill="url(#blob4)"/>
+                    </svg>
+                </div>
+                <!-- Dot grid canvas -->
+                <canvas id="dots-canvas"></canvas>
+            </div>
+
             <div class="login-card">
                 <div class="mb-10 text-left">
                     <h3 class="text-[32px] font-bold text-white leading-tight mb-3">Welcome Back</h3>
@@ -333,6 +409,56 @@
     </div>
 
     @include('partials.voltspace-api')
+    <script>
+    /* ── Gradient Dots Canvas Animation ── */
+    (function () {
+        const canvas = document.getElementById('dots-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        const DOT_SIZE   = 1.5;  // dot radius in px
+        const SPACING    = 18;   // px between dot centres
+        const BG_COLOR   = '#0b1120';
+
+        function resize() {
+            const parent = canvas.parentElement;
+            canvas.width  = parent.offsetWidth;
+            canvas.height = parent.offsetHeight;
+            draw();
+        }
+
+        function draw() {
+            const W = canvas.width;
+            const H = canvas.height;
+            const hexV = SPACING * 1.732; // vertical hex spacing
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Solid dark background (between dots)
+            ctx.fillStyle = BG_COLOR;
+            ctx.fillRect(0, 0, W, H);
+
+            // Punch transparent holes for dots using destination-out
+            ctx.globalCompositeOperation = 'destination-out';
+            let row = 0;
+            for (let y = 0; y <= H + hexV; y += hexV / 2, row++) {
+                const offsetX = (row % 2 === 0) ? 0 : SPACING / 2;
+                for (let x = offsetX; x <= W + SPACING; x += SPACING) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, DOT_SIZE, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0,0,0,1)';
+                    ctx.fill();
+                }
+            }
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        // Observe container resize
+        const ro = new ResizeObserver(resize);
+        ro.observe(canvas.parentElement);
+        resize();
+    })();
+    </script>
     <script>
         (function () {
             var input = document.getElementById('login-password');

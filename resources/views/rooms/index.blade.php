@@ -556,8 +556,8 @@ async function loadRoomDevices() {
 
                 <!-- Info rows -->
                 <div class="rounded-xl p-3 mb-5" style="background:#162032; border:1px solid #1e2d45;">
-                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Kapasitas</p>
-                        <p class="text-[20px] font-extrabold text-white">${kapasitas} <span class="text-[13px] font-medium text-slate-400">orang</span></p>
+                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Capacity</p>
+                        <p class="text-[20px] font-extrabold text-white">${kapasitas} <span class="text-[13px] font-medium text-slate-400">people</span></p>
                 </div>
 
                 <div class="flex items-center justify-between p-4 bg-[#161e2d] rounded-xl border border-[#1e2d45] mb-5">

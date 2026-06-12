@@ -128,7 +128,7 @@
                         <span id="room-info-status" class="px-2.5 py-1 rounded-full text-[11px] font-bold border"></span>
                     </div>
                     <div class="text-right flex-shrink-0">
-                        <p class="text-slate-500 text-[11px]">Kapasitas</p>
+                        <p class="text-slate-500 text-[11px]">Capacity</p>
                         <p class="text-white font-bold text-[15px]" id="room-info-capacity">—</p>
                     </div>
                 </div>
@@ -353,7 +353,7 @@
                 .filter(r => r.is_available !== false && r.status === 'tersedia')
                 .map(r => {
                     const name = `${r.nama_ruangan || r.id}${r.kode ? ' (' + r.kode + ')' : ''}`;
-                    return `<option value="${r.id}">${name} — Kapasitas: ${r.kapasitas ?? '?'}</option>`;
+                    return `<option value="${r.id}">${name} — Capacity: ${r.kapasitas ?? '?'}</option>`;
                 }).join('');
 
         /* Pre-select from query param */
@@ -375,7 +375,7 @@
 
         document.getElementById('room-info-name').textContent     = room.nama_ruangan || room.id;
         document.getElementById('room-info-meta').textContent     = (room.kode || room.id) + ' · Tel-U Bandung';
-        document.getElementById('room-info-capacity').textContent = (room.kapasitas ?? '—') + ' orang';
+        document.getElementById('room-info-capacity').textContent = (room.kapasitas ?? '—') + ' people';
         const badge = document.getElementById('room-info-status');
         badge.textContent  = 'Tersedia';
         badge.className    = 'px-2.5 py-1 rounded-full text-[11px] font-bold border text-emerald-400 border-emerald-500/30 bg-emerald-500/10';
