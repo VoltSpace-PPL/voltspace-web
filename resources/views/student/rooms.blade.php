@@ -82,9 +82,9 @@
                 <div class="flex items-center gap-4 py-3 px-4 bg-[#161e2d] rounded-xl mb-4 border border-[#1e2d45]">
                     <div class="flex items-center gap-2 text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2"/></svg>
-                        <span class="text-[13px]">Kapasitas</span>
+                        <span class="text-[13px]">Capacity</span>
                     </div>
-                    <span class="text-white font-bold text-[15px] ml-auto">${r.kapasitas ?? 0} <span class="text-slate-500 text-[12px] font-normal">orang</span></span>
+                    <span class="text-white font-bold text-[15px] ml-auto">${r.kapasitas ?? 0} <span class="text-slate-500 text-[12px] font-normal">people</span></span>
                 </div>
 
                 ${isAvailable
