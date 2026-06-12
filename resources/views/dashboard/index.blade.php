@@ -57,11 +57,11 @@
             <div class="w-11 h-11 rounded-xl flex items-center justify-center" style="background:rgba(99,179,237,0.15); border:1px solid rgba(99,179,237,0.2);">
                 <svg class="w-5 h-5" style="color:#63b3ed" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-width="2"/></svg>
             </div>
-            <span class="text-[11px] font-bold px-2 py-1 rounded-lg" style="color:#63b3ed; background:rgba(99,179,237,0.1);">+5.7%</span>
+            <span id="efficiency-badge" class="text-[11px] font-bold px-2 py-1 rounded-lg" style="color:#63b3ed; background:rgba(99,179,237,0.1);">—</span>
         </div>
         <p class="text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-1">Energy Efficiency</p>
         <p class="text-[28px] font-extrabold text-white leading-none"><span id="efficiency-value">—</span><span class="text-[16px] text-slate-500 ml-1">%</span></p>
-        <p class="text-slate-600 text-[12px] mt-1">Score</p>
+        <p class="text-slate-600 text-[12px] mt-1" id="efficiency-subtitle">vs. bulan lalu</p>
     </div>
 
     {{-- Active Rooms - PURPLE icon --}}
@@ -299,7 +299,29 @@
             const activeDevices = activeDeviceCountFromMap(statusMap);
 
             setEl('total-energy', fmt(liveEnergy) + ' kWh');
-            setEl('efficiency-value', fmt(s.energy_efficiency_percent));
+
+            // Energy Efficiency: format 2 desimal, badge dinamis
+            const effVal = parseFloat(s.energy_efficiency_percent) || 0;
+            const effFormatted = effVal.toFixed(2);
+            setEl('efficiency-value', effFormatted);
+
+            const badge = document.getElementById('efficiency-badge');
+            if (badge) {
+                if (effVal > 0) {
+                    badge.textContent = '+' + effFormatted + '%';
+                    badge.style.color = '#f87171';       // merah: konsumsi naik
+                    badge.style.background = 'rgba(248,113,113,0.1)';
+                } else if (effVal < 0) {
+                    badge.textContent = effFormatted + '%';
+                    badge.style.color = '#00d4aa';       // hijau: konsumsi turun (hemat)
+                    badge.style.background = 'rgba(0,212,170,0.1)';
+                } else {
+                    badge.textContent = '0.00%';
+                    badge.style.color = '#63b3ed';
+                    badge.style.background = 'rgba(99,179,237,0.1)';
+                }
+            }
+
             setEl('active-rooms', s.active_rooms);
             setEl('active-devices', activeDevices);
             setEl('energy-period', p.month_name + ' ' + p.year);

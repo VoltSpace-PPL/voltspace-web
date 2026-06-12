@@ -162,17 +162,8 @@
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <select name="start_time" id="add-start-time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-10 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                                <option value="" class="bg-[#161e2d]">— Pilih Jam —</option>
-                                @for ($h = 6; $h <= 20; $h++)
-                                    <option value="{{ sprintf('%02d:00', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:00', $h) }}</option>
-                                    @if ($h < 20)
-                                    <option value="{{ sprintf('%02d:30', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:30', $h) }}</option>
-                                    @endif
-                                @endfor
-                            </select>
-                            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+                            <input type="text" name="start_time" id="add-start-time" required placeholder="06:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
                         <p class="text-[11px] text-slate-500">Rentang: 06:00 – 20:00</p>
                     </div>
@@ -182,17 +173,8 @@
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <select name="end_time" id="add-end-time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-10 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                                <option value="" class="bg-[#161e2d]">— Pilih Jam —</option>
-                                @for ($h = 6; $h <= 20; $h++)
-                                    <option value="{{ sprintf('%02d:00', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:00', $h) }}</option>
-                                    @if ($h < 20)
-                                    <option value="{{ sprintf('%02d:30', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:30', $h) }}</option>
-                                    @endif
-                                @endfor
-                            </select>
-                            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+                            <input type="text" name="end_time" id="add-end-time" required placeholder="20:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
                         <p class="text-[11px] text-slate-500">Harus setelah jam mulai</p>
                     </div>
@@ -327,17 +309,8 @@
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <select name="edit_start_time" id="edit-start-time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-10 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                                <option value="" class="bg-[#161e2d]">— Pilih Jam —</option>
-                                @for ($h = 6; $h <= 20; $h++)
-                                    <option value="{{ sprintf('%02d:00', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:00', $h) }}</option>
-                                    @if ($h < 20)
-                                    <option value="{{ sprintf('%02d:30', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:30', $h) }}</option>
-                                    @endif
-                                @endfor
-                            </select>
-                            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+                            <input type="text" name="edit_start_time" id="edit-start-time" required placeholder="06:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
                         <p class="text-[11px] text-slate-500">Rentang: 06:00 – 20:00</p>
                     </div>
@@ -347,17 +320,8 @@
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <select name="edit_end_time" id="edit-end-time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-10 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors appearance-none cursor-pointer">
-                                <option value="" class="bg-[#161e2d]">— Pilih Jam —</option>
-                                @for ($h = 6; $h <= 20; $h++)
-                                    <option value="{{ sprintf('%02d:00', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:00', $h) }}</option>
-                                    @if ($h < 20)
-                                    <option value="{{ sprintf('%02d:30', $h) }}" class="bg-[#161e2d]">{{ sprintf('%02d:30', $h) }}</option>
-                                    @endif
-                                @endfor
-                            </select>
-                            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" stroke-width="2"/></svg>
+                            <input type="text" name="edit_end_time" id="edit-end-time" required placeholder="20:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
                         <p class="text-[11px] text-slate-500">Harus setelah jam mulai</p>
                     </div>
@@ -460,6 +424,32 @@
 @endsection
 
 @push('scripts')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    // Flatpickr time-picker config (same as student booking form)
+    const fpConfig = {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        altInput: true,
+        altFormat: "H:i",
+        time_24hr: true,
+        minTime: "06:00",
+        maxTime: "20:00",
+        allowInput: true,
+    };
+
+    let fpAddStart, fpAddEnd, fpEditStart, fpEditEnd;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fpAddStart  = flatpickr('#add-start-time',  { ...fpConfig });
+        fpAddEnd    = flatpickr('#add-end-time',    { ...fpConfig });
+        fpEditStart = flatpickr('#edit-start-time', { ...fpConfig });
+        fpEditEnd   = flatpickr('#edit-end-time',   { ...fpConfig });
+    });
+</script>
 <script>
     let schedulesMap = {};
     let deleteScheduleId = null;
@@ -849,6 +839,9 @@
     function openAddScheduleModal() {
         const form = document.getElementById('add-schedule-form');
         form.reset();
+        // Clear flatpickr instances
+        if (fpAddStart) fpAddStart.clear();
+        if (fpAddEnd)   fpAddEnd.clear();
         addDayManager.reset();
         setAddScheduleMode('days');
         document.getElementById('add-schedule-modal').classList.remove('hidden');
@@ -865,11 +858,11 @@
         form.edit_id.value = schedule.id;
         form.edit_ruangan_id.value = schedule.ruangan_id;
         
-        // set time — match dropdown value format HH:mm
+        // set time via flatpickr so altInput is updated correctly
         const startVal = (schedule.start_time || '').substring(0, 5);
         const endVal   = (schedule.end_time   || '').substring(0, 5);
-        form.edit_start_time.value = startVal;
-        form.edit_end_time.value   = endVal;
+        if (fpEditStart) fpEditStart.setDate(startVal, true);
+        if (fpEditEnd)   fpEditEnd.setDate(endVal, true);
         
         form.edit_automation_action.value = schedule.automation_action || 'on';
         
