@@ -21,7 +21,7 @@ class PeminjamanController extends Controller
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $q = Peminjaman::query()->with(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']);
+        $q = Peminjaman::query()->with(['ruangan:id,nama_ruangan', 'user:id,name,email']);
 
         if ($user->isMahasiswa()) {
             $q->where('user_id', $user->id);
@@ -51,7 +51,7 @@ class PeminjamanController extends Controller
             return response()->json(['message' => 'Akses ditolak.'], 403);
         }
 
-        return response()->json($peminjaman->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email', 'peninjau:id,name']));
+        return response()->json($peminjaman->load(['ruangan:id,nama_ruangan', 'user:id,name,email', 'peninjau:id,name']));
     }
 
     public function store(Request $request): JsonResponse
@@ -113,7 +113,7 @@ class PeminjamanController extends Controller
 
         return response()->json([
             'message' => 'Pengajuan berhasil dibuat.',
-            'data'    => $row->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
+            'data'    => $row->load(['ruangan:id,nama_ruangan', 'user:id,name,email']),
         ], 201);
     }
 
@@ -149,7 +149,7 @@ class PeminjamanController extends Controller
 
         return response()->json([
             'message'        => 'Disetujui. Jadwal listrik otomatis dibuat dan lampu diset nyala.',
-            'data'           => $peminjaman->fresh()->load(['ruangan:id,kode,nama_ruangan', 'user:id,name,email']),
+            'data'           => $peminjaman->fresh()->load(['ruangan:id,nama_ruangan', 'user:id,name,email']),
             'jadwal_listrik' => $jadwal,
         ]);
     }
