@@ -14,112 +14,198 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+/**
+ * Job: Electricity Schedule → kontrol relay ESP32.
+ *
+ * Aturan:
+ * - AUTO ON  aktif pada rentang start_time sampai end_time.
+ * - AUTO OFF aktif pada rentang start_time sampai end_time.
+ * - Jika AUTO ON dan AUTO OFF bentrok, AUTO OFF menang.
+ * - Contoh:
+ *   08:00-17:00 AUTO ON, 11:00-12:00 AUTO OFF
+ *   hasil: 08:00 ON, 11:00 OFF, 12:00 ON lagi, 17:00 OFF.
+ */
 Schedule::call(function () {
-    $now = Carbon::now();
+    $now = Carbon::now('Asia/Jakarta');
     $today = $now->toDateString();
     $currentTime = $now->format('H:i');
     $currentDay = strtolower($now->englishDayOfWeek);
 
+    $normalizeTime = function ($time): string {
+        return substr((string) $time, 0, 5);
+    };
+
+    $isTimeInRange = function (string $time, string $start, string $end): bool {
+        $time = substr($time, 0, 5);
+        $start = substr($start, 0, 5);
+        $end = substr($end, 0, 5);
+
+        // Normal: 08:00 - 17:00
+        if ($start <= $end) {
+            return $time >= $start && $time < $end;
+        }
+
+        // Lewat tengah malam: 22:00 - 05:00
+        return $time >= $start || $time < $end;
+    };
+
+    $buildDeviceUrl = function (Device $device, string $endpoint): ?string {
+        $ip = trim((string) $device->ip_address);
+
+        if ($ip === '') {
+            return null;
+        }
+
+        if (!str_starts_with($ip, 'http://') && !str_starts_with($ip, 'https://')) {
+            $ip = 'http://' . $ip;
+        }
+
+        return rtrim($ip, '/') . '/' . ltrim($endpoint, '/');
+    };
+
+    $sendRelayCommand = function (Device $device, string $aksi, string $ruanganId) use ($buildDeviceUrl) {
+        $commandUrl = $buildDeviceUrl($device, $aksi);
+
+        if (!$commandUrl) {
+            return;
+        }
+
+        $shouldSend = true;
+
+        // Cek status agar tidak spam /on atau /off setiap menit.
+        try {
+            $statusUrl = $buildDeviceUrl($device, 'status');
+            $statusRes = Http::timeout(3)->get($statusUrl);
+
+            if ($statusRes->successful()) {
+                $currentRelay = strtoupper((string) ($statusRes->json('relay') ?? ''));
+
+                if ($aksi === 'on' && $currentRelay === 'ON') {
+                    $shouldSend = false;
+                }
+
+                if ($aksi === 'off' && $currentRelay === 'OFF') {
+                    $shouldSend = false;
+                }
+            }
+        } catch (\Exception $e) {
+            // Kalau status gagal dibaca, tetap coba kirim command.
+        }
+
+        if (!$shouldSend) {
+            return;
+        }
+
+        try {
+            Http::timeout(5)->get($commandUrl);
+
+            // Dibungkus try-catch supaya scheduler tidak mati jika kolom user_id tidak nullable.
+            try {
+                KontrolListrik::create([
+                    'user_id'    => null,
+                    'ruangan_id' => $ruanganId,
+                    'device_id'  => $device->id,
+                    'aksi'       => $aksi,
+                ]);
+            } catch (\Exception $e) {
+                // Log kontrol gagal disimpan, command IoT tetap sudah dikirim.
+            }
+        } catch (ConnectionException $e) {
+            // IoT unreachable.
+        }
+    };
+
     $schedules = JadwalListrik::query()
         ->where('schedule_status', 'active')
-        ->get();
+        ->get()
+        ->filter(function ($schedule) use ($today, $currentDay) {
+            $tanggalMulai = $schedule->tanggal_mulai
+                ? Carbon::parse($schedule->tanggal_mulai)->toDateString()
+                : null;
 
-    foreach ($schedules as $schedule) {
-        // ── Determine if today is a valid day for this schedule ──────────
-        $selectedDays = is_array($schedule->selected_days) ? $schedule->selected_days : [];
-        $startTime = substr((string) $schedule->start_time, 0, 5);
-        $endTime   = substr((string) $schedule->end_time,   0, 5);
+            $tanggalSelesai = $schedule->tanggal_selesai
+                ? Carbon::parse($schedule->tanggal_selesai)->toDateString()
+                : null;
 
-        // Date-range guard
-        if ($schedule->tanggal_mulai && $schedule->tanggal_mulai > $today) {
+            // Date range guard.
+            if ($tanggalMulai && $tanggalMulai > $today) {
+                return false;
+            }
+
+            if ($tanggalSelesai && $tanggalSelesai < $today) {
+                return false;
+            }
+
+            // Day of week guard.
+            $selectedDays = $schedule->selected_days;
+
+            if (is_string($selectedDays)) {
+                $selectedDays = json_decode($selectedDays, true);
+            }
+
+            if (!is_array($selectedDays)) {
+                $selectedDays = [];
+            }
+
+            if (!empty($selectedDays) && !in_array($currentDay, $selectedDays, true)) {
+                return false;
+            }
+
+            return true;
+        });
+
+    $schedulesByRoom = $schedules->groupBy('ruangan_id');
+
+    foreach ($schedulesByRoom as $ruanganId => $roomSchedules) {
+        $activeNow = $roomSchedules->filter(function ($schedule) use ($currentTime, $normalizeTime, $isTimeInRange) {
+            $startTime = $normalizeTime($schedule->start_time ?? $schedule->waktu_mulai);
+            $endTime = $normalizeTime($schedule->end_time ?? $schedule->waktu_selesai);
+
+            if (!$startTime || !$endTime) {
+                return false;
+            }
+
+            return $isTimeInRange($currentTime, $startTime, $endTime);
+        });
+
+        $desiredAction = null;
+
+        if ($activeNow->isNotEmpty()) {
+            // Kalau ada AUTO OFF aktif, OFF menang dari AUTO ON.
+            $hasOffSchedule = $activeNow->contains(function ($schedule) {
+                return $schedule->automation_action === 'off';
+            });
+
+            $desiredAction = $hasOffSchedule ? 'off' : 'on';
+        } else {
+            // Kalau tepat di jam selesai salah satu schedule, matikan relay.
+            $endedNow = $roomSchedules->contains(function ($schedule) use ($currentTime, $normalizeTime) {
+                $endTime = $normalizeTime($schedule->end_time ?? $schedule->waktu_selesai);
+                return $endTime === $currentTime;
+            });
+
+            if ($endedNow) {
+                $desiredAction = 'off';
+            }
+        }
+
+        if (!$desiredAction) {
             continue;
         }
-        if ($schedule->tanggal_selesai && $schedule->tanggal_selesai < $today) {
-            continue;
+
+        $devices = Device::query()
+            ->where('ruangan_id', $ruanganId)
+            ->get();
+
+        foreach ($devices as $device) {
+            $sendRelayCommand($device, $desiredAction, (string) $ruanganId);
         }
 
-        // Day-of-week guard (only when selected_days is set)
-        if (!empty($selectedDays) && !in_array($currentDay, $selectedDays, true)) {
-            continue;
-        }
-
-        // ── TURN ON at start_time ────────────────────────────────────────
-        // Only for schedules with automation_action=on and
-        // NOT linked to a peminjaman (those are handled on approve).
-        if (
-            $startTime === $currentTime &&
-            $schedule->automation_action === 'on' &&
-            !$schedule->peminjaman_id &&
-            $schedule->ruangan_id
-        ) {
-            $devices = Device::query()->where('ruangan_id', $schedule->ruangan_id)->get();
-            foreach ($devices as $device) {
-                $ip = trim((string) $device->ip_address);
-                if ($ip) {
-                    if (!str_starts_with($ip, 'http://') && !str_starts_with($ip, 'https://')) {
-                        $ip = 'http://' . $ip;
-                    }
-                    $url = rtrim($ip, '/') . '/on';
-                    try {
-                        Http::timeout(5)->get($url);
-                    } catch (ConnectionException $e) {
-                        // IoT unreachable — log is skipped to avoid noise
-                    }
-                }
-                KontrolListrik::create([
-                    'user_id'    => null,
-                    'ruangan_id' => $schedule->ruangan_id,
-                    'device_id'  => $device->id,
-                    'aksi'       => 'on',
-                ]);
-            }
-
-            $schedule->update(['status_listrik' => 'nyala']);
-        }
-
-        // ── TURN OFF at end_time ─────────────────────────────────────────
-        $shouldRunOff = false;
-
-        if ($schedule->tanggal_selesai && $schedule->tanggal_selesai === $today) {
-            if ($endTime === $currentTime) {
-                $shouldRunOff = true;
-            }
-        } elseif (!$schedule->tanggal_selesai && !empty($selectedDays)) {
-            if ($endTime === $currentTime) {
-                $shouldRunOff = true;
-            }
-        }
-
-        if ($shouldRunOff && $schedule->ruangan_id) {
-            $devices = Device::query()->where('ruangan_id', $schedule->ruangan_id)->get();
-            foreach ($devices as $device) {
-                $ip = trim((string) $device->ip_address);
-                if ($ip) {
-                    if (!str_starts_with($ip, 'http://') && !str_starts_with($ip, 'https://')) {
-                        $ip = 'http://' . $ip;
-                    }
-                    $url = rtrim($ip, '/') . '/off';
-                    try {
-                        Http::timeout(5)->get($url);
-                    } catch (ConnectionException $e) {
-                        // ignore
-                    }
-                }
-                KontrolListrik::create([
-                    'user_id'    => null,
-                    'ruangan_id' => $schedule->ruangan_id,
-                    'device_id'  => $device->id,
-                    'aksi'       => 'off',
-                ]);
-            }
-
-            // Mark the schedule as inactive if it's tied to a one-time booking
-            if ($schedule->peminjaman_id) {
-                $schedule->update(['schedule_status' => 'inactive', 'status_listrik' => 'mati']);
-            } else {
-                $schedule->update(['status_listrik' => 'mati']);
-            }
-        }
+        JadwalListrik::query()
+            ->whereIn('id', $roomSchedules->pluck('id')->values()->all())
+            ->update([
+                'status_listrik' => $desiredAction === 'on' ? 'nyala' : 'mati',
+            ]);
     }
 })->everyMinute();
 

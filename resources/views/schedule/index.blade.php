@@ -437,7 +437,8 @@
         altFormat: "H:i",
         time_24hr: true,
         minTime: "06:00",
-        maxTime: "20:00",
+        minuteIncrement: 1,
+        maxTime: "21:00",
         allowInput: true,
     };
 
