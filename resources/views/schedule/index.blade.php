@@ -1258,6 +1258,8 @@
         // Validate extension
         if (!file.name.toLowerCase().endsWith('.xlsx')) {
             vsAlert.warning('Format Tidak Valid', 'Hanya file .xlsx yang diizinkan untuk import jadwal listrik.');
+                // Test hook for Dusk to detect format error
+                document.body.insertAdjacentHTML('beforeend', '<div id="test-import-failure">Format Tidak Valid</div>');
             input.value = '';
             return;
         }
@@ -1272,6 +1274,8 @@
         if (!file) return;
 
         vsAlert.info('Importing...', 'Memproses data jadwal listrik, mohon tunggu.');
+        // Test hook for Dusk: import has been triggered with valid file
+        document.body.insertAdjacentHTML('beforeend', '<div id="test-import-started">Import Started</div>');
 
         try {
             const formData = new FormData();
@@ -1290,6 +1294,8 @@
             const data = await res.json();
             if (res.ok) {
                 await vsAlert.success('Import Successful!', `Electricity schedules have been imported. ${data.message || ''}`);
+                // Test hook for Dusk to detect success
+                document.body.insertAdjacentHTML('beforeend', '<div id="test-import-success">Import Successful!</div>');
                 fileInput.value = '';
                 await loadSchedules();
             } else {
