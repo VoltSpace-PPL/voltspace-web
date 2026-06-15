@@ -3,8 +3,6 @@
 namespace Tests\Browser;
 
 use App\Models\Device;
-use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Concerns\CreatesTestRuangan;
 use Tests\DuskTestCase;
@@ -12,32 +10,11 @@ use Tests\DuskTestCase;
 class DeviceUpdate001Test extends DuskTestCase
 {
     use CreatesTestRuangan;
-    use DatabaseMigrations;
-
-    protected string $testRuanganId = '';
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        User::factory()->create([
-            'email' => 'admin@voltspace.id',
-            'role' => 'admin',
-            'password' => bcrypt('admin123'),
-        ]);
-
-        $room = $this->makeTestRuangan();
-        $this->testRuanganId = $room->id;
-    }
-
-    private function loginAdmin(Browser $browser)
-    {
-        $browser->visit('/login')
-            ->type('email', 'admin@voltspace.id')
-            ->type('password', 'admin123')
-            ->press('Sign In')
-            ->waitForLocation('/rooms')
-            ->pause(500);
+        $this->prepareDeviceDuskTest();
     }
 
     /**
@@ -55,22 +32,24 @@ class DeviceUpdate001Test extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($rid) {
             $this->loginAdmin($browser);
+            $this->visitDevicesPage($browser);
 
-            $browser->visit('/devices')
-                ->waitUntilMissingText('Loading devices...')
-                ->waitForText('Old Device Name')
+            $browser->waitForText('Old Device Name', 15)
                 ->click('.btn-edit-device')
                 ->waitForText('Edit Device')
+                ->pause(1000)
                 ->clear('edit_name')
                 ->type('edit_name', 'Updated Device Name')
                 ->clear('edit_type')
                 ->type('edit_type', 'Updated Type')
                 ->clear('edit_ip_address')
-                ->type('edit_ip_address', '10.0.0.2')
-                ->select('edit_ruangan_id', $rid)
+                ->type('edit_ip_address', '10.0.0.2');
+            $this->selectRoomInDropdown($browser, 'edit_ruangan_id', $rid);
+
+            $browser->assertSelected('edit_ruangan_id', $rid)
                 ->click('#edit-device-form button[type="submit"]')
-                ->waitUntilMissingText('Edit Device')
-                ->waitForText('Updated Device Name')
+                ->waitUntilMissing('#edit-device-modal:not(.hidden)', 15)
+                ->waitForText('Updated Device Name', 15)
                 ->assertSee('Updated Device Name')
                 ->assertDontSee('Old Device Name');
         });

@@ -3,8 +3,6 @@
 namespace Tests\Browser;
 
 use App\Models\Device;
-use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Concerns\CreatesTestRuangan;
 use Tests\DuskTestCase;
@@ -12,32 +10,11 @@ use Tests\DuskTestCase;
 class DeviceDelete001Test extends DuskTestCase
 {
     use CreatesTestRuangan;
-    use DatabaseMigrations;
-
-    protected string $testRuanganId = '';
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        User::factory()->create([
-            'email' => 'admin@voltspace.id',
-            'role' => 'admin',
-            'password' => bcrypt('admin123'),
-        ]);
-
-        $room = $this->makeTestRuangan();
-        $this->testRuanganId = $room->id;
-    }
-
-    private function loginAdmin(Browser $browser)
-    {
-        $browser->visit('/login')
-            ->type('email', 'admin@voltspace.id')
-            ->type('password', 'admin123')
-            ->press('Sign In')
-            ->waitForLocation('/rooms')
-            ->pause(500);
+        $this->prepareDeviceDuskTest();
     }
 
     /**
@@ -54,15 +31,14 @@ class DeviceDelete001Test extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $this->loginAdmin($browser);
+            $this->visitDevicesPage($browser);
 
-            $browser->visit('/devices')
-                ->waitUntilMissingText('Loading devices...')
-                ->waitForText('Device To Delete')
+            $browser->waitForText('Device To Delete', 15)
                 ->click('.btn-delete-device')
                 ->waitForText('Delete Device?')
                 ->click('#confirm-delete-device-btn')
-                ->waitUntilMissingText('Delete Device?')
-                ->pause(1000)
+                ->waitUntilMissing('#delete-device-modal:not(.hidden)', 15)
+                ->waitUntilMissingText('Device To Delete', 15)
                 ->assertDontSee('Device To Delete');
         });
     }

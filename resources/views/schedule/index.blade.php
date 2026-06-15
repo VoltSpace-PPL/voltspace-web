@@ -12,16 +12,29 @@
     </nav>
 
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div>
             <h1 class="text-[32px] font-bold text-white leading-tight">Electricity Schedule</h1>
             <p class="text-[14px] text-slate-500 mt-1">Automate electricity control with schedules</p>
         </div>
-        <button onclick="openAddScheduleModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#00d4aa] hover:bg-[#00bfa0] text-white rounded-lg font-bold text-[14px] transition-all self-start sm:self-auto shadow-lg shadow-[#00d4aa]/20">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            Add Schedule
-        </button>
+        <div class="flex items-center gap-3 flex-wrap self-start sm:self-auto">
+            <button onclick="downloadScheduleTemplate()" class="flex items-center gap-2 px-5 py-2.5 bg-[#161e2d] text-[#00d4aa] rounded-xl text-[13px] font-bold border border-[#00d4aa]/20 hover:bg-[#00d4aa]/10 transition-all shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-width="2.5"/></svg>
+                 Download Template
+            </button>
+            <label for="schedule-import-file" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl text-[13px] font-bold border border-indigo-500/20 hover:bg-indigo-500/20 transition-all shadow-sm cursor-pointer mb-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-width="2"/></svg>
+                Import Schedule
+            </label>
+            <input type="file" id="schedule-import-file" class="hidden" accept=".xlsx" onchange="handleScheduleImport(this)">
+            <button onclick="openAddScheduleModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#00d4aa] hover:bg-[#00bfa0] text-white rounded-lg font-bold text-[14px] transition-all self-start sm:self-auto shadow-lg shadow-[#00d4aa]/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Add Schedule
+            </button>
+        </div>
     </div>
+
+
 
     <!-- Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
@@ -106,6 +119,7 @@
                         <button type="button" id="add-mode-days-btn" onclick="setAddScheduleMode('days')" class="px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all">Days of Week</button>
                         <button type="button" id="add-mode-date-btn" onclick="setAddScheduleMode('date')" class="px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all">Specific Date</button>
                     </div>
+                    <p id="add-mode-lock-hint" class="hidden text-[11px] text-amber-400 mt-1">Clear the current selection to switch mode.</p>
                     <input type="hidden" name="schedule_mode" id="add-schedule-mode" value="days">
                 </div>
 
@@ -124,6 +138,7 @@
                         <button type="button" data-day="sunday" class="day-btn py-2 rounded-lg border border-white/10 text-[13px] font-medium text-slate-400 hover:bg-white/5 transition-colors">Sunday</button>
                     </div>
                     <input type="hidden" name="selected_days" id="add-selected-days">
+                    <button type="button" id="add-clear-days" onclick="clearAddDays()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline self-start">✕ Clear selection</button>
                 </div>
 
                 <!-- Select Date -->
@@ -136,29 +151,32 @@
                         <input type="date" name="specific_date" id="add-specific-date"
                                class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
                     </div>
+                    <button type="button" id="add-clear-date" onclick="clearAddDate()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline">✕ Clear date</button>
                 </div>
 
-                <!-- Time -->
+                {{-- Time --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Start Time</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <input type="time" name="start_time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
+                            <input type="text" name="start_time" id="add-start-time" required placeholder="06:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
+                        <p class="text-[11px] text-slate-500">Rentang: 06:00 – 20:00</p>
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">End Time</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <input type="time" name="end_time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
+                            <input type="text" name="end_time" id="add-end-time" required placeholder="20:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
+                        <p class="text-[11px] text-slate-500">Harus setelah jam mulai</p>
                     </div>
                 </div>
 
@@ -248,6 +266,7 @@
                         <button type="button" id="edit-mode-days-btn" onclick="setEditScheduleMode('days')" class="px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all">Days of Week</button>
                         <button type="button" id="edit-mode-date-btn" onclick="setEditScheduleMode('date')" class="px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all">Specific Date</button>
                     </div>
+                    <p id="edit-mode-lock-hint" class="hidden text-[11px] text-amber-400 mt-1">Clear the current selection to switch mode.</p>
                     <input type="hidden" name="edit_schedule_mode" id="edit-schedule-mode" value="days">
                 </div>
 
@@ -266,6 +285,7 @@
                         <button type="button" data-day="sunday" class="day-btn py-2 rounded-lg border border-white/10 text-[13px] font-medium text-slate-400 hover:bg-white/5 transition-colors">Sunday</button>
                     </div>
                     <input type="hidden" name="edit_selected_days" id="edit-selected-days">
+                    <button type="button" id="edit-clear-days" onclick="clearEditDays()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline self-start">✕ Clear selection</button>
                 </div>
 
                 <!-- Select Date -->
@@ -278,29 +298,32 @@
                         <input type="date" name="edit_specific_date" id="edit-specific-date"
                                class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
                     </div>
+                    <button type="button" id="edit-clear-date" onclick="clearEditDate()" class="hidden text-[11px] text-slate-500 hover:text-red-400 transition-colors mt-1 underline">✕ Clear date</button>
                 </div>
 
-                <!-- Time -->
+                {{-- Time --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Start Time</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <input type="time" name="edit_start_time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
+                            <input type="text" name="edit_start_time" id="edit-start-time" required placeholder="06:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
+                        <p class="text-[11px] text-slate-500">Rentang: 06:00 – 20:00</p>
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">End Time</label>
                         <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
                             </span>
-                            <input type="time" name="edit_end_time" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors [color-scheme:dark]">
+                            <input type="text" name="edit_end_time" id="edit-end-time" required placeholder="20:00"
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[14px] text-white focus:outline-none focus:border-[#00d4aa] transition-colors cursor-pointer">
                         </div>
+                        <p class="text-[11px] text-slate-500">Harus setelah jam mulai</p>
                     </div>
                 </div>
 
@@ -401,11 +424,100 @@
 @endsection
 
 @push('scripts')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    // Flatpickr time-picker config (same as student booking form)
+    const fpConfig = {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        altInput: true,
+        altFormat: "H:i",
+        time_24hr: true,
+        minTime: "06:00",
+        minuteIncrement: 1,
+        maxTime: "21:00",
+        allowInput: true,
+    };
+
+    let fpAddStart, fpAddEnd, fpEditStart, fpEditEnd;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fpAddStart  = flatpickr('#add-start-time',  { ...fpConfig });
+        fpAddEnd    = flatpickr('#add-end-time',    { ...fpConfig });
+        fpEditStart = flatpickr('#edit-start-time', { ...fpConfig });
+        fpEditEnd   = flatpickr('#edit-end-time',   { ...fpConfig });
+    });
+</script>
 <script>
     let schedulesMap = {};
     let deleteScheduleId = null;
     let addDayManager, editDayManager;
     let roomsMap = {};
+
+    window.openViewScheduleModal = function(sch) {
+        if (!sch) return;
+        const modal = document.getElementById('view-schedule-modal');
+        const content = document.getElementById('view-schedule-content');
+        
+        const roomName = roomsMap[sch.ruangan_id] || sch.ruangan_id || '–';
+        
+        let days = '';
+        if (sch.tanggal_mulai) {
+            const d = new Date(sch.tanggal_mulai);
+            days = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        } else {
+            const daysMap = { monday:'Monday', tuesday:'Tuesday', wednesday:'Wednesday', thursday:'Thursday', friday:'Friday', saturday:'Saturday', sunday:'Sunday' };
+            days = (sch.selected_days || []).map(d => daysMap[d] || d).join(', ');
+        }
+        
+        const startTime = (sch.start_time || '').substring(0,5);
+        const endTime = (sch.end_time || '').substring(0,5);
+        const isAutoOn = sch.automation_action === 'on';
+        const isActive = sch.schedule_status === 'active';
+        
+        content.innerHTML = `
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Room</p>
+                    <p class="text-[14px] font-bold text-white">${roomName}</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Schedule Type</p>
+                    <p class="text-[14px] font-bold text-white">${sch.tanggal_mulai ? 'Specific Date' : 'Days of Week'}</p>
+                </div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Days / Date</p>
+                <p class="text-[14px] font-bold text-white">${days}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Time</p>
+                    <p class="text-[14px] font-bold text-white">${startTime} - ${endTime} WIB</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Action</p>
+                    <p class="text-[14px] font-bold ${isAutoOn ? 'text-[#00d4aa]' : 'text-red-500'}">${isAutoOn ? '⚡ Turn ON' : '🔌 Turn OFF'}</p>
+                </div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 flex justify-between items-center">
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</p>
+                <span class="inline-flex items-center justify-center px-3 py-1 rounded-full ${isActive ? 'bg-[#00aaff]/10 text-[#00aaff] border border-[#00aaff]/20' : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'} text-[11px] font-bold tracking-wider">${isActive ? 'Active' : 'Inactive'}</span>
+            </div>
+        `;
+        
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeViewScheduleModal = function() {
+        const modal = document.getElementById('view-schedule-modal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    };
 
     function initDaySelector(containerId, inputId) {
         const container = document.getElementById(containerId);
@@ -431,6 +543,25 @@
         function updateInput() {
             const selected = Array.from(btns).filter(b => b.classList.contains('selected')).map(b => b.dataset.day);
             input.value = JSON.stringify(selected);
+
+            // Lock logic: lock the OTHER mode button
+            if (containerId === 'add-days-container') {
+                if (selected.length > 0) {
+                    lockAddModeBtn('date');   // days selected → disable Specific Date btn
+                    document.getElementById('add-clear-days').classList.remove('hidden');
+                } else {
+                    lockAddModeBtn(null);
+                    document.getElementById('add-clear-days').classList.add('hidden');
+                }
+            } else if (containerId === 'edit-days-container') {
+                if (selected.length > 0) {
+                    lockEditModeBtn('date');  // days selected → disable Specific Date btn
+                    document.getElementById('edit-clear-days').classList.remove('hidden');
+                } else {
+                    lockEditModeBtn(null);
+                    document.getElementById('edit-clear-days').classList.add('hidden');
+                }
+            }
         }
         
         return {
@@ -553,7 +684,7 @@
                         <p class="text-[13px] text-slate-400 font-medium leading-relaxed">${days}</p>
                     </td>
                     <td class="px-6 py-5 whitespace-nowrap">
-                        <span class="text-[13px] font-bold text-white tracking-wider">${startTime} - ${endTime}</span>
+                        <span class="text-[13px] font-bold text-white tracking-wider">${startTime} - ${endTime} WIB</span>
                     </td>
                     <td class="px-6 py-5 text-center whitespace-nowrap">
                         ${actionBadge}
@@ -601,13 +732,74 @@
         }
     }
 
+    function lockAddModeBtn(lockWhich) {
+        const disabledCls = 'opacity-40 cursor-not-allowed pointer-events-none';
+        const hint = document.getElementById('add-mode-lock-hint');
+        const btnDays = document.getElementById('add-mode-days-btn');
+        const btnDate = document.getElementById('add-mode-date-btn');
+        if (lockWhich === 'date') {
+            btnDate.classList.add(...disabledCls.split(' '));
+            btnDays.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else if (lockWhich === 'days') {
+            btnDays.classList.add(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else {
+            btnDays.classList.remove(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.add('hidden');
+        }
+    }
+
+    function lockEditModeBtn(lockWhich) {
+        const disabledCls = 'opacity-40 cursor-not-allowed pointer-events-none';
+        const hint = document.getElementById('edit-mode-lock-hint');
+        const btnDays = document.getElementById('edit-mode-days-btn');
+        const btnDate = document.getElementById('edit-mode-date-btn');
+        if (lockWhich === 'date') {
+            btnDate.classList.add(...disabledCls.split(' '));
+            btnDays.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else if (lockWhich === 'days') {
+            btnDays.classList.add(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.remove('hidden');
+        } else {
+            btnDays.classList.remove(...disabledCls.split(' '));
+            btnDate.classList.remove(...disabledCls.split(' '));
+            hint.classList.add('hidden');
+        }
+    }
+
+    function clearAddDays() {
+        addDayManager && addDayManager.reset();
+        document.getElementById('add-clear-days').classList.add('hidden');
+        lockAddModeBtn(null);
+    }
+    function clearAddDate() {
+        document.getElementById('add-specific-date').value = '';
+        document.getElementById('add-clear-date').classList.add('hidden');
+        lockAddModeBtn(null);
+    }
+    function clearEditDays() {
+        editDayManager && editDayManager.reset();
+        document.getElementById('edit-clear-days').classList.add('hidden');
+        lockEditModeBtn(null);
+    }
+    function clearEditDate() {
+        document.getElementById('edit-specific-date').value = '';
+        document.getElementById('edit-clear-date').classList.add('hidden');
+        lockEditModeBtn(null);
+    }
+
     function setAddScheduleMode(mode) {
         document.getElementById('add-schedule-mode').value = mode;
         const btnDays = document.getElementById('add-mode-days-btn');
         const btnDate = document.getElementById('add-mode-date-btn');
         const secDays = document.getElementById('add-days-section');
         const secDate = document.getElementById('add-date-section');
-        
+
         if (mode === 'days') {
             btnDays.className = 'px-5 py-2 rounded-lg text-[13px] font-bold bg-[#00d4aa] text-[#0f172a] shadow-sm transition-all';
             btnDate.className = 'px-5 py-2 rounded-lg text-[13px] font-bold text-slate-400 hover:text-white transition-all';
@@ -648,6 +840,9 @@
     function openAddScheduleModal() {
         const form = document.getElementById('add-schedule-form');
         form.reset();
+        // Clear flatpickr instances
+        if (fpAddStart) fpAddStart.clear();
+        if (fpAddEnd)   fpAddEnd.clear();
         addDayManager.reset();
         setAddScheduleMode('days');
         document.getElementById('add-schedule-modal').classList.remove('hidden');
@@ -664,9 +859,11 @@
         form.edit_id.value = schedule.id;
         form.edit_ruangan_id.value = schedule.ruangan_id;
         
-        // set time (limit to HH:mm)
-        form.edit_start_time.value = (schedule.start_time || '').substring(0,5);
-        form.edit_end_time.value = (schedule.end_time || '').substring(0,5);
+        // set time via flatpickr so altInput is updated correctly
+        const startVal = (schedule.start_time || '').substring(0, 5);
+        const endVal   = (schedule.end_time   || '').substring(0, 5);
+        if (fpEditStart) fpEditStart.setDate(startVal, true);
+        if (fpEditEnd)   fpEditEnd.setDate(endVal, true);
         
         form.edit_automation_action.value = schedule.automation_action || 'on';
         
@@ -796,7 +993,12 @@
         }
 
         if (!f.start_time.value || !f.end_time.value) {
-            vsAlert.warning('Waktu Tidak Lengkap', 'Harap isi waktu mulai dan waktu selesai.');
+            vsAlert.warning('Waktu Tidak Lengkap', 'Harap pilih waktu mulai dan waktu selesai.');
+            return;
+        }
+
+        if (f.start_time.value >= f.end_time.value) {
+            vsAlert.warning('Waktu Tidak Valid', 'Jam selesai harus lebih dari jam mulai.');
             return;
         }
 
@@ -837,14 +1039,14 @@
             if (res.ok) {
                 closeAddScheduleModal();
                 await loadSchedules();
-                vsAlert.success('Jadwal Ditambahkan', 'Jadwal listrik baru berhasil dibuat.');
+                vsAlert.success('Schedule Added', 'New electricity schedule has been created.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal membuat jadwal.');
-                vsAlert.error('Gagal Menyimpan', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to create schedule.');
+                vsAlert.error('Save Failed', msg);
             }
         } catch(err) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -861,7 +1063,12 @@
         }
 
         if (!f.edit_start_time.value || !f.edit_end_time.value) {
-            vsAlert.warning('Waktu Tidak Lengkap', 'Harap isi waktu mulai dan waktu selesai.');
+            vsAlert.warning('Waktu Tidak Lengkap', 'Harap pilih waktu mulai dan waktu selesai.');
+            return;
+        }
+
+        if (f.edit_start_time.value >= f.edit_end_time.value) {
+            vsAlert.warning('Waktu Tidak Valid', 'Jam selesai harus lebih dari jam mulai.');
             return;
         }
 
@@ -929,14 +1136,14 @@
             if (res.ok) {
                 closeEditScheduleModal();
                 await loadSchedules();
-                vsAlert.success('Jadwal Diperbarui', 'Jadwal listrik berhasil diperbarui.');
+                vsAlert.success('Schedule Updated', 'Electricity schedule has been successfully updated.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal memperbarui jadwal.');
-                vsAlert.error('Gagal Memperbarui', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to update schedule.');
+                vsAlert.error('Update Failed', msg);
             }
         } catch(err) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -965,20 +1172,20 @@
 
         const btn = document.getElementById('confirm-delete-schedule-btn');
         const origText = btn.textContent;
-        btn.disabled = true; btn.textContent = 'Menghapus...';
+        btn.disabled = true; btn.textContent = 'Deleting...';
 
         try {
             const res = await apiFetch('/jadwal-listrik/' + deleteScheduleId, { method: 'DELETE' });
             if (res.ok) {
                 closeDeleteScheduleModal();
                 await loadSchedules();
-                vsAlert.success('Jadwal Dihapus', 'Jadwal listrik berhasil dihapus dari sistem.');
+                vsAlert.success('Schedule Deleted', 'Electricity schedule has been removed from the system.');
             } else {
                 const err = await res.json();
-                vsAlert.error('Gagal Menghapus', err.message || 'Terjadi kesalahan saat menghapus jadwal.');
+                vsAlert.error('Delete Failed', err.message || 'An error occurred while deleting the schedule.');
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false; btn.textContent = origText;
         }
@@ -990,6 +1197,37 @@
         
         await loadRoomsDropdowns();
         await loadSchedules();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('room_id');
+        if (roomId) {
+            openAddScheduleModal();
+            const selectRoom = document.querySelector('select[name="ruangan_id"]');
+            if (selectRoom) {
+                selectRoom.value = roomId;
+            }
+        }
+
+        // Date input locking logic
+        document.getElementById('add-specific-date').addEventListener('change', function(e) {
+            if (this.value) {
+                lockAddModeBtn('days');   // date filled → disable Days of Week btn
+                document.getElementById('add-clear-date').classList.remove('hidden');
+            } else {
+                lockAddModeBtn(null);
+                document.getElementById('add-clear-date').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('edit-specific-date').addEventListener('change', function(e) {
+            if (this.value) {
+                lockEditModeBtn('days');  // date filled → disable Days of Week btn
+                document.getElementById('edit-clear-date').classList.remove('hidden');
+            } else {
+                lockEditModeBtn(null);
+                document.getElementById('edit-clear-date').classList.add('hidden');
+            }
+        });
     });
 
     /* ── Download Schedule Template ──────────────────── */

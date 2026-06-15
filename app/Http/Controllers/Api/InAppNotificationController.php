@@ -31,12 +31,34 @@ class InAppNotificationController extends Controller
 
         foreach ($pq->get() as $p) {
             $items[] = [
-                'type' => 'peminjaman',
-                'title' => 'Peminjaman '.$p->status,
-                'body' => ($p->ruangan?->nama_ruangan ?? $p->ruangan_id).' — '.$p->tanggal_mulai?->format('Y-m-d'),
-                'meta' => ['peminjaman_id' => $p->id, 'status' => $p->status],
+                'type'       => 'peminjaman',
+                'title'      => 'Peminjaman '.$p->status,
+                'body'       => ($p->ruangan?->nama_ruangan ?? $p->ruangan_id).' — '.$p->tanggal_mulai?->format('Y-m-d'),
+                'meta'       => ['peminjaman_id' => $p->id, 'status' => $p->status],
                 'created_at' => $p->updated_at?->toIso8601String(),
             ];
+        }
+
+        // Reminder: tampilkan pengajuan pending yang sudah >24 jam belum diproses (khusus admin)
+        if ($user->isStaffAdmin()) {
+            $overdue = \App\Models\Peminjaman::query()
+                ->with('ruangan:id,kode,nama_ruangan')
+                ->where('status', 'pending')
+                ->where('created_at', '<=', \Carbon\Carbon::now()->subHours(24))
+                ->orderByDesc('created_at')
+                ->limit(10)
+                ->get();
+
+            foreach ($overdue as $p) {
+                $hoursWaiting = (int) $p->created_at->diffInHours(now());
+                $items[]      = [
+                    'type'       => 'reminder',
+                    'title'      => '⏰ Pengajuan Menunggu Keputusan',
+                    'body'       => ($p->ruangan?->nama_ruangan ?? $p->ruangan_id).' — sudah menunggu '.$hoursWaiting.' jam. Harap segera diproses.',
+                    'meta'       => ['peminjaman_id' => $p->id, 'status' => 'pending', 'hours_waiting' => $hoursWaiting],
+                    'created_at' => $p->created_at?->toIso8601String(),
+                ];
+            }
         }
 
         $energyPayload = ['alerts' => []];

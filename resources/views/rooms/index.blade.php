@@ -58,23 +58,13 @@
             <form id="room-form" class="p-8 space-y-6">
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room Name (EN)</label>
+                    <div class="space-y-2 sm:col-span-2">
+                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room Name</label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2"/></svg>
                             </span>
-                            <input type="text" name="name_en" placeholder="Computer Lab 1" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room Name (ID)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2"/></svg>
-                            </span>
-                            <input type="text" name="name_id" placeholder="Lab Komputer 1"
+                            <input type="text" name="name_id" placeholder="e.g. Lab Komputer 1" required
                                    class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
                         </div>
                     </div>
@@ -82,12 +72,12 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Devices</label>
+                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Capacity</label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2"/></svg>
                             </span>
-                            <input type="number" name="devices" placeholder="24" min="1" required
+                            <input type="number" name="devices" placeholder="30" min="1" required
                                    class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
                         </div>
                     </div>
@@ -146,39 +136,28 @@
                 <input type="hidden" name="edit_id">
 
 
-                <!-- Room Name EN + ID -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room Name (EN)</label>
+                    <div class="space-y-2 sm:col-span-2">
+                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room Name</label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2"/></svg>
                             </span>
-                            <input type="text" name="edit_name_en" placeholder="Computer Lab 1" required
-                                   class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Room Name (ID)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2"/></svg>
-                            </span>
-                            <input type="text" name="edit_name_id" placeholder="Lab Komputer 1"
+                            <input type="text" name="edit_name_en" placeholder="e.g. Lab Komputer 1" required
                                    class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
                         </div>
                     </div>
                 </div>
 
-                <!-- Devices (capacity) + Floor -->
+                <!-- Capacity + Floor -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Devices</label>
+                        <label class="block text-[13px] font-bold text-slate-400 uppercase tracking-wider">Capacity</label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-width="2"/></svg>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke-width="2"/></svg>
                             </span>
-                            <input type="number" name="edit_devices" placeholder="24" min="0" required
+                            <input type="number" name="edit_devices" placeholder="30" min="0" required
                                    class="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-[15px] text-white placeholder:text-slate-600 focus:outline-none focus:border-[#00d4aa] transition-colors">
                         </div>
                     </div>
@@ -344,19 +323,19 @@ async function loadRoomDevices() {
         if (!deleteRoomId) return;
         const btn = document.getElementById('confirm-delete-room-btn');
         btn.disabled = true;
-        btn.textContent = 'Menghapus...';
+        btn.textContent = 'Deleting...';
         try {
             const res = await apiFetch('/ruangan/' + deleteRoomId, { method: 'DELETE' });
             if (res.ok) {
                 closeDeleteModal();
                 await loadRooms();
-                vsAlert.success('Berhasil Dihapus', 'Room berhasil dihapus dari sistem.');
+                vsAlert.success('Deleted', 'Room has been successfully deleted from the system.');
             } else {
                 const err = await res.json();
-                vsAlert.error('Gagal Menghapus', err.message || 'Terjadi kesalahan saat menghapus room.');
+                vsAlert.error('Delete Failed', err.message || 'An error occurred while deleting the room.');
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false;
             btn.textContent = 'Delete Room';
@@ -366,19 +345,30 @@ async function loadRoomDevices() {
     document.getElementById('edit-room-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const f = e.target;
-        const nameEn = f.edit_name_en.value.trim();
-        const nameId = f.edit_name_id.value.trim();
+        const nameEn = f.edit_name_en ? f.edit_name_en.value.trim() : '';
+        const nameId = f.edit_name_id ? f.edit_name_id.value.trim() : '';
         if (!nameEn && !nameId) {
-            vsAlert.warning('Form Tidak Lengkap', 'Harap isi minimal salah satu nama ruangan (EN atau ID).');
+            vsAlert.warning('Incomplete Form', 'Please fill in at least one room name (EN or ID).');
             return;
         }
         const btn = f.querySelector('button[type="submit"]');
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.textContent = 'Menyimpan...';
+        btn.textContent = 'Saving...';
         const id = f.edit_id.value;
         const rawKapasitas = parseInt(f.edit_devices.value, 10);
         const floor = f.edit_floor.value;
+
+        // Cek nama sama dengan ruangan lain (client-side)
+        const finalName = nameEn || nameId;
+        const exists = allRooms.find(r => r.nama_ruangan.toLowerCase() === finalName.toLowerCase() && String(r.id) !== String(id));
+        if (exists) {
+            vsAlert.warning('Duplicate Room Name', 'This room name is already used by another room. Please use a different name.');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            return;
+        }
+
         const payload = {
             nama_ruangan: nameEn || nameId,
             lantai:       parseInt(floor, 10),
@@ -390,14 +380,14 @@ async function loadRoomDevices() {
             if (res.ok) {
                 closeEditModal();
                 await loadRooms();
-                vsAlert.success('Berhasil Diperbarui', 'Data room berhasil diperbarui.');
+                vsAlert.success('Updated', 'Room data has been successfully updated.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal memperbarui room.');
-                vsAlert.error('Gagal Memperbarui', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to update room.');
+                vsAlert.error('Update Failed', msg);
             }
         } catch(e) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalText;
@@ -542,9 +532,9 @@ async function loadRoomDevices() {
                             <p class="text-[13px] text-slate-500 font-medium break-words">${subtitle} \u00b7 Floor ${floorLevel}</p>
                         </div>
                     </div>
-                    <span class="shrink-0 px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest ${isOccupied ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'}">
+                    ${displayStatus !== 'Booked' ? `<span class="shrink-0 px-3.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest ${isOccupied ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'}">
                         ${displayStatus}
-                    </span>
+                    </span>` : ''}
                 </div>
 
                 <!-- Consumption highlight + chart -->
@@ -566,8 +556,8 @@ async function loadRoomDevices() {
 
                 <!-- Info rows -->
                 <div class="rounded-xl p-3 mb-5" style="background:#162032; border:1px solid #1e2d45;">
-                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Devices</p>
-                        <p class="text-[20px] font-extrabold text-white">${kapasitas}</p>
+                        <p class="text-[11px] text-slate-500 uppercase tracking-wider font-bold mb-1">Capacity</p>
+                        <p class="text-[20px] font-extrabold text-white">${kapasitas} <span class="text-[13px] font-medium text-slate-400">people</span></p>
                 </div>
 
                 <div class="flex items-center justify-between p-4 bg-[#161e2d] rounded-xl border border-[#1e2d45] mb-5">
@@ -591,10 +581,10 @@ async function loadRoomDevices() {
                         Delete
                     </button>
                 </div>
-                <button class="w-full py-3.5 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 hover:brightness-110 transition-all">
+                <a href="/schedule?room_id=${roomId}" class="w-full py-3.5 bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 hover:brightness-110 transition-all">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     Manage Schedule
-                </button>
+                </a>
             </div>
             `;
         }).join('');
@@ -655,7 +645,7 @@ async function loadRoomDevices() {
 
         if (!device) {
             checkbox.checked = !checkbox.checked;
-            vsAlert.warning('Tidak Ada Perangkat', 'Belum ada device IoT yang terhubung untuk room ini.');
+            vsAlert.warning('No Device', 'No IoT device is connected to this room.');
             return;
         }
 
@@ -674,7 +664,7 @@ async function loadRoomDevices() {
 
             if (!res.ok) {
                 checkbox.checked = oldChecked;
-                vsAlert.error('Kontrol Gagal', 'Gagal mengontrol device IoT. Coba lagi.');
+                vsAlert.error('Control Failed', 'Failed to control IoT device. Please try again.');
                 return;
             }
 
@@ -685,7 +675,7 @@ async function loadRoomDevices() {
 
         } catch (e) {
             checkbox.checked = oldChecked;
-            vsAlert.error('Perangkat Tidak Terhubung', 'Device IoT tidak dapat dihubungi. Periksa koneksi jaringan.');
+            vsAlert.error('Device Unreachable', 'IoT device could not be reached. Please check the network connection.');
         }
     }
 
@@ -694,25 +684,36 @@ async function loadRoomDevices() {
     document.getElementById('room-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const f = e.target;
-        const nameEn = f.name_en.value.trim();
-        const nameId = f.name_id.value.trim();
+        const nameEn = f.name_en ? f.name_en.value.trim() : '';
+        const nameId = f.name_id ? f.name_id.value.trim() : '';
         const floor = parseInt(f.floor.value, 10);
         if (!nameEn && !nameId) {
-            vsAlert.warning('Form Tidak Lengkap', 'Harap isi minimal salah satu nama ruangan (EN atau ID).');
+            vsAlert.warning('Incomplete Form', 'Please fill in at least one room name (EN or ID).');
             return;
         }
         const devicesVal = parseInt(f.devices.value, 10) || 0;
         if (isNaN(devicesVal) || devicesVal < 0) {
-            vsAlert.warning('Input Tidak Valid', 'Jumlah perangkat tidak boleh negatif.');
+            vsAlert.warning('Invalid Input', 'Number of devices cannot be negative.');
             return;
         }
         const btn = f.querySelector('button[type="submit"]');
         const originalText = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = 'Menyimpan...';
+        btn.innerHTML = 'Saving...';
+
+        const finalName = nameId || nameEn;
+
+        // Cek nama sama dengan ruangan lain (client-side)
+        const exists = allRooms.find(r => r.nama_ruangan.toLowerCase() === finalName.toLowerCase());
+        if (exists) {
+            vsAlert.warning('Duplicate Room Name', 'This room name is already used by another room. Please use a different name.');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            return;
+        }
 
         const payload = {
-            nama_ruangan: nameId || nameEn,
+            nama_ruangan: finalName,
             kapasitas: devicesVal,
             lantai: floor,
             status: apiStatusFromUi(f.querySelector('input[name="status"]:checked').value)
@@ -724,14 +725,14 @@ async function loadRoomDevices() {
                 closeModal();
                 f.reset();
                 await loadRooms();
-                vsAlert.success('Berhasil Ditambahkan', 'Room baru berhasil ditambahkan.');
+                vsAlert.success('Room Added', 'New room has been successfully added.');
             } else {
                 const err = await res.json();
-                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Gagal menambahkan room.');
-                vsAlert.error('Gagal Menambahkan', msg);
+                const msg = err?.errors ? Object.values(err.errors).flat().join('<br>') : (err.message || 'Failed to add room.');
+                vsAlert.error('Add Failed', msg);
             }
         } catch(err) {
-            vsAlert.error('Koneksi Gagal', 'Tidak dapat terhubung ke server. Coba lagi.');
+            vsAlert.error('Connection Failed', 'Could not connect to the server. Please try again.');
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalText;

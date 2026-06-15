@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index(Request $request): JsonResponse
     {
         [$year, $month, $selectedDate] = $this->resolvePeriod($request);
-        $summary = $this->buildSummary($selectedDate->copy()->subMonth());
+        $summary = $this->buildSummary($selectedDate->copy(), $selectedDate->copy()->subMonth());
         $trend = $this->buildTrend($year);
         $rooms = $this->buildRoomsPayload($selectedDate);
 
@@ -35,7 +35,7 @@ class DashboardController extends Controller
     public function summary(Request $request): JsonResponse
     {
         [$year, $month, $selectedDate] = $this->resolvePeriod($request);
-        $summary = $this->buildSummary($selectedDate->copy()->subMonth());
+        $summary = $this->buildSummary($selectedDate->copy(), $selectedDate->copy()->subMonth());
 
         return response()->json([
             'period' => [
@@ -88,37 +88,41 @@ class DashboardController extends Controller
         return [$year, $month, $selectedDate];
     }
 
-    private function buildSummary(Carbon $previousDate): array
+    private function buildSummary(Carbon $currentDate, Carbon $previousDate): array
     {
+        // Total konsumsi bulan berjalan
+        $totalEnergyThisMonth = (float) MonitoringEnergi::query()
+            ->where('tahun', $currentDate->year)
+            ->where('bulan', $currentDate->month)
+            ->sum('konsumsi_kwh');
+
+        // Total konsumsi bulan sebelumnya
         $totalEnergyLastMonth = (float) MonitoringEnergi::query()
             ->where('tahun', $previousDate->year)
             ->where('bulan', $previousDate->month)
             ->sum('konsumsi_kwh');
 
+        // Energy Efficiency = ((bulan ini - bulan lalu) / bulan lalu) × 100
+        // Hindari division by zero: jika bulan lalu = 0, hasilkan 0
+        if ($totalEnergyLastMonth > 0) {
+            $efficiency = round(
+                (($totalEnergyThisMonth - $totalEnergyLastMonth) / $totalEnergyLastMonth) * 100,
+                2
+            );
+        } else {
+            $efficiency = 0.0;
+        }
+
         $activeRooms = (int) Ruangan::query()->where('status', 'digunakan')->count();
         $activeDevices = (int) DB::table('devices')->count();
 
-        $latestControlPerRoom = DB::table('kontrol_listriks as kl')
-            ->select('kl.ruangan_id', 'kl.aksi')
-            ->join(
-                DB::raw('(SELECT ruangan_id, MAX(created_at) as max_created FROM kontrol_listriks GROUP BY ruangan_id) as latest'),
-                function ($join): void {
-                    $join->on('latest.ruangan_id', '=', 'kl.ruangan_id')
-                        ->on('latest.max_created', '=', 'kl.created_at');
-                }
-            )
-            ->get();
-
-        $trackedRooms = $latestControlPerRoom->count();
-        $offCount = $latestControlPerRoom->where('aksi', 'off')->count();
-        $efficiency = $trackedRooms > 0 ? round(($offCount / $trackedRooms) * 100, 1) : 0.0;
-
         return [
             'total_energy_last_month_kwh' => round($totalEnergyLastMonth, 2),
+            'total_energy_this_month_kwh' => round($totalEnergyThisMonth, 2),
             'energy_efficiency_percent' => $efficiency,
             'active_rooms' => $activeRooms,
             'active_devices' => $activeDevices,
-            'efficiency_formula' => 'persentase ruangan dengan status power terakhir OFF',
+            'efficiency_formula' => '((bulan_ini - bulan_lalu) / bulan_lalu) * 100',
         ];
     }
 

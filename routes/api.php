@@ -78,6 +78,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/jadwal-listrik/template/download', [JadwalListrikExcelController::class, 'downloadTemplate']);
         Route::post('/jadwal-listrik/import', [JadwalListrikExcelController::class, 'import']);
 
+        Route::get('/users/template/download', [UserExcelImportController::class, 'downloadTemplate']);
+        Route::post('/users/import', [UserExcelImportController::class, 'import']);
+
         Route::get('/energy-alerts/settings', [EnergyAlertController::class, 'settings']);
         Route::put('/energy-alerts/settings', [EnergyAlertController::class, 'updateSettings']);
         Route::get('/energy-alerts', [EnergyAlertController::class, 'alerts']);
@@ -86,15 +89,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/laporan-energi/generate', [GeneratedEnergyReportController::class, 'store']);
         Route::get('/laporan-energi/{report}/preview', [GeneratedEnergyReportController::class, 'preview']);
         Route::get('/laporan-energi/{report}/download', [GeneratedEnergyReportController::class, 'download']);
-        Route::delete('/laporan-energi/{report}', [GeneratedEnergyReportController::class, 'destroy']);
+        Route::post('/laporan-energi/{report}/toggle-hide', [GeneratedEnergyReportController::class, 'toggleHide']);
     });
 
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('super_admin');
-
-    Route::middleware('super_admin')->group(function () {
-        Route::get('/users/template/download', [UserExcelImportController::class, 'downloadTemplate']);
-        Route::post('/users/import', [UserExcelImportController::class, 'import']);
-    });
 });
 
 Route::get('/devices/{device}/status', [DeviceControlController::class, 'status']);

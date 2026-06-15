@@ -111,6 +111,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const user = await resUser.json();
             document.getElementById('profile_name').value = user.name || '';
             document.getElementById('profile_email').value = user.email || '';
+
+            if (user.role !== 'super_admin') {
+                document.getElementById('high_usage_threshold_kwh').disabled = true;
+                document.getElementById('peak_demand_limit_kw').disabled = true;
+                
+                // Dim the inputs
+                document.getElementById('high_usage_threshold_kwh').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('peak_demand_limit_kw').classList.add('opacity-50', 'cursor-not-allowed');
+                
+                // Hide save button
+                document.getElementById('save-settings-btn').style.display = 'none';
+            }
         }
     } catch (e) {
         console.warn('Failed to load user profile', e);

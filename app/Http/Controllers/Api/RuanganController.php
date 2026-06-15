@@ -18,7 +18,27 @@ class RuanganController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        return response()->json($query->latest()->get());
+        $ruangans = $query->latest()->get();
+
+        if ($request->filled('cek_tanggal') && $request->filled('waktu_mulai') && $request->filled('waktu_selesai')) {
+            $tanggal = \Carbon\Carbon::parse($request->input('cek_tanggal'))->startOfDay();
+            $wm = $request->input('waktu_mulai');
+            $ws = $request->input('waktu_selesai');
+
+            // Mengambil semua ruangan dan mengecek jadwal bentrok tanpa melakukan inner join yang mengeliminasi ruangan kosong
+            $ruangans = $ruangans->map(function ($ruangan) use ($tanggal, $wm, $ws) {
+                // Gunakan RoomScheduleGuard untuk mengecek bentrok peminjaman dan jadwal kuliah
+                $isBooked = \App\Support\RoomScheduleGuard::peminjamanBlocks($ruangan->id, $tanggal, $tanggal, $wm, $ws, ['ditolak', 'dibatalkan', 'pending']);
+                $isScheduled = \App\Support\RoomScheduleGuard::jadwalListrikBlocks($ruangan->id, $tanggal, $tanggal, $wm, $ws);
+                
+                $ruangan->is_available = !$isBooked && !$isScheduled;
+                $ruangan->reason = $isBooked ? 'Sudah Dipesan' : ($isScheduled ? 'Jadwal Perkuliahan' : 'Tersedia');
+                
+                return $ruangan;
+            });
+        }
+
+        return response()->json($ruangans);
     }
 
     public function store(StoreRuanganRequest $request): JsonResponse

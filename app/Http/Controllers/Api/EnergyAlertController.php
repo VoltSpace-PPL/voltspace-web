@@ -17,8 +17,8 @@ class EnergyAlertController extends Controller
 
     public function settings(Request $request): JsonResponse
     {
-        if (! $request->user()->isSuperAdmin()) {
-            return response()->json(['message' => 'Hanya super_admin yang dapat mengatur ambang peringatan energi global.'], 403);
+        if (! $request->user()->isStaffAdmin()) {
+            return response()->json(['message' => 'Akses ditolak.'], 403);
         }
 
         return response()->json(EnergyAlertSetting::current());

@@ -167,7 +167,7 @@
             const room = b.ruangan || {};
             const id = 'BK' + String(b.id).padStart(3, '0');
             const date = b.tanggal_mulai ? b.tanggal_mulai.substring(0, 10) : '-';
-            const time = `${(b.waktu_mulai||'').substring(0,5)} - ${(b.waktu_selesai||'').substring(0,5)}`;
+            const time = `${(b.waktu_mulai||'').substring(0,5)} - ${(b.waktu_selesai||'').substring(0,5)} WIB`;
             
             return `
                 <tr class="transition-colors" style="border-bottom:1px solid rgba(30,45,69,0.7);" onmouseenter="this.style.background='rgba(255,255,255,0.015)'" onmouseleave="this.style.background=''">

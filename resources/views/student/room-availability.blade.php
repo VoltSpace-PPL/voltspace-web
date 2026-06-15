@@ -10,7 +10,7 @@
 </div>
 
 {{-- Stats Cards --}}
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
     <div class="rounded-2xl p-5 flex items-center gap-4" style="background:#161e2d; border:1px solid #1e2d45;">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
              style="background:rgba(99,179,237,0.15); border:1px solid rgba(99,179,237,0.2);">
@@ -33,18 +33,6 @@
         <div>
             <p class="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Available</p>
             <p class="text-[30px] font-extrabold text-white leading-none mt-0.5" id="stat-available">—</p>
-        </div>
-    </div>
-    <div class="rounded-2xl p-5 flex items-center gap-4" style="background:#161e2d; border:1px solid #1e2d45;">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-             style="background:rgba(246,173,85,0.15); border:1px solid rgba(246,173,85,0.2);">
-            <svg class="w-6 h-6 text-[#f6ad55]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/>
-            </svg>
-        </div>
-        <div>
-            <p class="text-slate-500 text-[11px] font-bold uppercase tracking-wider">Booked</p>
-            <p class="text-[30px] font-extrabold text-white leading-none mt-0.5" id="stat-booked">—</p>
         </div>
     </div>
 </div>
@@ -76,25 +64,15 @@
     </div>
     <div class="flex items-center gap-2 flex-shrink-0">
         <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-width="2"/>
-        </svg>
-        <select id="status-filter"
-            class="px-4 py-2.5 rounded-xl text-white text-[13px] focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/40 transition-all cursor-pointer"
-            style="background:#161e2d; border:1px solid #1e2d45;">
-            <option value="">All Status</option>
-            <option value="tersedia">Available</option>
-            <option value="dipesan">Booked</option>
-            <option value="digunakan">In Use</option>
-        </select>
-    </div>
-    <div class="flex items-center gap-2 flex-shrink-0">
-        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" stroke-width="2"/>
         </svg>
-        <select id="building-filter"
+        <select id="floor-filter"
             class="px-4 py-2.5 rounded-xl text-white text-[13px] focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/40 transition-all cursor-pointer"
             style="background:#161e2d; border:1px solid #1e2d45;">
-            <option value="">All Buildings</option>
+            <option value="">All Floors</option>
+            <option value="1">Floor 1</option>
+            <option value="2">Floor 2</option>
+            <option value="3">Floor 3</option>
         </select>
     </div>
 </div>
@@ -106,6 +84,8 @@
         <span class="text-slate-500 text-[13px]">Loading rooms...</span>
     </div>
 </div>
+
+
 @endsection
 
 @push('scripts')
@@ -113,6 +93,8 @@
 (function () {
     let allRooms = [];
     let activeBookings = [];
+
+
 
     const statusCfg = {
         tersedia:  { label: 'Available', cls: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30', dot: 'bg-emerald-400' },
@@ -124,36 +106,9 @@
         return statusCfg[s] || { label: s, cls: 'bg-slate-500/15 text-slate-400 border-slate-500/30', dot: 'bg-slate-400' };
     }
 
-    function getBuilding(room) {
-        const kode = (room.kode || room.id || '').toUpperCase();
-        const nama = (room.nama_ruangan || '').trim();
-        const buildingMap = {
-            'TUCH': 'TUCH', 'GSG': 'GSG', 'SC': 'Student Center',
-            'GKB': 'GKB', 'GKU': 'GKU', 'FIK': 'FIK', 'FEB': 'FEB',
-        };
-        for (const [key, val] of Object.entries(buildingMap)) {
-            if (kode.startsWith(key) || nama.toUpperCase().startsWith(key)) return val;
-        }
-        return nama.split(/[\s\-_]/)[0] || 'Other';
-    }
-
     function updateStats(rooms) {
         document.getElementById('stat-total').textContent     = rooms.length;
         document.getElementById('stat-available').textContent = rooms.filter(r => r.status === 'tersedia').length;
-        document.getElementById('stat-booked').textContent    = rooms.filter(r => r.status === 'dipesan' || r.status === 'digunakan').length;
-    }
-
-    function populateBuildingFilter(rooms) {
-        const buildings = [...new Set(rooms.map(r => getBuilding(r)))].sort();
-        const sel = document.getElementById('building-filter');
-        const current = sel.value;
-        sel.innerHTML = '<option value="">All Buildings</option>';
-        buildings.forEach(b => {
-            const opt = document.createElement('option');
-            opt.value = b; opt.textContent = b;
-            if (b === current) opt.selected = true;
-            sel.appendChild(opt);
-        });
     }
 
     function renderRooms(rooms) {
@@ -170,7 +125,6 @@
 
         grid.innerHTML = rooms.map(r => {
             const s = statusInfo(r.status);
-            const isAvailable = r.status === 'tersedia';
             const booking = activeBookings.find(b => b.ruangan_id === r.id && b.status === 'disetujui');
 
             return `
@@ -190,10 +144,12 @@
                     <p class="text-[12px] text-slate-500 mt-0.5">${r.kode || r.id}</p>
                 </div>
             </div>
+            ${s.label !== 'In Use' && s.label !== 'Booked' ? `
             <span class="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${s.cls}">
                 <span class="w-1.5 h-1.5 rounded-full ${s.dot}"></span>
                 ${s.label}
             </span>
+            ` : ''}
         </div>
 
         <div class="space-y-2">
@@ -212,36 +168,17 @@
             </div>
         </div>
 
-        ${booking ? `
-        <div class="mt-4 rounded-xl p-3" style="background:rgba(246,173,85,0.08); border:1px solid rgba(246,173,85,0.2);">
-            <p class="text-[11px] font-bold text-orange-400 uppercase tracking-wider mb-1.5">Current User</p>
-            <p class="text-white text-[13px] font-semibold">${booking.user?.name || 'Unknown'}</p>
-            <p class="text-slate-500 text-[12px] mt-0.5">
-                <svg class="w-3 h-3 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/></svg>
-                ${(booking.waktu_mulai||'').substring(0,5)} – ${(booking.waktu_selesai||'').substring(0,5)}
-            </p>
-        </div>` : ''}
     </div>
 
     <div class="px-5 pb-5 pt-1">
-        ${isAvailable
-            ? `<a href="/student/bookings/create?room_id=${r.id}"
-                class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] transition-all hover:scale-[1.01] active:scale-[0.99]"
-                style="background:#00d4aa; color:#0b1120; box-shadow:0 4px 14px rgba(0,212,170,0.3);">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                Book This Room
-               </a>`
-            : `<button disabled
-                class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] cursor-not-allowed"
-                style="background:#1e293b; color:#475569; border:1px solid #1e2d45;">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                </svg>
-                Not Available
-               </button>`
-        }
+        <a href="/student/room-availability/${r.id}"
+            class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-[13px] hover:scale-[1.01] transition-all"
+            style="background:linear-gradient(135deg,rgba(0,212,170,0.15),rgba(0,170,255,0.15)); color:#00d4aa; border:1px solid rgba(0,212,170,0.3);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            View Booking Calendar
+        </a>
     </div>
 </div>`;
         }).join('');
@@ -249,15 +186,14 @@
 
     function filterAndRender() {
         const q    = document.getElementById('room-search').value.toLowerCase();
-        const st   = document.getElementById('status-filter').value;
-        const bldg = document.getElementById('building-filter').value;
+        const fl   = document.getElementById('floor-filter').value;
         const filtered = allRooms.filter(r => {
+            if (r.status !== 'tersedia') return false;
             const name = (r.nama_ruangan || '').toLowerCase();
             const kode = (r.kode || r.id || '').toLowerCase();
-            const b    = getBuilding(r);
-            return (!q    || name.includes(q) || kode.includes(q))
-                && (!st   || r.status === st)
-                && (!bldg || b === bldg);
+            const floorLevel = String(r.lantai || 1);
+            return (!q || name.includes(q) || kode.includes(q))
+                && (!fl || floorLevel === fl);
         });
         renderRooms(filtered);
     }
@@ -278,7 +214,6 @@
             const data = await res.json();
             allRooms   = Array.isArray(data) ? data : (data.data || []);
             updateStats(allRooms);
-            populateBuildingFilter(allRooms);
             filterAndRender();
         } catch (e) {
             document.getElementById('rooms-grid').innerHTML =
@@ -287,13 +222,14 @@
     }
 
     document.getElementById('room-search').addEventListener('input', filterAndRender);
-    document.getElementById('status-filter').addEventListener('change', filterAndRender);
-    document.getElementById('building-filter').addEventListener('change', filterAndRender);
+    document.getElementById('floor-filter').addEventListener('change', filterAndRender);
 
     document.addEventListener('DOMContentLoaded', async () => {
         await loadActiveBookings();
         await loadRooms();
     });
+
+
 })();
 </script>
 @endpush
