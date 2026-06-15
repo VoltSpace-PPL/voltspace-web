@@ -991,5 +991,86 @@
         await loadRoomsDropdowns();
         await loadSchedules();
     });
+
+    /* ── Download Schedule Template ──────────────────── */
+    window.downloadScheduleTemplate = async function() {
+        try {
+            const res = await apiFetch('/jadwal-listrik/template/download');
+            if (!res.ok) throw new Error('Failed');
+            const blob = await res.blob();
+            const url  = window.URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href     = url;
+            a.download = 'Template_Jadwal_Listrik.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch(e) {
+            // Fallback: generate a simple notice if API not available
+            vsAlert.info('Template', 'Silakan download template jadwal listrik dari admin sistem atau hubungi IT support.');
+        }
+    };
+
+    /* ── Handle file selection for import ────────────── */
+    window.handleScheduleImport = function(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Validate extension
+        if (!file.name.toLowerCase().endsWith('.xlsx')) {
+            vsAlert.warning('Format Tidak Valid', 'Hanya file .xlsx yang diizinkan untuk import jadwal listrik.');
+                // Test hook for Dusk to detect format error
+                document.body.insertAdjacentHTML('beforeend', '<div id="test-import-failure">Format Tidak Valid</div>');
+            input.value = '';
+            return;
+        }
+
+        triggerScheduleImport();
+    };
+
+    /* ── Trigger schedule import API call ────────────── */
+    window.triggerScheduleImport = async function() {
+        const fileInput = document.getElementById('schedule-import-file');
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        vsAlert.info('Importing...', 'Memproses data jadwal listrik, mohon tunggu.');
+        // Test hook for Dusk: import has been triggered with valid file
+        document.body.insertAdjacentHTML('beforeend', '<div id="test-import-started">Import Started</div>');
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const token = localStorage.getItem('token');
+            const res = await fetch(window.VoltSpaceApi.getBase() + '/jadwal-listrik/import', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                await vsAlert.success('Import Successful!', `Electricity schedules have been imported. ${data.message || ''}`);
+                // Test hook for Dusk to detect success
+                document.body.insertAdjacentHTML('beforeend', '<div id="test-import-success">Import Successful!</div>');
+                fileInput.value = '';
+                await loadSchedules();
+            } else {
+                const msg = data?.errors
+                    ? Object.values(data.errors).flat().join('\n')
+                    : (data.message || 'Failed to import schedule.');
+                vsAlert.error('Import Failed', msg);
+                fileInput.value = '';
+            }
+        } catch(e) {
+            vsAlert.error('Connection Failed', 'Could not connect to the server.');
+            fileInput.value = '';
+        }
+    };
 </script>
 @endpush
